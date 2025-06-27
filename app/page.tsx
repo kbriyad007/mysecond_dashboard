@@ -1,5 +1,3 @@
-
-// app/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,7 +12,7 @@ export default function Page() {
 
   useEffect(() => {
     fetch(
-      "https://api.storyblok.com/v2/cdn/stories/home?version=draft&token=SySd6YFXHDQzNOBoSFcvrQtt
+      "https://api.storyblok.com/v2/cdn/stories/home?version=draft&token=SySd6YFXHDQzNOBoSFcvrQtt"
     )
       .then((res) => res.json())
       .then((data) => setStory(data.story.content))
