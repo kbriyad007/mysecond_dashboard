@@ -1,14 +1,14 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface MyProduct {
   name: string;
   description: string;
   image?: { filename: string };
   price?: number | string;
-  body?: any[]; // in case you use nested blocks
+  // removed 'body' field to avoid 'any' type
 }
 
 export default function Page() {
@@ -17,7 +17,7 @@ export default function Page() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const slug = "product"; // make sure your Storyblok story slug is exactly this
+    const slug = "product"; // your Storyblok story slug, all lowercase
 
     const token = "UNyEawluuu4UVVnYIBUqPAtt"; // your public API token
     const url = `https://api.storyblok.com/v2/cdn/stories/${slug}?version=draft&token=${token}`;
@@ -34,7 +34,6 @@ export default function Page() {
       .then((data) => {
         console.log("✅ Storyblok content received:", data);
 
-        // Adjust this depending on how your content is structured
         const content = data.story?.content;
 
         if (!content) {
@@ -78,10 +77,12 @@ export default function Page() {
         <h2>{product.name || "Unnamed Product"}</h2>
 
         {product.image?.filename ? (
-          <img
+          <Image
             src={product.image.filename}
             alt={product.name || "Product image"}
-            style={{ width: "100%", maxWidth: "300px" }}
+            width={300}
+            height={300}
+            style={{ objectFit: "contain" }}
           />
         ) : (
           <p>⚠️ No product image found.</p>
