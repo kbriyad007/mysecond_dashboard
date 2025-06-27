@@ -3,60 +3,36 @@
 import { useEffect, useState } from "react";
 
 interface MyProduct {
-  name: string;
-  description: string;
-  image: { filename: string };
-  price: number;
+  name?: string;
+  description?: string;
+  image?: { filename: string };
+  price?: number;
 }
 
 export default function Page() {
   const [product, setProduct] = useState<MyProduct | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const url =
-      "https://api.storyblok.com/v2/cdn/stories/product?version=draft&token=UNyEawluuu4UVVnYIBUqPAtt";
+    console.log(
+      "📦 Fetching Storyblok content from:",
+      "https://api.storyblok.com/v2/cdn/stories/product?version=draft&token=UNyEawluuu4UVVnYIBUqPAtt"
+    );
 
-    console.log("📦 Fetching Storyblok content from:", url);
-
-    fetch(url)
-      .then(async (res) => {
-        if (!res.ok) {
-          const errorText = await res.text();
-          console.error("❌ Response error:", res.status, errorText);
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
+    fetch(
+      "https://api.storyblok.com/v2/cdn/stories/product?version=draft&token=UNyEawluuu4UVVnYIBUqPAtt"
+    )
+      .then((res) => res.json())
       .then((data) => {
         console.log("✅ Storyblok content received:", data);
         setProduct(data.story.content);
       })
       .catch((err) => {
-        console.error("🚨 Fetch failed:", err.message);
-        setError(err.message);
+        console.error("❌ Failed to fetch product:", err);
         setProduct(null);
       });
   }, []);
 
-  if (error) {
-    return (
-      <div style={{ color: "red", padding: "1rem" }}>
-        <h2>⚠️ Error loading product</h2>
-        <p>{error}</p>
-        <p>
-          Please check:
-          <ul>
-            <li>✅ Your Story slug is correct (e.g. `Product` vs `product`)</li>
-            <li>✅ The Story is published</li>
-            <li>✅ The token is valid</li>
-          </ul>
-        </p>
-      </div>
-    );
-  }
-
-  if (!product) return <div>⏳ Loading product...</div>;
+  if (!product) return <div>Loading product...</div>;
 
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
@@ -69,15 +45,21 @@ export default function Page() {
           maxWidth: "400px",
         }}
       >
-        <h2>{product.name}</h2>
-        <img
-          src={product.image.filename}
-          alt={product.name}
-          style={{ width: "100%", maxWidth: "300px" }}
-        />
-        <p>{product.description}</p>
+        <h2>{product.name || "Unnamed Product"}</h2>
+
+        {product.image?.filename ? (
+          <img
+            src={product.image.filename}
+            alt={product.name || "Product Image"}
+            style={{ width: "100%", maxWidth: "300px" }}
+          />
+        ) : (
+          <p>⚠️ No product image found.</p>
+        )}
+
+        <p>{product.description || "No description available."}</p>
         <p>
-          <strong>Price:</strong> ${product.price}
+          <strong>Price:</strong> ${product.price ?? "N/A"}
         </p>
       </div>
     </main>
