@@ -15,7 +15,7 @@ export default function Page() {
 
   useEffect(() => {
     const url =
-      "https://api.storyblok.com/v2/cdn/stories/Product?version=draft&token=UNyEawluuu4UVVnYIBUqPAtt";
+      "https://api.storyblok.com/v2/cdn/stories/product?version=draft&token=UNyEawluuu4UVVnYIBUqPAtt";
 
     console.log("📦 Fetching Storyblok content from:", url);
 
