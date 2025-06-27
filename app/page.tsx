@@ -14,7 +14,7 @@ export default function Page() {
 
   useEffect(() => {
     fetch(
-      "https://api.storyblok.com/v2/cdn/stories/Product?version=draft&token=SySd6YFXHDQzNOBoSFcvrQtt"
+      "https://api.storyblok.com/v2/cdn/stories/Product?version=draft&token=UNyEawluuu4UVVnYIBUqPAtt"
     )
       .then((res) => res.json())
       .then((data) => {
