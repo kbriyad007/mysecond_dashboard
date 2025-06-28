@@ -4,10 +4,17 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { renderRichText } from "@storyblok/react";
 
+interface StoryblokRichTextNode {
+  type: string;
+  content?: StoryblokRichTextNode[];
+  text?: string;
+  [key: string]: any;
+}
+
 interface MyProduct {
   component: string;
   name: string;
-  description: Record<string, unknown>; // loosely typed
+  description: StoryblokRichTextNode;
   image?: { filename: string };
   price?: number | string;
 }
@@ -90,7 +97,7 @@ export default function Page() {
         )}
 
         {/* Rich Text Render */}
-        <div>{renderRichText(product.description as any)}</div>
+        <div>{renderRichText(product.description)}</div>
 
         <p>
           <strong>Price:</strong>{" "}
