@@ -7,7 +7,7 @@ import { renderRichText } from "@storyblok/react";
 interface MyProduct {
   component: string;
   name: string;
-  description: Record<string, unknown>; // no more 'any'
+  description: Record<string, unknown>; // loosely typed
   image?: { filename: string };
   price?: number | string;
 }
@@ -90,7 +90,7 @@ export default function Page() {
         )}
 
         {/* Rich Text Render */}
-        <div>{renderRichText(product.description)}</div>
+        <div>{renderRichText(product.description as any)}</div>
 
         <p>
           <strong>Price:</strong>{" "}
