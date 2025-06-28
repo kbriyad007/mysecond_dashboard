@@ -7,7 +7,7 @@ import { renderRichText } from "@storyblok/react";
 interface MyProduct {
   component: string;
   name: string;
-  description: unknown; // very loose typing
+  description: unknown; // loose typing for compatibility
   image?: { filename: string };
   price?: number | string;
 }
@@ -90,6 +90,7 @@ export default function Page() {
         )}
 
         {/* Rich Text Render */}
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <div>{renderRichText(product.description as any)}</div>
 
         <p>
