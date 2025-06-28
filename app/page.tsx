@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { renderRichText } from "@storyblok/react";
 
 interface MyProduct {
   component: string;
   name: string;
-  description: string;
+  description: any; // rich text
   image?: { filename: string };
   price?: number | string;
 }
@@ -18,9 +19,15 @@ export default function Page() {
 
   useEffect(() => {
     const slug = "product";
-    const token = "UNyEawluuu4UVVnYIBUqPAtt";
-    const url = `https://api.storyblok.com/v2/cdn/stories/${slug}?version=draft&token=${token}`;
+    const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
 
+    if (!token) {
+      setErrorMsg("❌ Storyblok token not found in environment variables.");
+      setLoading(false);
+      return;
+    }
+
+    const url = `https://api.storyblok.com/v2/cdn/stories/${slug}?version=draft&token=${token}`;
     console.log(`📦 Fetching Storyblok content from: ${url}`);
 
     fetch(url)
@@ -37,8 +44,7 @@ export default function Page() {
           return;
         }
 
-        const firstProduct = body[0] as MyProduct;
-        setProduct(firstProduct);
+        setProduct(body[0] as MyProduct);
       })
       .catch((err) => {
         console.error("🚨 Fetch failed:", err);
@@ -83,7 +89,8 @@ export default function Page() {
           <p>⚠️ No product image found.</p>
         )}
 
-        <p>{product.description || "No description available."}</p>
+        {/* Rich Text Render */}
+        <div>{renderRichText(product.description)}</div>
 
         <p>
           <strong>Price:</strong>{" "}
