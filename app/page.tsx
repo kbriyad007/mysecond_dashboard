@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 interface MyProduct {
+  component: string;
   name: string;
   description: string;
   image?: { filename: string };
   price?: number | string;
-  // removed 'body' field to avoid 'any' type
 }
 
 export default function Page() {
@@ -17,37 +17,32 @@ export default function Page() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const slug = "product"; // your Storyblok story slug, all lowercase
-
-    const token = "UNyEawluuu4UVVnYIBUqPAtt"; // your public API token
+    const slug = "product";
+    const token = "UNyEawluuu4UVVnYIBUqPAtt";
     const url = `https://api.storyblok.com/v2/cdn/stories/${slug}?version=draft&token=${token}`;
 
     console.log(`📦 Fetching Storyblok content from: ${url}`);
 
     fetch(url)
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
       .then((data) => {
         console.log("✅ Storyblok content received:", data);
 
-        const content = data.story?.content;
-
-        if (!content) {
-          setErrorMsg("❌ No content found in Storyblok response.");
-          setProduct(null);
+        const body = data.story?.content?.body;
+        if (!body || !Array.isArray(body) || body.length === 0) {
+          setErrorMsg("❌ No product block found in content.body.");
           return;
         }
 
-        setProduct(content);
+        const firstProduct = body[0] as MyProduct;
+        setProduct(firstProduct);
       })
       .catch((err) => {
         console.error("🚨 Fetch failed:", err);
         setErrorMsg(err.message);
-        setProduct(null);
       })
       .finally(() => setLoading(false));
   }, []);
