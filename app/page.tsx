@@ -7,7 +7,7 @@ import { renderRichText } from "@storyblok/react";
 interface MyProduct {
   component: string;
   name: string;
-  description: Record<string, any>; // safer than any
+  description: Record<string, unknown>; // no more 'any'
   image?: { filename: string };
   price?: number | string;
 }
