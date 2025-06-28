@@ -8,7 +8,7 @@ interface MyProduct {
   component: string;
   name: string;
   description: unknown; // loose typing for compatibility
-  image?: { filename: string };
+  image?: { filename: string }; // expects hashed filename, e.g. "73e848c834"
   price?: number | string;
 }
 
@@ -64,6 +64,16 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
+  // Storyblok base URL and desired image size
+  const baseUrl = "https://a.storyblok.com/f/285405591159825";
+  const width = 1056; // adjust as needed
+  const height = 595; // adjust as needed
+
+  // Build full image URL only if image.filename exists
+  const imageUrl = product.image?.filename
+    ? `${baseUrl}/${width}x${height}/${product.image.filename}`
+    : null;
+
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>🛍️ Product Details</h1>
@@ -77,12 +87,12 @@ export default function Page() {
       >
         <h2>{product.name || "Unnamed Product"}</h2>
 
-        {product.image?.filename ? (
+        {imageUrl ? (
           <Image
-            src={product.image.filename}
+            src={imageUrl}
             alt={product.name || "Product image"}
-            width={300}
-            height={300}
+            width={width}
+            height={height}
             style={{ objectFit: "contain" }}
           />
         ) : (
