@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText } from "@storyblok/react";
+import { renderRichText, RichTextField } from "@storyblok/react";
 
 interface MyProduct {
   component: string;
   name: string;
-  description: any; // rich text
+  description: RichTextField; // typed properly now
   image?: { filename: string };
   price?: number | string;
 }
