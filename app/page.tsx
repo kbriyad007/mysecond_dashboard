@@ -89,8 +89,7 @@ export default function Page() {
           style={{ objectFit: "cover" }}
         />
 
-        {/* Disable TypeScript error for this line */}
-        {/* @ts-expect-error */}
+        {/* @ts-expect-error types do not exactly match */}
         <div>{renderRichText(product.description)}</div>
 
         <p>
