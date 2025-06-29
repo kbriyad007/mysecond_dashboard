@@ -2,12 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText, type SbRichtext } from "@storyblok/react";
+import { renderRichText } from "@storyblok/react";
+
+type StoryblokRichText = {
+  type: string;
+  content?: StoryblokRichText[];
+  text?: string;
+  attrs?: Record<string, any>;
+};
 
 interface MyProduct {
   component: string;
   name: string;
-  description: SbRichtext;  // ✅ Proper rich text type
+  description: StoryblokRichText; // Custom type for rich text
   image?: { filename: string };
   price?: number | string;
 }
@@ -90,4 +97,3 @@ export default function Page() {
     </main>
   );
 }
-
