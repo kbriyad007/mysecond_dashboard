@@ -103,25 +103,26 @@ export default function Page() {
               overflow: "hidden",
               display: "flex",
               flexDirection: "column",
+              minHeight: "430px", // ⬅️ Card height increased
             }}
           >
             <Image
               src={product.image?.filename || fallbackImage}
               alt={product.name || "Product image"}
               width={240}
-              height={150}
+              height={180} // ⬆️ Increased image height
               style={{ objectFit: "cover", width: "100%", height: "auto" }}
               quality={75}
               priority={i === 0}
             />
 
-            <div style={{ padding: "0.75rem 1rem", flexGrow: 1 }}>
+            <div style={{ padding: "1rem", flexGrow: 1 }}>
               <h2
                 style={{
                   fontWeight: 700,
                   fontSize: "1rem",
                   color: "#0f172a",
-                  marginBottom: "0.4rem",
+                  marginBottom: "0.5rem",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -137,7 +138,7 @@ export default function Page() {
                   fontSize: "0.75rem",
                   lineHeight: 1.4,
                   marginBottom: "0.6rem",
-                  maxHeight: "40px",
+                  maxHeight: "45px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                 }}
@@ -151,7 +152,7 @@ export default function Page() {
                   fontWeight: 600,
                   fontSize: "0.9rem",
                   color: "#2563eb",
-                  marginBottom: "0.8rem",
+                  marginBottom: "1rem",
                 }}
               >
                 Price:{" "}
@@ -164,13 +165,13 @@ export default function Page() {
                 onClick={() => handleAddToCart(i)}
                 style={{
                   width: "100%",
-                  padding: "0.5rem 0",
+                  padding: "0.6rem 0",
                   background: "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
                   color: "#fff",
                   border: "none",
                   borderRadius: "6px",
                   fontWeight: 600,
-                  fontSize: "0.8rem",
+                  fontSize: "0.85rem",
                   cursor: "pointer",
                   boxShadow: "0 3px 8px rgba(59, 130, 246, 0.4)",
                 }}
