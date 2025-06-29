@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText, ISbRichtext } from "@storyblok/react";
+import { renderRichText } from "@storyblok/react";
+import { ISbRichtext } from "storyblok-js-client";
 
 interface MyProduct {
   component: string;
@@ -64,8 +65,11 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
-  // Build full image URL only if image.filename exists
-  const imageUrl = product.image?.filename ?? null;
+  // Storyblok images usually need the full URL with https://a.storyblok.com/
+  // So build full URL if image filename exists
+  const imageUrl = product.image?.filename
+    ? `https://a.storyblok.com/${product.image.filename}`
+    : null;
 
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
