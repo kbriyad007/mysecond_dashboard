@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText } from "@storyblok/react";
+import { renderRichText, type SbRichtext } from "@storyblok/react";
 
 interface MyProduct {
   component: string;
   name: string;
-  description: any; // Rich text content from Storyblok
+  description: SbRichtext;  // ✅ Proper rich text type
   image?: { filename: string };
   price?: number | string;
 }
@@ -18,7 +18,7 @@ export default function Page() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const slug = "product"; // 👈 Your Storyblok entry slug
+    const slug = "product";
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
 
     if (!token) {
@@ -28,28 +28,20 @@ export default function Page() {
     }
 
     const url = `https://api.storyblok.com/v2/cdn/stories/${slug}?version=draft&token=${token}`;
-    console.log(`📦 Fetching Storyblok content from: ${url}`);
-
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
       .then((data) => {
-        console.log("✅ Storyblok content received:", data);
-
         const body = data.story?.content?.body;
         if (!body || !Array.isArray(body) || body.length === 0) {
           setErrorMsg("❌ No product block found in content.body.");
           return;
         }
-
         setProduct(body[0] as MyProduct);
       })
-      .catch((err) => {
-        console.error("🚨 Fetch failed:", err);
-        setErrorMsg(err.message);
-      })
+      .catch((err) => setErrorMsg(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -64,7 +56,6 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
-  // ✅ Hardcoded image URL for testing
   const imageUrl =
     "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
@@ -89,7 +80,6 @@ export default function Page() {
           style={{ objectFit: "cover" }}
         />
 
-        {/* ✅ Properly render rich text content */}
         <div>{renderRichText(product.description)}</div>
 
         <p>
