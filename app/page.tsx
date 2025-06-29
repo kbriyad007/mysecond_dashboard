@@ -8,13 +8,13 @@ type StoryblokRichText = {
   type: string;
   content?: StoryblokRichText[];
   text?: string;
-  attrs?: Record<string, any>;
+  attrs?: Record<string, unknown>;  // safer than any
 };
 
 interface MyProduct {
   component: string;
   name: string;
-  description: StoryblokRichText; // Custom type for rich text
+  description: StoryblokRichText;
   image?: { filename: string };
   price?: number | string;
 }
