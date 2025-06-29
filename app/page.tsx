@@ -55,176 +55,228 @@ export default function Page() {
 
   if (loading || errorMsg || products.length === 0) {
     return (
-      <div
-        style={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          fontSize: "0.9rem",
-          fontFamily: "'Inter', sans-serif",
-          backgroundColor: "#f1f5f9",
-          color: errorMsg ? "#b91c1c" : "#64748b",
-          padding: "1rem",
-          textAlign: "center",
-        }}
-      >
+      <div className="status-message">
         {errorMsg
           ? `❌ Error: ${errorMsg}`
           : products.length === 0
           ? "No products available."
           : "Loading products..."}
+        <style jsx>{`
+          .status-message {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            font-family: "Inter", sans-serif;
+            background-color: #f9fafb;
+            color: ${errorMsg ? "#dc2626" : "#64748b"};
+            padding: 1rem;
+            text-align: center;
+            user-select: none;
+          }
+        `}</style>
       </div>
     );
   }
 
   return (
     <>
-      <main
-        style={{
-          minHeight: "100vh",
-          background: "linear-gradient(to right, #f8fafc, #e2e8f0)",
-          padding: "1.5rem 1rem",
-          fontFamily: "'Inter', sans-serif",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "1rem",
-        }}
-      >
+      <main className="product-grid">
         {products.map((product, i) => (
-          <div
-            key={i}
-            style={{
-              width: "240px",
-              backgroundColor: "#fff",
-              borderRadius: "12px",
-              boxShadow: "0 6px 20px rgba(0, 0, 0, 0.05)",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Image
-              src={product.image?.filename || fallbackImage}
-              alt={product.name || "Product image"}
-              width={240}
-              height={180}
-              style={{ objectFit: "cover", width: "100%", height: "auto" }}
-              quality={75}
-              priority={i === 0}
-            />
+          <article key={i} className="card" tabIndex={0} aria-label={product.name || "Product"}>
+            <div className="image-wrapper">
+              <Image
+                src={product.image?.filename || fallbackImage}
+                alt={product.name || "Product image"}
+                width={320}
+                height={200}
+                style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
+                quality={80}
+                priority={i === 0}
+                draggable={false}
+              />
+            </div>
 
-            <div style={{ padding: "1rem", flexGrow: 1, display: "flex", flexDirection: "column" }}>
-              <h2
-                style={{
-                  fontWeight: 700,
-                  fontSize: "1rem",
-                  color: "#0f172a",
-                  marginBottom: "0.5rem",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-                title={product.name}
-              >
+            <div className="card-body">
+              <h2 title={product.name} className="card-title">
                 {product.name || "Unnamed Product"}
               </h2>
 
-              <p
-                style={{
-                  color: "#64748b",
-                  fontSize: "0.75rem",
-                  lineHeight: 1.4,
-                  marginBottom: "0.8rem",
-                }}
-                title={product.description}
-              >
+              <p title={product.description} className="card-description">
                 {product.description}
               </p>
 
-              <p
-                style={{
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  color: "#2563eb",
-                  marginBottom: "1rem",
-                }}
-              >
+              <p className="card-price">
                 Price:{" "}
-                <span style={{ color: "#16a34a", fontWeight: 700 }}>
-                  ${product.price ?? "N/A"}
-                </span>
+                <span>${product.price ?? "N/A"}</span>
               </p>
 
               <button
                 onClick={() => handleAddToCart(i)}
-                style={{
-                  width: "100%",
-                  padding: "0.6rem 0",
-                  background: "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "6px",
-                  fontWeight: 600,
-                  fontSize: "0.85rem",
-                  cursor: "pointer",
-                  boxShadow: "0 3px 8px rgba(59, 130, 246, 0.4)",
-                  marginTop: "auto",
-                }}
+                className={`btn-add-cart ${addedToCartIndex === i ? "added" : ""}`}
                 aria-label={`Add ${product.name} to cart`}
               >
                 🛒 Add to Cart
               </button>
 
-              {addedToCartIndex === i && (
-                <p
-                  style={{
-                    color: "#22c55e",
-                    marginTop: "0.5rem",
-                    fontSize: "0.75rem",
-                    fontWeight: 600,
-                    textAlign: "center",
-                    animation: "fadeInOut 2s ease",
-                  }}
-                >
-                  ✔️ Added!
-                </p>
-              )}
+              {addedToCartIndex === i && <p className="added-msg">✔️ Added!</p>}
             </div>
-          </div>
+          </article>
         ))}
       </main>
 
-      <style>{`
+      <style jsx>{`
+        /* Container grid */
+        .product-grid {
+          min-height: 100vh;
+          padding: 2rem 1.5rem;
+          background: linear-gradient(90deg, #f9fafb, #e4e7ec);
+          font-family: "Inter", sans-serif;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem 2rem;
+          justify-content: center;
+          align-content: start;
+        }
+
+        /* Card style */
+        .card {
+          background: #ffffff;
+          border-radius: 16px;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+          display: flex;
+          flex-direction: column;
+          transition: box-shadow 0.3s ease, transform 0.3s ease;
+          outline-offset: 4px;
+          cursor: pointer;
+        }
+        .card:focus,
+        .card:hover {
+          box-shadow: 0 12px 32px rgba(59, 130, 246, 0.3);
+          transform: translateY(-4px);
+        }
+
+        .image-wrapper {
+          border-radius: 16px 16px 0 0;
+          overflow: hidden;
+          flex-shrink: 0;
+        }
+
+        /* Card body */
+        .card-body {
+          padding: 1.25rem 1.5rem 1.5rem;
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+        }
+
+        /* Title */
+        .card-title {
+          font-weight: 700;
+          font-size: 1.15rem;
+          color: #0f172a;
+          margin: 0 0 0.5rem 0;
+          line-height: 1.3;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          user-select: text;
+        }
+
+        /* Description */
+        .card-description {
+          font-size: 0.875rem;
+          line-height: 1.5;
+          color: #475569;
+          flex-grow: 1;
+          margin: 0 0 1rem 0;
+          user-select: text;
+          overflow-wrap: anywhere;
+        }
+
+        /* Price */
+        .card-price {
+          font-weight: 600;
+          font-size: 1rem;
+          color: #2563eb;
+          margin-bottom: 1.2rem;
+        }
+        .card-price span {
+          color: #16a34a;
+          font-weight: 700;
+        }
+
+        /* Button */
+        .btn-add-cart {
+          padding: 0.65rem 0;
+          background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+          color: #ffffff;
+          font-weight: 600;
+          font-size: 0.9rem;
+          border: none;
+          border-radius: 10px;
+          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+          cursor: pointer;
+          transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
+          user-select: none;
+        }
+        .btn-add-cart:hover {
+          background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
+          box-shadow: 0 6px 18px rgba(37, 99, 235, 0.65);
+          transform: translateY(-2px);
+        }
+        .btn-add-cart:active {
+          transform: translateY(0);
+          box-shadow: 0 3px 9px rgba(37, 99, 235, 0.5);
+        }
+        .btn-add-cart.added {
+          background-color: #22c55e;
+          box-shadow: 0 4px 14px rgba(34, 197, 94, 0.6);
+        }
+
+        /* Added message */
+        .added-msg {
+          margin-top: 0.5rem;
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: #22c55e;
+          text-align: center;
+          animation: fadeInOut 2s ease forwards;
+          user-select: none;
+        }
+
+        /* Fade in/out animation */
         @keyframes fadeInOut {
-          0% { opacity: 0; transform: translateY(4px); }
-          10% { opacity: 1; transform: translateY(0); }
-          90% { opacity: 1; transform: translateY(0); }
-          100% { opacity: 0; transform: translateY(4px); }
-        }
-
-        @media (max-width: 1280px) {
-          main > div {
-            width: 22%;
+          0% {
+            opacity: 0;
+            transform: translateY(6px);
+          }
+          10% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          90% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(6px);
           }
         }
 
-        @media (max-width: 1024px) {
-          main > div {
-            width: 30%;
-          }
-        }
-
-        @media (max-width: 768px) {
-          main > div {
-            width: 46%;
-          }
-        }
-
+        /* Responsive tweaks */
         @media (max-width: 480px) {
-          main > div {
-            width: 90%;
+          .product-grid {
+            padding: 1rem 1rem 2rem;
+            gap: 1.25rem 1.25rem;
+          }
+          .card {
+            border-radius: 12px;
+          }
+          .btn-add-cart {
+            border-radius: 8px;
           }
         }
       `}</style>
