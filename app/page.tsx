@@ -7,7 +7,8 @@ import { renderRichText } from "@storyblok/react";
 interface MyProduct {
   component: string;
   name: string;
-  description: any; // Using any to avoid type error
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  description: any;
   image?: { filename: string };
   price?: number | string;
 }
@@ -64,7 +65,6 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
-  // Build full image URL if image filename exists
   const imageUrl = product.image?.filename
     ? `https://a.storyblok.com/${product.image.filename}`
     : null;
