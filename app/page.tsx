@@ -65,9 +65,9 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
-  const imageUrl = product.image?.filename
-    ? `https://a.storyblok.com/${product.image.filename}`
-    : null;
+  // ✅ Hardcoded image URL for testing
+  const imageUrl =
+    "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
@@ -82,17 +82,13 @@ export default function Page() {
       >
         <h2>{product.name || "Unnamed Product"}</h2>
 
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={product.name || "Product image"}
-            width={1056}
-            height={595}
-            style={{ objectFit: "cover" }}
-          />
-        ) : (
-          <p>⚠️ No product image found.</p>
-        )}
+        <Image
+          src={imageUrl}
+          alt={product.name || "Product image"}
+          width={1056}
+          height={595}
+          style={{ objectFit: "cover" }}
+        />
 
         <div>{renderRichText(product.description)}</div>
 
