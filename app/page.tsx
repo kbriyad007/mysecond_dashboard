@@ -18,7 +18,7 @@ export default function Page() {
   const [addedToCartIndex, setAddedToCartIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const slug = "product"; // your story slug
+    const slug = "product";
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
 
     if (!token) {
@@ -45,7 +45,18 @@ export default function Page() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading)
+  const fallbackImage =
+    "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
+
+  const handleAddToCart = (index: number) => {
+    setAddedToCartIndex(index);
+    setTimeout(() => setAddedToCartIndex(null), 2000);
+  };
+
+  const cardWidth = 240; // in px
+  const cardHeight = cardWidth * 1.618; // golden ratio
+
+  if (loading || errorMsg || products.length === 0) {
     return (
       <div
         style={{
@@ -54,61 +65,20 @@ export default function Page() {
           justifyContent: "center",
           alignItems: "center",
           fontSize: "0.9rem",
-          color: "#94a3b8",
           fontFamily: "'Inter', sans-serif",
           backgroundColor: "#f1f5f9",
-        }}
-      >
-        Loading products...
-      </div>
-    );
-
-  if (errorMsg)
-    return (
-      <div
-        style={{
-          maxWidth: "300px",
-          margin: "3rem auto",
-          padding: "1rem",
-          backgroundColor: "#fee2e2",
-          borderRadius: "10px",
-          color: "#b91c1c",
-          fontWeight: "600",
-          fontFamily: "'Inter', sans-serif",
+          color: errorMsg ? "#b91c1c" : "#64748b",
+          padding: "1.5rem",
           textAlign: "center",
-          fontSize: "0.95rem",
         }}
       >
-        ❌ <strong>Error:</strong> {errorMsg}
+        {errorMsg
+          ? `❌ Error: ${errorMsg}`
+          : products.length === 0
+          ? "No products available."
+          : "Loading products..."}
       </div>
     );
-
-  if (products.length === 0)
-    return (
-      <div
-        style={{
-          maxWidth: "300px",
-          margin: "3rem auto",
-          padding: "1rem",
-          backgroundColor: "#fef3c7",
-          borderRadius: "10px",
-          color: "#92400e",
-          fontWeight: "600",
-          fontFamily: "'Inter', sans-serif",
-          textAlign: "center",
-          fontSize: "0.95rem",
-        }}
-      >
-        No products available.
-      </div>
-    );
-
-  const fallbackImage =
-    "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
-
-  function handleAddToCart(index: number) {
-    setAddedToCartIndex(index);
-    setTimeout(() => setAddedToCartIndex(null), 2000);
   }
 
   return (
@@ -122,17 +92,16 @@ export default function Page() {
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
-          gap: "1rem",
+          gap: "1.25rem",
         }}
       >
         {products.map((product, i) => (
           <div
             key={i}
             style={{
-              flex: "1 1 calc(19% - 1rem)",
-              maxWidth: "19%",
+              width: `${cardWidth}px`,
               backgroundColor: "#fff",
-              borderRadius: "14px",
+              borderRadius: "12px",
               boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
               overflow: "hidden",
               display: "flex",
@@ -143,20 +112,20 @@ export default function Page() {
             <Image
               src={product.image?.filename || fallbackImage}
               alt={product.name || "Product image"}
-              width={320}
-              height={200}
+              width={cardWidth}
+              height={cardHeight}
               style={{ objectFit: "cover", width: "100%", height: "auto" }}
-              quality={75}
+              quality={80}
               priority={i === 0}
             />
 
             <div style={{ padding: "1rem", flexGrow: 1 }}>
               <h2
                 style={{
-                  fontWeight: "700",
-                  fontSize: "1.1rem",
+                  fontWeight: 700,
+                  fontSize: "1.05rem",
                   color: "#0f172a",
-                  marginBottom: "0.4rem",
+                  marginBottom: "0.5rem",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -171,8 +140,8 @@ export default function Page() {
                   color: "#64748b",
                   fontSize: "0.8rem",
                   lineHeight: 1.5,
-                  marginBottom: "0.8rem",
-                  maxHeight: "60px",
+                  marginBottom: "0.75rem",
+                  maxHeight: "50px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                 }}
@@ -183,14 +152,14 @@ export default function Page() {
 
               <p
                 style={{
-                  fontWeight: "600",
-                  fontSize: "1rem",
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
                   color: "#2563eb",
-                  marginBottom: "1rem",
+                  marginBottom: "0.75rem",
                 }}
               >
                 Price:{" "}
-                <span style={{ color: "#16a34a", fontWeight: "700" }}>
+                <span style={{ color: "#16a34a", fontWeight: 700 }}>
                   ${product.price ?? "N/A"}
                 </span>
               </p>
@@ -199,17 +168,18 @@ export default function Page() {
                 onClick={() => handleAddToCart(i)}
                 style={{
                   width: "100%",
-                  padding: "0.6rem 0",
-                  background: "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
-                  color: "white",
+                  padding: "0.55rem 0",
+                  background:
+                    "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
+                  color: "#fff",
                   border: "none",
                   borderRadius: "8px",
-                  fontWeight: "600",
+                  fontWeight: 600,
                   fontSize: "0.85rem",
                   cursor: "pointer",
                   boxShadow: "0 4px 10px rgba(59, 130, 246, 0.4)",
+                  transition: "all 0.25s ease",
                 }}
-                aria-label={`Add ${product.name} to cart`}
               >
                 🛒 Add to Cart
               </button>
@@ -220,7 +190,7 @@ export default function Page() {
                     color: "#22c55e",
                     marginTop: "0.6rem",
                     fontSize: "0.8rem",
-                    fontWeight: "600",
+                    fontWeight: 600,
                     textAlign: "center",
                     animation: "fadeInOut 2s ease",
                   }}
@@ -243,29 +213,25 @@ export default function Page() {
 
         @media (max-width: 1280px) {
           main > div {
-            flex: 1 1 calc(25% - 1rem);
-            max-width: calc(25% - 1rem);
+            width: 22%;
           }
         }
 
         @media (max-width: 1024px) {
           main > div {
-            flex: 1 1 calc(33.33% - 1rem);
-            max-width: calc(33.33% - 1rem);
+            width: 29%;
           }
         }
 
         @media (max-width: 768px) {
           main > div {
-            flex: 1 1 calc(50% - 1rem);
-            max-width: calc(50% - 1rem);
+            width: 45%;
           }
         }
 
         @media (max-width: 480px) {
           main > div {
-            flex: 1 1 100%;
-            max-width: 100%;
+            width: 90%;
           }
         }
       `}</style>
