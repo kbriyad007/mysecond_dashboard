@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-// Update the type to reflect plain text, not rich text
 interface MyProduct {
   component: string;
   name: string;
-  description: string; // ✅ plain text instead of StoryblokRichText
+  description: string;
   image?: { filename: string };
   price?: number | string;
 }
@@ -46,100 +45,239 @@ export default function Page() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div>Loading product...</div>;
-
-  if (errorMsg)
+  if (loading)
     return (
-      <div style={{ color: "red", padding: "1rem" }}>
-        <strong>Error:</strong> {errorMsg}
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "1.25rem",
+          color: "#6b7280",
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+          backgroundColor: "#f3f4f6",
+        }}
+      >
+        Loading product...
       </div>
     );
 
-  if (!product) return <div>No product data available.</div>;
+  if (errorMsg)
+    return (
+      <div
+        style={{
+          maxWidth: "400px",
+          margin: "3rem auto",
+          padding: "1rem",
+          backgroundColor: "#fee2e2",
+          borderRadius: "8px",
+          color: "#b91c1c",
+          fontWeight: "600",
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+          boxShadow: "0 4px 8px rgb(185 28 28 / 0.1)",
+          textAlign: "center",
+        }}
+      >
+        ❌ <strong>Error:</strong> {errorMsg}
+      </div>
+    );
 
-  // Use a hardcoded image URL for testing
+  if (!product)
+    return (
+      <div
+        style={{
+          maxWidth: "400px",
+          margin: "3rem auto",
+          padding: "1rem",
+          backgroundColor: "#fef3c7",
+          borderRadius: "8px",
+          color: "#92400e",
+          fontWeight: "600",
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+          boxShadow: "0 4px 8px rgb(146 64 14 / 0.1)",
+          textAlign: "center",
+        }}
+      >
+        No product data available.
+      </div>
+    );
+
   const imageUrl =
     "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
-  // Handler for Add to Cart button
   function handleAddToCart() {
     setAddedToCart(true);
-    // Reset message after 2 seconds
     setTimeout(() => setAddedToCart(false), 2000);
   }
 
   return (
-    <main style={{ padding: "2rem", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb", minHeight: "100vh" }}>
-      <h1 style={{ marginBottom: "1rem", color: "#111827" }}>🛍️ Product Details</h1>
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "2rem",
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      }}
+    >
       <div
         style={{
-          border: "1px solid #e5e7eb",
-          padding: "1.5rem",
-          borderRadius: "12px",
-          maxWidth: "400px",
+          maxWidth: "420px",
+          width: "100%",
           backgroundColor: "white",
-          boxShadow: "0 4px 8px rgb(0 0 0 / 0.05)",
+          borderRadius: "20px",
+          boxShadow:
+            "0 20px 30px rgba(14, 165, 233, 0.15), 0 10px 15px rgba(14, 165, 233, 0.1)",
+          overflow: "hidden",
+          transition: "transform 0.3s ease",
+          cursor: "default",
+        }}
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLDivElement).style.transform = "scale(1.02)";
+          (e.currentTarget as HTMLDivElement).style.boxShadow =
+            "0 30px 40px rgba(14, 165, 233, 0.25), 0 15px 25px rgba(14, 165, 233, 0.2)";
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
+          (e.currentTarget as HTMLDivElement).style.boxShadow =
+            "0 20px 30px rgba(14, 165, 233, 0.15), 0 10px 15px rgba(14, 165, 233, 0.1)";
         }}
       >
-        <h2 style={{ fontWeight: "700", fontSize: "1.5rem", marginBottom: "0.75rem", color: "#111827" }}>
-          {product.name || "Unnamed Product"}
-        </h2>
-
         <Image
           src={imageUrl}
           alt={product.name || "Product image"}
-          width={1056}
-          height={595}
-          style={{ objectFit: "cover", borderRadius: "8px", marginBottom: "1rem" }}
+          width={420}
+          height={250}
+          style={{ objectFit: "cover", width: "100%", height: "auto" }}
+          priority
         />
 
-        <p style={{ color: "#4b5563", lineHeight: "1.5", marginBottom: "1rem" }}>
-          {product.description}
-        </p>
+        <div style={{ padding: "1.5rem 2rem" }}>
+          <h2
+            style={{
+              fontWeight: "800",
+              fontSize: "1.75rem",
+              color: "#0369a1",
+              marginBottom: "0.5rem",
+              userSelect: "none",
+            }}
+          >
+            {product.name || "Unnamed Product"}
+          </h2>
 
-        <p style={{ fontWeight: "600", fontSize: "1.125rem", marginBottom: "1.5rem", color: "#111827" }}>
-          Price:{" "}
-          {product.price !== undefined ? (
-            <span style={{ color: "#10b981" }}>${product.price}</span>
-          ) : (
-            "N/A"
-          )}
-        </p>
-
-        <button
-          onClick={handleAddToCart}
-          style={{
-            width: "100%",
-            padding: "0.75rem 1rem",
-            backgroundColor: "#3b82f6",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontWeight: "600",
-            fontSize: "1.125rem",
-            boxShadow: "0 4px 6px rgba(59, 130, 246, 0.5)",
-            transition: "background-color 0.3s ease, box-shadow 0.3s ease",
-          }}
-          aria-label="Add to cart"
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#2563eb";
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 6px 12px rgba(37, 99, 235, 0.6)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#3b82f6";
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 6px rgba(59, 130, 246, 0.5)";
-          }}
-        >
-          Add to Cart
-        </button>
-
-        {addedToCart && (
-          <p style={{ color: "#10b981", marginTop: "0.75rem", fontWeight: "600", textAlign: "center" }}>
-            ✔️ Added to cart!
+          <p
+            style={{
+              color: "#475569",
+              fontSize: "1rem",
+              lineHeight: 1.6,
+              marginBottom: "1.25rem",
+              minHeight: "70px",
+              userSelect: "text",
+            }}
+          >
+            {product.description}
           </p>
-        )}
+
+          <p
+            style={{
+              fontWeight: "700",
+              fontSize: "1.25rem",
+              color: "#0284c7",
+              marginBottom: "1.75rem",
+              userSelect: "none",
+            }}
+          >
+            Price:{" "}
+            {product.price !== undefined ? (
+              <span
+                style={{
+                  color: "#059669",
+                  fontWeight: "900",
+                  fontSize: "1.5rem",
+                }}
+              >
+                ${product.price}
+              </span>
+            ) : (
+              "N/A"
+            )}
+          </p>
+
+          <button
+            onClick={handleAddToCart}
+            style={{
+              width: "100%",
+              padding: "0.85rem 0",
+              background:
+                "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)",
+              color: "white",
+              border: "none",
+              borderRadius: "12px",
+              fontWeight: "700",
+              fontSize: "1.25rem",
+              boxShadow:
+                "0 8px 15px rgba(14, 165, 233, 0.5)",
+              cursor: "pointer",
+              transition:
+                "background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease",
+              userSelect: "none",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "0.5rem",
+              letterSpacing: "0.02em",
+            }}
+            aria-label="Add to cart"
+            onMouseEnter={(e) => {
+              const btn = e.currentTarget;
+              btn.style.background =
+                "linear-gradient(90deg, #0284c7 0%, #0369a1 100%)";
+              btn.style.boxShadow =
+                "0 12px 25px rgba(2, 132, 199, 0.7)";
+              btn.style.transform = "scale(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              const btn = e.currentTarget;
+              btn.style.background =
+                "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)";
+              btn.style.boxShadow =
+                "0 8px 15px rgba(14, 165, 233, 0.5)";
+              btn.style.transform = "scale(1)";
+            }}
+          >
+            🛒 Add to Cart
+          </button>
+
+          {addedToCart && (
+            <p
+              style={{
+                color: "#059669",
+                marginTop: "1rem",
+                fontWeight: "700",
+                fontSize: "1.125rem",
+                textAlign: "center",
+                userSelect: "none",
+                animation: "fadeInOut 2s forwards",
+              }}
+            >
+              ✔️ Added to cart!
+            </p>
+          )}
+        </div>
       </div>
+
+      <style>{`
+        @keyframes fadeInOut {
+          0% { opacity: 0; transform: translateY(10px); }
+          10% { opacity: 1; transform: translateY(0); }
+          90% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(10px); }
+        }
+      `}</style>
     </main>
   );
 }
