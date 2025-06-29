@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { renderRichText } from "@storyblok/react";
 
 interface MyProduct {
   component: string;
   name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  description: string; // now assuming it's plain HTML string
+  description: any; // Rich text content from Storyblok
   image?: { filename: string };
   price?: number | string;
 }
@@ -18,7 +18,7 @@ export default function Page() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const slug = "product";
+    const slug = "product"; // 👈 Your Storyblok entry slug
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
 
     if (!token) {
@@ -64,6 +64,7 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
+  // ✅ Hardcoded image URL for testing
   const imageUrl =
     "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
@@ -88,12 +89,8 @@ export default function Page() {
           style={{ objectFit: "cover" }}
         />
 
-        {/* ✅ Render raw HTML safely */}
-        <div
-          dangerouslySetInnerHTML={{
-            __html: product.description,
-          }}
-        />
+        {/* ✅ Properly render rich text content */}
+        <div>{renderRichText(product.description)}</div>
 
         <p>
           <strong>Price:</strong>{" "}
