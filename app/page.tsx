@@ -53,7 +53,7 @@ export default function Page() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "1.25rem",
+          fontSize: "1rem",
           color: "#6b7280",
           fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
           backgroundColor: "#f3f4f6",
@@ -67,7 +67,7 @@ export default function Page() {
     return (
       <div
         style={{
-          maxWidth: "400px",
+          maxWidth: "360px",
           margin: "3rem auto",
           padding: "1rem",
           backgroundColor: "#fee2e2",
@@ -87,7 +87,7 @@ export default function Page() {
     return (
       <div
         style={{
-          maxWidth: "400px",
+          maxWidth: "360px",
           margin: "3rem auto",
           padding: "1rem",
           backgroundColor: "#fef3c7",
@@ -120,50 +120,39 @@ export default function Page() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "2rem",
+        padding: "1.5rem",
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       }}
     >
       <div
         style={{
-          maxWidth: "420px",
+          maxWidth: "360px",
           width: "100%",
           backgroundColor: "white",
-          borderRadius: "20px",
+          borderRadius: "16px",
           boxShadow:
-            "0 20px 30px rgba(14, 165, 233, 0.15), 0 10px 15px rgba(14, 165, 233, 0.1)",
+            "0 15px 25px rgba(14, 165, 233, 0.15), 0 7px 15px rgba(14, 165, 233, 0.1)",
           overflow: "hidden",
-          transition: "transform 0.3s ease",
           cursor: "default",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLDivElement).style.transform = "scale(1.02)";
-          (e.currentTarget as HTMLDivElement).style.boxShadow =
-            "0 30px 40px rgba(14, 165, 233, 0.25), 0 15px 25px rgba(14, 165, 233, 0.2)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
-          (e.currentTarget as HTMLDivElement).style.boxShadow =
-            "0 20px 30px rgba(14, 165, 233, 0.15), 0 10px 15px rgba(14, 165, 233, 0.1)";
+          userSelect: "none",
         }}
       >
         <Image
           src={imageUrl}
           alt={product.name || "Product image"}
-          width={420}
-          height={250}
+          width={360}
+          height={215}
           style={{ objectFit: "cover", width: "100%", height: "auto" }}
           priority
         />
 
-        <div style={{ padding: "1.5rem 2rem" }}>
+        <div style={{ padding: "1rem 1.5rem" }}>
           <h2
             style={{
-              fontWeight: "800",
-              fontSize: "1.75rem",
+              fontWeight: "700",
+              fontSize: "1.4rem",
               color: "#0369a1",
-              marginBottom: "0.5rem",
-              userSelect: "none",
+              marginBottom: "0.4rem",
             }}
           >
             {product.name || "Unnamed Product"}
@@ -172,10 +161,10 @@ export default function Page() {
           <p
             style={{
               color: "#475569",
-              fontSize: "1rem",
-              lineHeight: 1.6,
-              marginBottom: "1.25rem",
-              minHeight: "70px",
+              fontSize: "0.9rem",
+              lineHeight: 1.5,
+              marginBottom: "1rem",
+              minHeight: "60px",
               userSelect: "text",
             }}
           >
@@ -185,10 +174,9 @@ export default function Page() {
           <p
             style={{
               fontWeight: "700",
-              fontSize: "1.25rem",
+              fontSize: "1.1rem",
               color: "#0284c7",
-              marginBottom: "1.75rem",
-              userSelect: "none",
+              marginBottom: "1.25rem",
             }}
           >
             Price:{" "}
@@ -196,8 +184,8 @@ export default function Page() {
               <span
                 style={{
                   color: "#059669",
-                  fontWeight: "900",
-                  fontSize: "1.5rem",
+                  fontWeight: "800",
+                  fontSize: "1.3rem",
                 }}
               >
                 ${product.price}
@@ -211,24 +199,24 @@ export default function Page() {
             onClick={handleAddToCart}
             style={{
               width: "100%",
-              padding: "0.85rem 0",
+              padding: "0.7rem 0",
               background:
                 "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)",
               color: "white",
               border: "none",
-              borderRadius: "12px",
+              borderRadius: "10px",
               fontWeight: "700",
-              fontSize: "1.25rem",
+              fontSize: "1.1rem",
               boxShadow:
-                "0 8px 15px rgba(14, 165, 233, 0.5)",
+                "0 6px 12px rgba(14, 165, 233, 0.5)",
               cursor: "pointer",
               transition:
-                "background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease",
+                "background 0.3s ease, box-shadow 0.3s ease",
               userSelect: "none",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              gap: "0.5rem",
+              gap: "0.4rem",
               letterSpacing: "0.02em",
             }}
             aria-label="Add to cart"
@@ -237,16 +225,14 @@ export default function Page() {
               btn.style.background =
                 "linear-gradient(90deg, #0284c7 0%, #0369a1 100%)";
               btn.style.boxShadow =
-                "0 12px 25px rgba(2, 132, 199, 0.7)";
-              btn.style.transform = "scale(1.05)";
+                "0 8px 18px rgba(2, 132, 199, 0.7)";
             }}
             onMouseLeave={(e) => {
               const btn = e.currentTarget;
               btn.style.background =
                 "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)";
               btn.style.boxShadow =
-                "0 8px 15px rgba(14, 165, 233, 0.5)";
-              btn.style.transform = "scale(1)";
+                "0 6px 12px rgba(14, 165, 233, 0.5)";
             }}
           >
             🛒 Add to Cart
@@ -256,9 +242,9 @@ export default function Page() {
             <p
               style={{
                 color: "#059669",
-                marginTop: "1rem",
+                marginTop: "0.9rem",
                 fontWeight: "700",
-                fontSize: "1.125rem",
+                fontSize: "1rem",
                 textAlign: "center",
                 userSelect: "none",
                 animation: "fadeInOut 2s forwards",
@@ -272,10 +258,10 @@ export default function Page() {
 
       <style>{`
         @keyframes fadeInOut {
-          0% { opacity: 0; transform: translateY(10px); }
+          0% { opacity: 0; transform: translateY(6px); }
           10% { opacity: 1; transform: translateY(0); }
           90% { opacity: 1; transform: translateY(0); }
-          100% { opacity: 0; transform: translateY(10px); }
+          100% { opacity: 0; transform: translateY(6px); }
         }
       `}</style>
     </main>
