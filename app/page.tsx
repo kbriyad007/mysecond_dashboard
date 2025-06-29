@@ -53,10 +53,10 @@ export default function Page() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "0.8rem",
-          color: "#9ca3af",
+          fontSize: "0.9rem",
+          color: "#94a3b8",
           fontFamily: "'Inter', sans-serif",
-          backgroundColor: "#f8fafc",
+          backgroundColor: "#f1f5f9",
         }}
       >
         Loading products...
@@ -67,17 +67,16 @@ export default function Page() {
     return (
       <div
         style={{
-          maxWidth: "280px",
+          maxWidth: "300px",
           margin: "3rem auto",
-          padding: "0.8rem",
+          padding: "1rem",
           backgroundColor: "#fee2e2",
           borderRadius: "10px",
           color: "#b91c1c",
           fontWeight: "600",
           fontFamily: "'Inter', sans-serif",
-          boxShadow: "0 3px 8px rgb(185 28 28 / 0.15)",
           textAlign: "center",
-          fontSize: "0.9rem",
+          fontSize: "0.95rem",
         }}
       >
         ❌ <strong>Error:</strong> {errorMsg}
@@ -88,17 +87,16 @@ export default function Page() {
     return (
       <div
         style={{
-          maxWidth: "280px",
+          maxWidth: "300px",
           margin: "3rem auto",
-          padding: "0.8rem",
+          padding: "1rem",
           backgroundColor: "#fef3c7",
           borderRadius: "10px",
           color: "#92400e",
           fontWeight: "600",
           fontFamily: "'Inter', sans-serif",
-          boxShadow: "0 3px 8px rgb(146 64 14 / 0.15)",
           textAlign: "center",
-          fontSize: "0.9rem",
+          fontSize: "0.95rem",
         }}
       >
         No products available.
@@ -118,48 +116,47 @@ export default function Page() {
       <main
         style={{
           minHeight: "100vh",
-          background: "linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%)",
-          padding: "1rem",
+          background: "linear-gradient(to right, #f8fafc, #e2e8f0)",
+          padding: "1.5rem",
           fontFamily: "'Inter', sans-serif",
           display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
           flexWrap: "wrap",
-          gap: "0.75rem",
+          justifyContent: "center",
+          gap: "1rem",
         }}
       >
         {products.map((product, i) => (
           <div
             key={i}
             style={{
-              flex: "1 1 calc(19% - 0.75rem)", // ~5 items per row with gap
+              flex: "1 1 calc(19% - 1rem)",
               maxWidth: "19%",
-              backgroundColor: "white",
-              borderRadius: "10px",
-              boxShadow: "0 6px 15px rgba(0,0,0,0.07)",
+              backgroundColor: "#fff",
+              borderRadius: "14px",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
               overflow: "hidden",
-              userSelect: "none",
               display: "flex",
               flexDirection: "column",
+              transition: "transform 0.2s ease",
             }}
           >
             <Image
               src={product.image?.filename || fallbackImage}
               alt={product.name || "Product image"}
-              width={240}
-              height={140}
+              width={320}
+              height={200}
               style={{ objectFit: "cover", width: "100%", height: "auto" }}
-              priority={i === 0}
               quality={75}
+              priority={i === 0}
             />
 
-            <div style={{ padding: "0.5rem 0.75rem", flexGrow: 1 }}>
+            <div style={{ padding: "1rem", flexGrow: 1 }}>
               <h2
                 style={{
                   fontWeight: "700",
-                  fontSize: "1rem",
-                  color: "#1e40af",
-                  marginBottom: "0.25rem",
+                  fontSize: "1.1rem",
+                  color: "#0f172a",
+                  marginBottom: "0.4rem",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -171,11 +168,11 @@ export default function Page() {
 
               <p
                 style={{
-                  color: "#475569",
-                  fontSize: "0.7rem",
-                  lineHeight: 1.3,
-                  marginBottom: "0.5rem",
-                  height: "40px",
+                  color: "#64748b",
+                  fontSize: "0.8rem",
+                  lineHeight: 1.5,
+                  marginBottom: "0.8rem",
+                  maxHeight: "60px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                 }}
@@ -186,77 +183,46 @@ export default function Page() {
 
               <p
                 style={{
-                  fontWeight: "700",
-                  fontSize: "0.85rem",
+                  fontWeight: "600",
+                  fontSize: "1rem",
                   color: "#2563eb",
-                  marginBottom: "0.8rem",
+                  marginBottom: "1rem",
                 }}
               >
                 Price:{" "}
-                {product.price !== undefined ? (
-                  <span
-                    style={{
-                      color: "#16a34a",
-                      fontWeight: "800",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    ${product.price}
-                  </span>
-                ) : (
-                  "N/A"
-                )}
+                <span style={{ color: "#16a34a", fontWeight: "700" }}>
+                  ${product.price ?? "N/A"}
+                </span>
               </p>
 
               <button
                 onClick={() => handleAddToCart(i)}
                 style={{
                   width: "100%",
-                  padding: "0.4rem 0",
-                  background:
-                    "linear-gradient(90deg, #2563eb 0%, #1e40af 100%)",
+                  padding: "0.6rem 0",
+                  background: "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
                   color: "white",
                   border: "none",
-                  borderRadius: "6px",
-                  fontWeight: "700",
+                  borderRadius: "8px",
+                  fontWeight: "600",
                   fontSize: "0.85rem",
-                  boxShadow: "0 3px 8px rgba(37, 99, 235, 0.5)",
                   cursor: "pointer",
-                  transition: "background 0.25s ease, box-shadow 0.25s ease",
-                  userSelect: "none",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "0.2rem",
-                  letterSpacing: "0.02em",
+                  boxShadow: "0 4px 10px rgba(59, 130, 246, 0.4)",
                 }}
                 aria-label={`Add ${product.name} to cart`}
-                onMouseEnter={(e) => {
-                  const btn = e.currentTarget;
-                  btn.style.background =
-                    "linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%)";
-                  btn.style.boxShadow = "0 5px 10px rgba(30, 64, 175, 0.7)";
-                }}
-                onMouseLeave={(e) => {
-                  const btn = e.currentTarget;
-                  btn.style.background =
-                    "linear-gradient(90deg, #2563eb 0%, #1e40af 100%)";
-                  btn.style.boxShadow = "0 3px 8px rgba(37, 99, 235, 0.5)";
-                }}
               >
-                🛒 Add
+                🛒 Add to Cart
               </button>
 
               {addedToCartIndex === i && (
                 <p
                   style={{
-                    color: "#16a34a",
-                    marginTop: "0.5rem",
-                    fontWeight: "700",
+                    color: "#22c55e",
+                    marginTop: "0.6rem",
                     fontSize: "0.8rem",
+                    fontWeight: "600",
                     textAlign: "center",
-                    userSelect: "none",
-                    animation: "fadeInOut 2s forwards",
+                    animation: "fadeInOut 2s ease",
                   }}
                 >
                   ✔️ Added!
@@ -269,23 +235,30 @@ export default function Page() {
 
       <style>{`
         @keyframes fadeInOut {
-          0% { opacity: 0; transform: translateY(4px); }
+          0% { opacity: 0; transform: translateY(5px); }
           10% { opacity: 1; transform: translateY(0); }
           90% { opacity: 1; transform: translateY(0); }
-          100% { opacity: 0; transform: translateY(4px); }
+          100% { opacity: 0; transform: translateY(5px); }
         }
 
-        @media (max-width: 1200px) {
+        @media (max-width: 1280px) {
           main > div {
-            flex: 1 1 calc(33.33% - 0.75rem);
-            max-width: calc(33.33% - 0.75rem);
+            flex: 1 1 calc(25% - 1rem);
+            max-width: calc(25% - 1rem);
+          }
+        }
+
+        @media (max-width: 1024px) {
+          main > div {
+            flex: 1 1 calc(33.33% - 1rem);
+            max-width: calc(33.33% - 1rem);
           }
         }
 
         @media (max-width: 768px) {
           main > div {
-            flex: 1 1 calc(50% - 0.75rem);
-            max-width: calc(50% - 0.75rem);
+            flex: 1 1 calc(50% - 1rem);
+            max-width: calc(50% - 1rem);
           }
         }
 
