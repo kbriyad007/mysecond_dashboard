@@ -18,7 +18,7 @@ export default function Page() {
   const [addedToCartIndex, setAddedToCartIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const slug = "product"; // or your story slug with multiple products in content.body
+    const slug = "product"; // your story slug
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
 
     if (!token) {
@@ -53,10 +53,10 @@ export default function Page() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "1rem",
-          color: "#6b7280",
-          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-          backgroundColor: "#f3f4f6",
+          fontSize: "0.9rem",
+          color: "#9ca3af",
+          fontFamily: "'Inter', sans-serif",
+          backgroundColor: "#f8fafc",
         }}
       >
         Loading products...
@@ -67,15 +67,15 @@ export default function Page() {
     return (
       <div
         style={{
-          maxWidth: "360px",
+          maxWidth: "320px",
           margin: "3rem auto",
           padding: "1rem",
           backgroundColor: "#fee2e2",
-          borderRadius: "8px",
+          borderRadius: "10px",
           color: "#b91c1c",
           fontWeight: "600",
-          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-          boxShadow: "0 4px 8px rgb(185 28 28 / 0.1)",
+          fontFamily: "'Inter', sans-serif",
+          boxShadow: "0 3px 8px rgb(185 28 28 / 0.15)",
           textAlign: "center",
         }}
       >
@@ -87,15 +87,15 @@ export default function Page() {
     return (
       <div
         style={{
-          maxWidth: "360px",
+          maxWidth: "320px",
           margin: "3rem auto",
           padding: "1rem",
           backgroundColor: "#fef3c7",
-          borderRadius: "8px",
+          borderRadius: "10px",
           color: "#92400e",
           fontWeight: "600",
-          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-          boxShadow: "0 4px 8px rgb(146 64 14 / 0.1)",
+          fontFamily: "'Inter', sans-serif",
+          boxShadow: "0 3px 8px rgb(146 64 14 / 0.15)",
           textAlign: "center",
         }}
       >
@@ -103,7 +103,6 @@ export default function Page() {
       </div>
     );
 
-  // Fallback image URL for all products (replace with your product.image.filename if available)
   const fallbackImage =
     "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
@@ -116,30 +115,28 @@ export default function Page() {
     <main
       style={{
         minHeight: "100vh",
-        background:
-          "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)",
-        padding: "1.5rem",
-        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        background: "linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%)",
+        padding: "1rem",
+        fontFamily: "'Inter', sans-serif",
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
         flexWrap: "wrap",
-        gap: "1.5rem",
+        gap: "1rem",
       }}
     >
       {products.map((product, i) => (
         <div
           key={i}
           style={{
-            maxWidth: "360px",
+            maxWidth: "320px",
             width: "100%",
             backgroundColor: "white",
-            borderRadius: "16px",
-            boxShadow:
-              "0 15px 25px rgba(14, 165, 233, 0.15), 0 7px 15px rgba(14, 165, 233, 0.1)",
+            borderRadius: "12px",
+            boxShadow: "0 8px 20px rgba(0, 0, 0, 0.05)",
             overflow: "hidden",
             userSelect: "none",
-            flex: "1 1 360px",
+            flex: "1 1 320px",
             display: "flex",
             flexDirection: "column",
           }}
@@ -147,19 +144,19 @@ export default function Page() {
           <Image
             src={product.image?.filename || fallbackImage}
             alt={product.name || "Product image"}
-            width={360}
-            height={215}
+            width={320}
+            height={190}
             style={{ objectFit: "cover", width: "100%", height: "auto" }}
             priority={i === 0}
           />
 
-          <div style={{ padding: "1rem 1.5rem", flexGrow: 1 }}>
+          <div style={{ padding: "0.75rem 1.25rem", flexGrow: 1 }}>
             <h2
               style={{
                 fontWeight: "700",
-                fontSize: "1.4rem",
-                color: "#0369a1",
-                marginBottom: "0.4rem",
+                fontSize: "1.25rem",
+                color: "#1e40af",
+                marginBottom: "0.35rem",
               }}
             >
               {product.name || "Unnamed Product"}
@@ -168,10 +165,10 @@ export default function Page() {
             <p
               style={{
                 color: "#475569",
-                fontSize: "0.9rem",
-                lineHeight: 1.5,
-                marginBottom: "1rem",
-                minHeight: "60px",
+                fontSize: "0.85rem",
+                lineHeight: 1.4,
+                marginBottom: "0.9rem",
+                minHeight: "55px",
                 userSelect: "text",
               }}
             >
@@ -181,18 +178,18 @@ export default function Page() {
             <p
               style={{
                 fontWeight: "700",
-                fontSize: "1.1rem",
-                color: "#0284c7",
-                marginBottom: "1.25rem",
+                fontSize: "1rem",
+                color: "#2563eb",
+                marginBottom: "1rem",
               }}
             >
               Price:{" "}
               {product.price !== undefined ? (
                 <span
                   style={{
-                    color: "#059669",
+                    color: "#16a34a",
                     fontWeight: "800",
-                    fontSize: "1.3rem",
+                    fontSize: "1.15rem",
                   }}
                 >
                   ${product.price}
@@ -206,36 +203,36 @@ export default function Page() {
               onClick={() => handleAddToCart(i)}
               style={{
                 width: "100%",
-                padding: "0.7rem 0",
+                padding: "0.55rem 0",
                 background:
-                  "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)",
+                  "linear-gradient(90deg, #2563eb 0%, #1e40af 100%)",
                 color: "white",
                 border: "none",
-                borderRadius: "10px",
+                borderRadius: "8px",
                 fontWeight: "700",
-                fontSize: "1.1rem",
-                boxShadow: "0 6px 12px rgba(14, 165, 233, 0.5)",
+                fontSize: "1rem",
+                boxShadow: "0 4px 10px rgba(37, 99, 235, 0.5)",
                 cursor: "pointer",
-                transition: "background 0.3s ease, box-shadow 0.3s ease",
+                transition: "background 0.25s ease, box-shadow 0.25s ease",
                 userSelect: "none",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                gap: "0.4rem",
+                gap: "0.3rem",
                 letterSpacing: "0.02em",
               }}
               aria-label={`Add ${product.name} to cart`}
               onMouseEnter={(e) => {
                 const btn = e.currentTarget;
                 btn.style.background =
-                  "linear-gradient(90deg, #0284c7 0%, #0369a1 100%)";
-                btn.style.boxShadow = "0 8px 18px rgba(2, 132, 199, 0.7)";
+                  "linear-gradient(90deg, #1e40af 0%, #1e3a8a 100%)";
+                btn.style.boxShadow = "0 6px 14px rgba(30, 64, 175, 0.7)";
               }}
               onMouseLeave={(e) => {
                 const btn = e.currentTarget;
                 btn.style.background =
-                  "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)";
-                btn.style.boxShadow = "0 6px 12px rgba(14, 165, 233, 0.5)";
+                  "linear-gradient(90deg, #2563eb 0%, #1e40af 100%)";
+                btn.style.boxShadow = "0 4px 10px rgba(37, 99, 235, 0.5)";
               }}
             >
               🛒 Add to Cart
@@ -244,10 +241,10 @@ export default function Page() {
             {addedToCartIndex === i && (
               <p
                 style={{
-                  color: "#059669",
-                  marginTop: "0.9rem",
+                  color: "#16a34a",
+                  marginTop: "0.7rem",
                   fontWeight: "700",
-                  fontSize: "1rem",
+                  fontSize: "0.9rem",
                   textAlign: "center",
                   userSelect: "none",
                   animation: "fadeInOut 2s forwards",
