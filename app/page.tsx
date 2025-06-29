@@ -2,14 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText } from "@storyblok/react";
-
-type StoryblokRichText = {
-  type: string;
-  content?: StoryblokRichText[];
-  text?: string;
-  attrs?: Record<string, unknown>;  // safer than any
-};
+import { renderRichText, type StoryblokRichText } from "@storyblok/react";
 
 interface MyProduct {
   component: string;
