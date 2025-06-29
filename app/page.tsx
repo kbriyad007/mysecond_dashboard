@@ -89,9 +89,8 @@ export default function Page() {
               <Image
                 src={product.image?.filename || fallbackImage}
                 alt={product.name || "Product image"}
-                width={320}
-                height={200}
-                style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
+                fill
+                style={{ objectFit: "cover" }}
                 quality={80}
                 priority={i === 0}
                 draggable={false}
@@ -108,8 +107,7 @@ export default function Page() {
               </p>
 
               <p className="card-price">
-                Price:{" "}
-                <span>${product.price ?? "N/A"}</span>
+                Price: <span>${product.price ?? "N/A"}</span>
               </p>
 
               <button
@@ -127,7 +125,6 @@ export default function Page() {
       </main>
 
       <style jsx>{`
-        /* Container grid */
         .product-grid {
           min-height: 100vh;
           padding: 2rem 1.5rem;
@@ -140,7 +137,6 @@ export default function Page() {
           align-content: start;
         }
 
-        /* Card style */
         .card {
           background: #ffffff;
           border-radius: 16px;
@@ -158,12 +154,14 @@ export default function Page() {
         }
 
         .image-wrapper {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 16 / 9;
           border-radius: 16px 16px 0 0;
           overflow: hidden;
           flex-shrink: 0;
         }
 
-        /* Card body */
         .card-body {
           padding: 1.25rem 1.5rem 1.5rem;
           display: flex;
@@ -171,7 +169,6 @@ export default function Page() {
           flex-grow: 1;
         }
 
-        /* Title */
         .card-title {
           font-weight: 700;
           font-size: 1.15rem;
@@ -184,7 +181,6 @@ export default function Page() {
           user-select: text;
         }
 
-        /* Description */
         .card-description {
           font-size: 0.875rem;
           line-height: 1.5;
@@ -195,7 +191,6 @@ export default function Page() {
           overflow-wrap: anywhere;
         }
 
-        /* Price */
         .card-price {
           font-weight: 600;
           font-size: 1rem;
@@ -207,7 +202,6 @@ export default function Page() {
           font-weight: 700;
         }
 
-        /* Button */
         .btn-add-cart {
           padding: 0.65rem 0;
           background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
@@ -235,7 +229,6 @@ export default function Page() {
           box-shadow: 0 4px 14px rgba(34, 197, 94, 0.6);
         }
 
-        /* Added message */
         .added-msg {
           margin-top: 0.5rem;
           font-size: 0.8rem;
@@ -246,7 +239,6 @@ export default function Page() {
           user-select: none;
         }
 
-        /* Fade in/out animation */
         @keyframes fadeInOut {
           0% {
             opacity: 0;
@@ -266,7 +258,6 @@ export default function Page() {
           }
         }
 
-        /* Responsive tweaks */
         @media (max-width: 480px) {
           .product-grid {
             padding: 1rem 1rem 2rem;
