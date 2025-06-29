@@ -12,13 +12,13 @@ interface MyProduct {
 }
 
 export default function Page() {
-  const [product, setProduct] = useState<MyProduct | null>(null);
+  const [products, setProducts] = useState<MyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
-  const [addedToCart, setAddedToCart] = useState(false);
+  const [addedToCartIndex, setAddedToCartIndex] = useState<number | null>(null);
 
   useEffect(() => {
-    const slug = "product";
+    const slug = "product"; // or your story slug with multiple products in content.body
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
 
     if (!token) {
@@ -36,10 +36,10 @@ export default function Page() {
       .then((data) => {
         const body = data.story?.content?.body;
         if (!body || !Array.isArray(body) || body.length === 0) {
-          setErrorMsg("❌ No product block found in content.body.");
+          setErrorMsg("❌ No product blocks found in content.body.");
           return;
         }
-        setProduct(body[0] as MyProduct);
+        setProducts(body as MyProduct[]);
       })
       .catch((err) => setErrorMsg(err.message))
       .finally(() => setLoading(false));
@@ -59,7 +59,7 @@ export default function Page() {
           backgroundColor: "#f3f4f6",
         }}
       >
-        Loading product...
+        Loading products...
       </div>
     );
 
@@ -83,7 +83,7 @@ export default function Page() {
       </div>
     );
 
-  if (!product)
+  if (products.length === 0)
     return (
       <div
         style={{
@@ -99,16 +99,17 @@ export default function Page() {
           textAlign: "center",
         }}
       >
-        No product data available.
+        No products available.
       </div>
     );
 
-  const imageUrl =
+  // Fallback image URL for all products (replace with your product.image.filename if available)
+  const fallbackImage =
     "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
-  function handleAddToCart() {
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+  function handleAddToCart(index: number) {
+    setAddedToCartIndex(index);
+    setTimeout(() => setAddedToCartIndex(null), 2000);
   }
 
   return (
@@ -117,144 +118,147 @@ export default function Page() {
         minHeight: "100vh",
         background:
           "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
         padding: "1.5rem",
         fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        flexWrap: "wrap",
+        gap: "1.5rem",
       }}
     >
-      <div
-        style={{
-          maxWidth: "360px",
-          width: "100%",
-          backgroundColor: "white",
-          borderRadius: "16px",
-          boxShadow:
-            "0 15px 25px rgba(14, 165, 233, 0.15), 0 7px 15px rgba(14, 165, 233, 0.1)",
-          overflow: "hidden",
-          cursor: "default",
-          userSelect: "none",
-        }}
-      >
-        <Image
-          src={imageUrl}
-          alt={product.name || "Product image"}
-          width={360}
-          height={215}
-          style={{ objectFit: "cover", width: "100%", height: "auto" }}
-          priority
-        />
+      {products.map((product, i) => (
+        <div
+          key={i}
+          style={{
+            maxWidth: "360px",
+            width: "100%",
+            backgroundColor: "white",
+            borderRadius: "16px",
+            boxShadow:
+              "0 15px 25px rgba(14, 165, 233, 0.15), 0 7px 15px rgba(14, 165, 233, 0.1)",
+            overflow: "hidden",
+            userSelect: "none",
+            flex: "1 1 360px",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Image
+            src={product.image?.filename || fallbackImage}
+            alt={product.name || "Product image"}
+            width={360}
+            height={215}
+            style={{ objectFit: "cover", width: "100%", height: "auto" }}
+            priority={i === 0}
+          />
 
-        <div style={{ padding: "1rem 1.5rem" }}>
-          <h2
-            style={{
-              fontWeight: "700",
-              fontSize: "1.4rem",
-              color: "#0369a1",
-              marginBottom: "0.4rem",
-            }}
-          >
-            {product.name || "Unnamed Product"}
-          </h2>
-
-          <p
-            style={{
-              color: "#475569",
-              fontSize: "0.9rem",
-              lineHeight: 1.5,
-              marginBottom: "1rem",
-              minHeight: "60px",
-              userSelect: "text",
-            }}
-          >
-            {product.description}
-          </p>
-
-          <p
-            style={{
-              fontWeight: "700",
-              fontSize: "1.1rem",
-              color: "#0284c7",
-              marginBottom: "1.25rem",
-            }}
-          >
-            Price:{" "}
-            {product.price !== undefined ? (
-              <span
-                style={{
-                  color: "#059669",
-                  fontWeight: "800",
-                  fontSize: "1.3rem",
-                }}
-              >
-                ${product.price}
-              </span>
-            ) : (
-              "N/A"
-            )}
-          </p>
-
-          <button
-            onClick={handleAddToCart}
-            style={{
-              width: "100%",
-              padding: "0.7rem 0",
-              background:
-                "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)",
-              color: "white",
-              border: "none",
-              borderRadius: "10px",
-              fontWeight: "700",
-              fontSize: "1.1rem",
-              boxShadow:
-                "0 6px 12px rgba(14, 165, 233, 0.5)",
-              cursor: "pointer",
-              transition:
-                "background 0.3s ease, box-shadow 0.3s ease",
-              userSelect: "none",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "0.4rem",
-              letterSpacing: "0.02em",
-            }}
-            aria-label="Add to cart"
-            onMouseEnter={(e) => {
-              const btn = e.currentTarget;
-              btn.style.background =
-                "linear-gradient(90deg, #0284c7 0%, #0369a1 100%)";
-              btn.style.boxShadow =
-                "0 8px 18px rgba(2, 132, 199, 0.7)";
-            }}
-            onMouseLeave={(e) => {
-              const btn = e.currentTarget;
-              btn.style.background =
-                "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)";
-              btn.style.boxShadow =
-                "0 6px 12px rgba(14, 165, 233, 0.5)";
-            }}
-          >
-            🛒 Add to Cart
-          </button>
-
-          {addedToCart && (
-            <p
+          <div style={{ padding: "1rem 1.5rem", flexGrow: 1 }}>
+            <h2
               style={{
-                color: "#059669",
-                marginTop: "0.9rem",
                 fontWeight: "700",
-                fontSize: "1rem",
-                textAlign: "center",
-                userSelect: "none",
-                animation: "fadeInOut 2s forwards",
+                fontSize: "1.4rem",
+                color: "#0369a1",
+                marginBottom: "0.4rem",
               }}
             >
-              ✔️ Added to cart!
+              {product.name || "Unnamed Product"}
+            </h2>
+
+            <p
+              style={{
+                color: "#475569",
+                fontSize: "0.9rem",
+                lineHeight: 1.5,
+                marginBottom: "1rem",
+                minHeight: "60px",
+                userSelect: "text",
+              }}
+            >
+              {product.description}
             </p>
-          )}
+
+            <p
+              style={{
+                fontWeight: "700",
+                fontSize: "1.1rem",
+                color: "#0284c7",
+                marginBottom: "1.25rem",
+              }}
+            >
+              Price:{" "}
+              {product.price !== undefined ? (
+                <span
+                  style={{
+                    color: "#059669",
+                    fontWeight: "800",
+                    fontSize: "1.3rem",
+                  }}
+                >
+                  ${product.price}
+                </span>
+              ) : (
+                "N/A"
+              )}
+            </p>
+
+            <button
+              onClick={() => handleAddToCart(i)}
+              style={{
+                width: "100%",
+                padding: "0.7rem 0",
+                background:
+                  "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)",
+                color: "white",
+                border: "none",
+                borderRadius: "10px",
+                fontWeight: "700",
+                fontSize: "1.1rem",
+                boxShadow: "0 6px 12px rgba(14, 165, 233, 0.5)",
+                cursor: "pointer",
+                transition: "background 0.3s ease, box-shadow 0.3s ease",
+                userSelect: "none",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "0.4rem",
+                letterSpacing: "0.02em",
+              }}
+              aria-label={`Add ${product.name} to cart`}
+              onMouseEnter={(e) => {
+                const btn = e.currentTarget;
+                btn.style.background =
+                  "linear-gradient(90deg, #0284c7 0%, #0369a1 100%)";
+                btn.style.boxShadow = "0 8px 18px rgba(2, 132, 199, 0.7)";
+              }}
+              onMouseLeave={(e) => {
+                const btn = e.currentTarget;
+                btn.style.background =
+                  "linear-gradient(90deg, #0ea5e9 0%, #0284c7 100%)";
+                btn.style.boxShadow = "0 6px 12px rgba(14, 165, 233, 0.5)";
+              }}
+            >
+              🛒 Add to Cart
+            </button>
+
+            {addedToCartIndex === i && (
+              <p
+                style={{
+                  color: "#059669",
+                  marginTop: "0.9rem",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  textAlign: "center",
+                  userSelect: "none",
+                  animation: "fadeInOut 2s forwards",
+                }}
+              >
+                ✔️ Added to cart!
+              </p>
+            )}
+          </div>
         </div>
-      </div>
+      ))}
 
       <style>{`
         @keyframes fadeInOut {
