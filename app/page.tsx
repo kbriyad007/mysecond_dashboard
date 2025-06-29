@@ -69,53 +69,73 @@ export default function Page() {
   }
 
   return (
-    <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
-      <h1>🛍️ Product Details</h1>
+    <main style={{ padding: "2rem", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f9fafb", minHeight: "100vh" }}>
+      <h1 style={{ marginBottom: "1rem", color: "#111827" }}>🛍️ Product Details</h1>
       <div
         style={{
-          border: "1px solid #ddd",
-          padding: "1rem",
-          borderRadius: "8px",
+          border: "1px solid #e5e7eb",
+          padding: "1.5rem",
+          borderRadius: "12px",
           maxWidth: "400px",
+          backgroundColor: "white",
+          boxShadow: "0 4px 8px rgb(0 0 0 / 0.05)",
         }}
       >
-        <h2>{product.name || "Unnamed Product"}</h2>
+        <h2 style={{ fontWeight: "700", fontSize: "1.5rem", marginBottom: "0.75rem", color: "#111827" }}>
+          {product.name || "Unnamed Product"}
+        </h2>
 
         <Image
           src={imageUrl}
           alt={product.name || "Product image"}
           width={1056}
           height={595}
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: "cover", borderRadius: "8px", marginBottom: "1rem" }}
         />
 
-        {/* ✅ Plain text description instead of renderRichText */}
-        <p>{product.description}</p>
+        <p style={{ color: "#4b5563", lineHeight: "1.5", marginBottom: "1rem" }}>
+          {product.description}
+        </p>
 
-        <p>
-          <strong>Price:</strong>{" "}
-          {product.price !== undefined ? `$${product.price}` : "N/A"}
+        <p style={{ fontWeight: "600", fontSize: "1.125rem", marginBottom: "1.5rem", color: "#111827" }}>
+          Price:{" "}
+          {product.price !== undefined ? (
+            <span style={{ color: "#10b981" }}>${product.price}</span>
+          ) : (
+            "N/A"
+          )}
         </p>
 
         <button
           onClick={handleAddToCart}
           style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            backgroundColor: "#0070f3",
+            width: "100%",
+            padding: "0.75rem 1rem",
+            backgroundColor: "#3b82f6",
             color: "white",
             border: "none",
-            borderRadius: "5px",
+            borderRadius: "8px",
             cursor: "pointer",
-            fontSize: "1rem",
+            fontWeight: "600",
+            fontSize: "1.125rem",
+            boxShadow: "0 4px 6px rgba(59, 130, 246, 0.5)",
+            transition: "background-color 0.3s ease, box-shadow 0.3s ease",
           }}
           aria-label="Add to cart"
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#2563eb";
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 6px 12px rgba(37, 99, 235, 0.6)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#3b82f6";
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 4px 6px rgba(59, 130, 246, 0.5)";
+          }}
         >
           Add to Cart
         </button>
 
         {addedToCart && (
-          <p style={{ color: "green", marginTop: "0.5rem" }}>
+          <p style={{ color: "#10b981", marginTop: "0.75rem", fontWeight: "600", textAlign: "center" }}>
             ✔️ Added to cart!
           </p>
         )}
