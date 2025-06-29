@@ -2,20 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText } from "@storyblok/react";
 
-// Minimal custom type for Storyblok rich text data
-type StoryblokRichText = {
-  type: string;
-  content?: StoryblokRichText[];
-  text?: string;
-  attrs?: Record<string, unknown>;
-};
-
+// Update the type to reflect plain text, not rich text
 interface MyProduct {
   component: string;
   name: string;
-  description: StoryblokRichText; // Use custom type here
+  description: string; // ✅ plain text instead of StoryblokRichText
   image?: { filename: string };
   price?: number | string;
 }
@@ -89,8 +81,8 @@ export default function Page() {
           style={{ objectFit: "cover" }}
         />
 
-        {/* @ts-expect-error types do not exactly match */}
-        <div>{renderRichText(product.description)}</div>
+        {/* ✅ Plain text description instead of renderRichText */}
+        <p>{product.description}</p>
 
         <p>
           <strong>Price:</strong>{" "}
