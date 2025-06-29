@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText } from "@storyblok/react";
+import { renderRichText, ISbRichtext } from "@storyblok/react";
 
 interface MyProduct {
   component: string;
   name: string;
-  description: unknown;
-  image?: { filename: string };
+  description: ISbRichtext; // ✅ typed properly for rich text
+  image?: { filename: string }; // optional image
   price?: number | string;
 }
 
@@ -18,7 +18,7 @@ export default function Page() {
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const slug = "product";
+    const slug = "product"; // 👈 Slug of your Story in Storyblok
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
 
     if (!token) {
@@ -64,6 +64,9 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
+  // Build full image URL only if image.filename exists
+  const imageUrl = product.image?.filename ?? null;
+
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>🛍️ Product Details</h1>
@@ -77,19 +80,19 @@ export default function Page() {
       >
         <h2>{product.name || "Unnamed Product"}</h2>
 
-        {product.image?.filename ? (
+        {imageUrl ? (
           <Image
-            src={product.image.filename}
+            src={imageUrl}
             alt={product.name || "Product image"}
-            width={600}
-            height={400}
+            width={1056}
+            height={595}
             style={{ objectFit: "cover" }}
           />
         ) : (
           <p>⚠️ No product image found.</p>
         )}
 
-        <div>{renderRichText(product.description as any)}</div>
+        <div>{renderRichText(product.description)}</div>
 
         <p>
           <strong>Price:</strong>{" "}
