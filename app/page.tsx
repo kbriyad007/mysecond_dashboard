@@ -54,7 +54,7 @@ export default function Page() {
   };
 
   const cardWidth = 240;
-  const cardHeight = cardWidth * 1.618 * 1.2; // 20% taller than golden ratio
+  const cardHeight = cardWidth * 1.618 * 1.4; // increased height
 
   if (loading || errorMsg || products.length === 0) {
     return (
@@ -64,7 +64,7 @@ export default function Page() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "0.9rem",
+          fontSize: "0.95rem",
           fontFamily: "'Inter', sans-serif",
           backgroundColor: "#f1f5f9",
           color: errorMsg ? "#b91c1c" : "#64748b",
@@ -87,12 +87,12 @@ export default function Page() {
         style={{
           minHeight: "100vh",
           background: "linear-gradient(to right, #f8fafc, #e2e8f0)",
-          padding: "1.5rem",
+          padding: "2rem 1rem",
           fontFamily: "'Inter', sans-serif",
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
-          gap: "1.25rem",
+          gap: "1.5rem",
         }}
       >
         {products.map((product, i) => (
@@ -101,12 +101,13 @@ export default function Page() {
             style={{
               width: `${cardWidth}px`,
               backgroundColor: "#fff",
-              borderRadius: "12px",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
+              borderRadius: "14px",
+              boxShadow: "0 10px 28px rgba(0,0,0,0.07)",
               overflow: "hidden",
               display: "flex",
               flexDirection: "column",
               transition: "transform 0.2s ease",
+              minHeight: `${cardHeight + 100}px`,
             }}
           >
             <Image
@@ -115,17 +116,17 @@ export default function Page() {
               width={cardWidth}
               height={cardHeight}
               style={{ objectFit: "cover", width: "100%", height: "auto" }}
-              quality={80}
+              quality={85}
               priority={i === 0}
             />
 
-            <div style={{ padding: "1rem", flexGrow: 1 }}>
+            <div style={{ padding: "1.25rem", flexGrow: 1 }}>
               <h2
                 style={{
                   fontWeight: 700,
-                  fontSize: "1.05rem",
+                  fontSize: "1.15rem",
                   color: "#0f172a",
-                  marginBottom: "0.5rem",
+                  marginBottom: "0.6rem",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -138,10 +139,10 @@ export default function Page() {
               <p
                 style={{
                   color: "#64748b",
-                  fontSize: "0.8rem",
-                  lineHeight: 1.5,
-                  marginBottom: "0.75rem",
-                  maxHeight: "50px",
+                  fontSize: "0.85rem",
+                  lineHeight: 1.6,
+                  marginBottom: "0.9rem",
+                  maxHeight: "66px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                 }}
@@ -153,9 +154,9 @@ export default function Page() {
               <p
                 style={{
                   fontWeight: 600,
-                  fontSize: "0.95rem",
+                  fontSize: "1rem",
                   color: "#2563eb",
-                  marginBottom: "0.75rem",
+                  marginBottom: "1rem",
                 }}
               >
                 Price:{" "}
@@ -168,14 +169,13 @@ export default function Page() {
                 onClick={() => handleAddToCart(i)}
                 style={{
                   width: "100%",
-                  padding: "0.55rem 0",
-                  background:
-                    "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
+                  padding: "0.65rem 0",
+                  background: "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
                   color: "#fff",
                   border: "none",
                   borderRadius: "8px",
                   fontWeight: 600,
-                  fontSize: "0.85rem",
+                  fontSize: "0.9rem",
                   cursor: "pointer",
                   boxShadow: "0 4px 10px rgba(59, 130, 246, 0.4)",
                   transition: "all 0.25s ease",
@@ -189,7 +189,7 @@ export default function Page() {
                   style={{
                     color: "#22c55e",
                     marginTop: "0.6rem",
-                    fontSize: "0.8rem",
+                    fontSize: "0.85rem",
                     fontWeight: 600,
                     textAlign: "center",
                     animation: "fadeInOut 2s ease",
@@ -219,13 +219,13 @@ export default function Page() {
 
         @media (max-width: 1024px) {
           main > div {
-            width: 29%;
+            width: 30%;
           }
         }
 
         @media (max-width: 768px) {
           main > div {
-            width: 45%;
+            width: 46%;
           }
         }
 
