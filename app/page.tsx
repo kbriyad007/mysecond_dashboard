@@ -16,6 +16,7 @@ export default function Page() {
   const [product, setProduct] = useState<MyProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+  const [addedToCart, setAddedToCart] = useState(false);
 
   useEffect(() => {
     const slug = "product";
@@ -60,6 +61,13 @@ export default function Page() {
   const imageUrl =
     "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
+  // Handler for Add to Cart button
+  function handleAddToCart() {
+    setAddedToCart(true);
+    // Reset message after 2 seconds
+    setTimeout(() => setAddedToCart(false), 2000);
+  }
+
   return (
     <main style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
       <h1>🛍️ Product Details</h1>
@@ -88,6 +96,29 @@ export default function Page() {
           <strong>Price:</strong>{" "}
           {product.price !== undefined ? `$${product.price}` : "N/A"}
         </p>
+
+        <button
+          onClick={handleAddToCart}
+          style={{
+            marginTop: "1rem",
+            padding: "0.5rem 1rem",
+            backgroundColor: "#0070f3",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontSize: "1rem",
+          }}
+          aria-label="Add to cart"
+        >
+          Add to Cart
+        </button>
+
+        {addedToCart && (
+          <p style={{ color: "green", marginTop: "0.5rem" }}>
+            ✔️ Added to cart!
+          </p>
+        )}
       </div>
     </main>
   );
