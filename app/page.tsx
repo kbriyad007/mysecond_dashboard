@@ -53,8 +53,8 @@ export default function Page() {
     setTimeout(() => setAddedToCartIndex(null), 2000);
   };
 
-  const cardWidth = 240; // in px
-  const cardHeight = cardWidth * 1.618; // golden ratio
+  const cardWidth = 240;
+  const cardHeight = cardWidth * 1.618 * 1.2; // 20% taller than golden ratio
 
   if (loading || errorMsg || products.length === 0) {
     return (
