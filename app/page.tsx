@@ -53,9 +53,6 @@ export default function Page() {
     setTimeout(() => setAddedToCartIndex(null), 2000);
   };
 
-  const cardWidth = 240;
-  const cardHeight = cardWidth * 1.618 * 1.4; // increased height
-
   if (loading || errorMsg || products.length === 0) {
     return (
       <div
@@ -64,11 +61,11 @@ export default function Page() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "0.95rem",
+          fontSize: "0.9rem",
           fontFamily: "'Inter', sans-serif",
           backgroundColor: "#f1f5f9",
           color: errorMsg ? "#b91c1c" : "#64748b",
-          padding: "1.5rem",
+          padding: "1rem",
           textAlign: "center",
         }}
       >
@@ -87,46 +84,44 @@ export default function Page() {
         style={{
           minHeight: "100vh",
           background: "linear-gradient(to right, #f8fafc, #e2e8f0)",
-          padding: "2rem 1rem",
+          padding: "1.5rem 1rem",
           fontFamily: "'Inter', sans-serif",
           display: "flex",
           flexWrap: "wrap",
           justifyContent: "center",
-          gap: "1.5rem",
+          gap: "1rem",
         }}
       >
         {products.map((product, i) => (
           <div
             key={i}
             style={{
-              width: `${cardWidth}px`,
+              width: "240px",
               backgroundColor: "#fff",
-              borderRadius: "14px",
-              boxShadow: "0 10px 28px rgba(0,0,0,0.07)",
+              borderRadius: "12px",
+              boxShadow: "0 6px 20px rgba(0, 0, 0, 0.05)",
               overflow: "hidden",
               display: "flex",
               flexDirection: "column",
-              transition: "transform 0.2s ease",
-              minHeight: `${cardHeight + 100}px`,
             }}
           >
             <Image
               src={product.image?.filename || fallbackImage}
               alt={product.name || "Product image"}
-              width={cardWidth}
-              height={cardHeight}
+              width={240}
+              height={150}
               style={{ objectFit: "cover", width: "100%", height: "auto" }}
-              quality={85}
+              quality={75}
               priority={i === 0}
             />
 
-            <div style={{ padding: "1.25rem", flexGrow: 1 }}>
+            <div style={{ padding: "0.75rem 1rem", flexGrow: 1 }}>
               <h2
                 style={{
                   fontWeight: 700,
-                  fontSize: "1.15rem",
+                  fontSize: "1rem",
                   color: "#0f172a",
-                  marginBottom: "0.6rem",
+                  marginBottom: "0.4rem",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -139,10 +134,10 @@ export default function Page() {
               <p
                 style={{
                   color: "#64748b",
-                  fontSize: "0.85rem",
-                  lineHeight: 1.6,
-                  marginBottom: "0.9rem",
-                  maxHeight: "66px",
+                  fontSize: "0.75rem",
+                  lineHeight: 1.4,
+                  marginBottom: "0.6rem",
+                  maxHeight: "40px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                 }}
@@ -154,9 +149,9 @@ export default function Page() {
               <p
                 style={{
                   fontWeight: 600,
-                  fontSize: "1rem",
+                  fontSize: "0.9rem",
                   color: "#2563eb",
-                  marginBottom: "1rem",
+                  marginBottom: "0.8rem",
                 }}
               >
                 Price:{" "}
@@ -169,17 +164,17 @@ export default function Page() {
                 onClick={() => handleAddToCart(i)}
                 style={{
                   width: "100%",
-                  padding: "0.65rem 0",
+                  padding: "0.5rem 0",
                   background: "linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%)",
                   color: "#fff",
                   border: "none",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   fontWeight: 600,
-                  fontSize: "0.9rem",
+                  fontSize: "0.8rem",
                   cursor: "pointer",
-                  boxShadow: "0 4px 10px rgba(59, 130, 246, 0.4)",
-                  transition: "all 0.25s ease",
+                  boxShadow: "0 3px 8px rgba(59, 130, 246, 0.4)",
                 }}
+                aria-label={`Add ${product.name} to cart`}
               >
                 🛒 Add to Cart
               </button>
@@ -188,8 +183,8 @@ export default function Page() {
                 <p
                   style={{
                     color: "#22c55e",
-                    marginTop: "0.6rem",
-                    fontSize: "0.85rem",
+                    marginTop: "0.5rem",
+                    fontSize: "0.75rem",
                     fontWeight: 600,
                     textAlign: "center",
                     animation: "fadeInOut 2s ease",
@@ -205,10 +200,10 @@ export default function Page() {
 
       <style>{`
         @keyframes fadeInOut {
-          0% { opacity: 0; transform: translateY(5px); }
+          0% { opacity: 0; transform: translateY(4px); }
           10% { opacity: 1; transform: translateY(0); }
           90% { opacity: 1; transform: translateY(0); }
-          100% { opacity: 0; transform: translateY(5px); }
+          100% { opacity: 0; transform: translateY(4px); }
         }
 
         @media (max-width: 1280px) {
