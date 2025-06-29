@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { renderRichText, type StoryblokRichText } from "@storyblok/react";
+import { renderRichText } from "@storyblok/react";
+import type { SbRichtext } from "@storyblok/react";
 
 interface MyProduct {
   component: string;
   name: string;
-  description: StoryblokRichText;
+  description: SbRichtext; // Proper Storyblok rich text type
   image?: { filename: string };
   price?: number | string;
 }
@@ -56,6 +57,7 @@ export default function Page() {
 
   if (!product) return <div>No product data available.</div>;
 
+  // Hardcoded image for now
   const imageUrl =
     "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
