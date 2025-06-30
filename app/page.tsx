@@ -131,34 +131,25 @@ export default function Page() {
         }
 
         .card {
-          background-color: #ffffffcc;
-          border: 1px solid #d1d5db;
-          border-radius: 16px;
-          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+          background-color: #ffffff;
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
+          box-shadow: 0 0 0 rgba(0, 0, 0, 0); /* No shadow on hover */
           display: flex;
           flex-direction: column;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+          overflow: hidden;
         }
 
         .image-wrapper {
           position: relative;
           width: 100%;
           aspect-ratio: 4 / 3;
-          border-radius: 16px 16px 0 0;
           overflow: hidden;
+          border-bottom: 1px solid #e5e7eb;
         }
 
         .product-img {
-          transition: transform 0.3s ease;
-        }
-
-        .card:hover .product-img {
-          transform: scale(1.05);
+          border-radius: 0;
         }
 
         .card-body {
@@ -166,13 +157,14 @@ export default function Page() {
           display: flex;
           flex-direction: column;
           flex-grow: 1;
+          border-top: none;
         }
 
         .card-title {
           font-weight: 600;
           font-size: 1rem;
           color: #1f2937;
-          margin-bottom: 0.4rem;
+          margin-bottom: 0.5rem;
         }
 
         .card-description {
@@ -201,7 +193,7 @@ export default function Page() {
           font-weight: 600;
           border: none;
           border-radius: 8px;
-          transition: all 0.3s ease;
+          transition: background-color 0.2s ease;
         }
 
         .btn-add-cart:hover {
