@@ -5,7 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
-  useCallback,
+  ReactNode,
 } from "react";
 
 export interface CartItem {
@@ -22,10 +22,10 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  // Load from localStorage
+  // Load cart from localStorage on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem("cart");
@@ -33,33 +33,35 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         setCartItems(JSON.parse(stored));
       }
     } catch (error) {
-      console.error("Failed to parse cart from localStorage", error);
+      console.error("Error loading cart from localStorage:", error);
     }
   }, []);
 
-  // Save to localStorage on change
+  // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = useCallback((item: CartItem) => {
+  const addToCart = (item: CartItem) => {
     setCartItems((prev) => {
       const exists = prev.find((p) => p.name === item.name);
-      if (exists) return prev;
+      if (exists) return prev; // prevent duplicates
       return [...prev, item];
     });
-  }, []);
+  };
 
-  const removeFromCart = useCallback((name: string) => {
+  const removeFromCart = (name: string) => {
     setCartItems((prev) => prev.filter((item) => item.name !== name));
-  }, []);
+  };
 
-  const clearCart = useCallback(() => {
+  const clearCart = () => {
     setCartItems([]);
-  }, []);
+  };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{ cartItems, addToCart, removeFromCart, clearCart }}
+    >
       {children}
     </CartContext.Provider>
   );
