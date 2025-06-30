@@ -67,9 +67,9 @@ export default function Page() {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-family: "Inter", sans-serif;
-            background-color: #f9fafb;
+            background: linear-gradient(to right, #f8fafc, #e2e8f0);
             color: ${errorMsg ? "#dc2626" : "#64748b"};
             padding: 1rem;
             text-align: center;
@@ -107,7 +107,7 @@ export default function Page() {
               </p>
 
               <p className="card-price">
-                Price: <span>${product.price ?? "N/A"}</span>
+                💵 <span>${product.price ?? "N/A"}</span>
               </p>
 
               <button
@@ -127,43 +127,39 @@ export default function Page() {
       <style jsx>{`
         .product-grid {
           min-height: 100vh;
-          padding: 2rem 1rem;
-          background: linear-gradient(90deg, #f9fafb, #e4e7ec);
+          padding: 3rem 1.5rem;
+          background: linear-gradient(to right, #f0f4f8, #e0f2fe);
           font-family: "Inter", sans-serif;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-          gap: 1.2rem;
-          justify-content: center;
-          align-content: start;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1.6rem;
         }
 
         .card {
-          background: #ffffff;
-          border-radius: 16px;
-          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+          background: rgba(255, 255, 255, 0.75);
+          backdrop-filter: blur(12px);
+          border-radius: 20px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
           display: flex;
           flex-direction: column;
-          transition: all 0.3s ease;
-          outline-offset: 4px;
-          cursor: pointer;
+          transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .card:focus,
         .card:hover {
-          box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
-          transform: translateY(-3px);
+          transform: translateY(-6px);
+          box-shadow: 0 12px 32px rgba(37, 99, 235, 0.15);
         }
 
         .image-wrapper {
           position: relative;
           width: 100%;
-          aspect-ratio: 16 / 9;
-          border-radius: 16px 16px 0 0;
+          aspect-ratio: 16 / 10;
+          border-radius: 20px 20px 0 0;
           overflow: hidden;
         }
 
         .card-body {
-          padding: 1rem 1rem 1.25rem;
+          padding: 1.25rem;
           display: flex;
           flex-direction: column;
           flex-grow: 1;
@@ -171,26 +167,22 @@ export default function Page() {
 
         .card-title {
           font-weight: 700;
-          font-size: 1rem;
-          color: #0f172a;
-          margin: 0 0 0.4rem 0;
+          font-size: 1.1rem;
+          color: #1e293b;
+          margin: 0 0 0.5rem 0;
           line-height: 1.3;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
         }
 
         .card-description {
-          font-size: 0.82rem;
-          line-height: 1.4;
+          font-size: 0.9rem;
+          line-height: 1.5;
           color: #475569;
           flex-grow: 1;
-          margin: 0 0 0.8rem 0;
-          overflow-wrap: anywhere;
+          margin-bottom: 1rem;
         }
 
         .card-price {
-          font-weight: 600;
+          font-weight: 500;
           font-size: 0.95rem;
           color: #2563eb;
           margin-bottom: 1rem;
@@ -202,25 +194,21 @@ export default function Page() {
         }
 
         .btn-add-cart {
-          padding: 0.55rem 0;
-          background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+          padding: 0.6rem 0;
+          background: linear-gradient(to right, #3b82f6, #2563eb);
           color: #ffffff;
           font-weight: 600;
-          font-size: 0.85rem;
+          font-size: 0.88rem;
           border: none;
-          border-radius: 8px;
-          box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
+          border-radius: 10px;
+          box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
           cursor: pointer;
           transition: all 0.3s ease;
         }
 
         .btn-add-cart:hover {
-          background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
-          transform: translateY(-1px);
-        }
-
-        .btn-add-cart:active {
-          transform: scale(0.98);
+          transform: translateY(-2px);
+          background: linear-gradient(to right, #2563eb, #1d4ed8);
         }
 
         .btn-add-cart.added {
@@ -229,8 +217,8 @@ export default function Page() {
         }
 
         .added-msg {
-          margin-top: 0.4rem;
-          font-size: 0.75rem;
+          margin-top: 0.6rem;
+          font-size: 0.78rem;
           font-weight: 600;
           color: #22c55e;
           text-align: center;
@@ -242,10 +230,7 @@ export default function Page() {
             opacity: 0;
             transform: translateY(5px);
           }
-          10% {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          10%,
           90% {
             opacity: 1;
             transform: translateY(0);
@@ -256,28 +241,27 @@ export default function Page() {
           }
         }
 
-        /* Show 2 cards per row even on smaller devices */
         @media (max-width: 480px) {
           .product-grid {
             grid-template-columns: repeat(2, 1fr);
-            padding: 1rem;
+            padding: 1.5rem;
             gap: 1rem;
           }
 
           .card-title {
-            font-size: 0.95rem;
+            font-size: 1rem;
           }
 
           .card-description {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
           }
 
           .card-price {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
           }
 
           .btn-add-cart {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
           }
         }
       `}</style>
