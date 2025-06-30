@@ -69,11 +69,10 @@ export default function Page() {
             align-items: center;
             font-size: 1rem;
             font-family: "Inter", sans-serif;
-            background-color: #f8fafc;
+            background-color: #f3f4f6;
             color: ${errorMsg ? "#dc2626" : "#6b7280"};
             padding: 1rem;
             text-align: center;
-            user-select: none;
           }
         `}</style>
       </div>
@@ -94,6 +93,7 @@ export default function Page() {
                 quality={85}
                 priority={i === 0}
                 draggable={false}
+                className="product-img"
               />
             </div>
 
@@ -110,7 +110,7 @@ export default function Page() {
               </button>
 
               {addedToCartIndex === i && (
-                <p className="added-msg">✔️ Added!</p>
+                <p className="added-msg">✔️ Added to cart</p>
               )}
             </div>
           </article>
@@ -124,45 +124,55 @@ export default function Page() {
           background-color: #f3f4f6;
           font-family: "Inter", sans-serif;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 1.5rem;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 1.6rem;
+          max-width: 1400px;
+          margin: 0 auto;
         }
 
         .card {
           background-color: #ffffffcc;
-          backdrop-filter: blur(6px);
           border: 1px solid #d1d5db;
           border-radius: 16px;
           box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
           display: flex;
           flex-direction: column;
-          overflow: hidden;
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .card:hover {
           transform: translateY(-4px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
         .image-wrapper {
           position: relative;
           width: 100%;
-          aspect-ratio: 16 / 10;
+          aspect-ratio: 4 / 3;
+          border-radius: 16px 16px 0 0;
           overflow: hidden;
         }
 
+        .product-img {
+          transition: transform 0.3s ease;
+        }
+
+        .card:hover .product-img {
+          transform: scale(1.05);
+        }
+
         .card-body {
-          padding: 1.25rem;
+          padding: 1.2rem;
           display: flex;
           flex-direction: column;
+          flex-grow: 1;
         }
 
         .card-title {
           font-weight: 600;
           font-size: 1rem;
           color: #1f2937;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.4rem;
         }
 
         .card-description {
@@ -184,7 +194,7 @@ export default function Page() {
         }
 
         .btn-add-cart {
-          padding: 0.6rem 0;
+          padding: 0.6rem;
           background-color: #1f2937;
           color: #ffffff;
           font-size: 0.85rem;
@@ -204,25 +214,15 @@ export default function Page() {
 
         .added-msg {
           margin-top: 0.5rem;
-          font-size: 0.75rem;
+          font-size: 0.8rem;
+          font-weight: 500;
           color: #16a34a;
           text-align: center;
-          animation: fadeInOut 2s ease;
         }
 
-        @keyframes fadeInOut {
-          0% {
-            opacity: 0;
-            transform: translateY(5px);
-          }
-          10%,
-          90% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(5px);
+        @media (min-width: 1024px) {
+          .product-grid {
+            grid-template-columns: repeat(4, 1fr);
           }
         }
 
@@ -230,22 +230,6 @@ export default function Page() {
           .product-grid {
             grid-template-columns: repeat(2, 1fr);
             padding: 1.5rem 1rem;
-          }
-
-          .card-title {
-            font-size: 0.95rem;
-          }
-
-          .card-description {
-            font-size: 0.75rem;
-          }
-
-          .card-price {
-            font-size: 0.8rem;
-          }
-
-          .btn-add-cart {
-            font-size: 0.75rem;
           }
         }
       `}</style>
