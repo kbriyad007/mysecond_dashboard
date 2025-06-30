@@ -1,18 +1,44 @@
+"use client";
+
+import { useState } from "react";
 import ProductGrid from "./ProductGrid";
 import CartMenu from "../components/CartMenu";
+import "./ProductsPage.css"; // Custom CSS file
 
 export default function ProductsPage() {
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
   return (
-    <main className="bg-gray-100 min-h-screen p-6 grid lg:grid-cols-4 gap-6">
-      {/* Product listing on the left (3/4) */}
-      <div className="lg:col-span-3">
-        <ProductGrid />
+    <main className="page-container">
+      {/* Mobile cart toggle */}
+      <div className="cart-toggle-button">
+        <button onClick={() => setIsCartOpen(true)}>🛒 View Cart</button>
       </div>
 
-      {/* Cart menu on the right (1/4) */}
-      <div className="lg:col-span-1">
-        <CartMenu />
+      <div className="product-cart-layout">
+        {/* Product section */}
+        <div className="product-section">
+          <ProductGrid />
+        </div>
+
+        {/* Cart (desktop) */}
+        <div className="cart-section desktop-only">
+          <CartMenu />
+        </div>
       </div>
+
+      {/* Mobile slide-in cart */}
+      {isCartOpen && (
+        <div className="cart-drawer-overlay" onClick={() => setIsCartOpen(false)}>
+          <div className="cart-drawer" onClick={(e) => e.stopPropagation()}>
+            <div className="cart-drawer-header">
+              <h2>🛍️ Your Cart</h2>
+              <button onClick={() => setIsCartOpen(false)}>✕</button>
+            </div>
+            <CartMenu />
+          </div>
+        </div>
+      )}
     </main>
   );
 }
