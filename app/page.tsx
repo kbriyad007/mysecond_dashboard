@@ -127,12 +127,12 @@ export default function Page() {
       <style jsx>{`
         .product-grid {
           min-height: 100vh;
-          padding: 2rem 1.5rem;
+          padding: 2rem 1rem;
           background: linear-gradient(90deg, #f9fafb, #e4e7ec);
           font-family: "Inter", sans-serif;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 1.5rem 2rem;
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          gap: 1.2rem;
           justify-content: center;
           align-content: start;
         }
@@ -140,17 +140,18 @@ export default function Page() {
         .card {
           background: #ffffff;
           border-radius: 16px;
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
           display: flex;
           flex-direction: column;
-          transition: box-shadow 0.3s ease, transform 0.3s ease;
+          transition: all 0.3s ease;
           outline-offset: 4px;
           cursor: pointer;
         }
+
         .card:focus,
         .card:hover {
-          box-shadow: 0 12px 32px rgba(59, 130, 246, 0.3);
-          transform: translateY(-4px);
+          box-shadow: 0 10px 24px rgba(37, 99, 235, 0.2);
+          transform: translateY(-3px);
         }
 
         .image-wrapper {
@@ -159,11 +160,10 @@ export default function Page() {
           aspect-ratio: 16 / 9;
           border-radius: 16px 16px 0 0;
           overflow: hidden;
-          flex-shrink: 0;
         }
 
         .card-body {
-          padding: 1.25rem 1.5rem 1.5rem;
+          padding: 1rem 1rem 1.25rem;
           display: flex;
           flex-direction: column;
           flex-grow: 1;
@@ -171,78 +171,76 @@ export default function Page() {
 
         .card-title {
           font-weight: 700;
-          font-size: 1.15rem;
+          font-size: 1rem;
           color: #0f172a;
-          margin: 0 0 0.5rem 0;
+          margin: 0 0 0.4rem 0;
           line-height: 1.3;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          user-select: text;
         }
 
         .card-description {
-          font-size: 0.875rem;
-          line-height: 1.5;
+          font-size: 0.82rem;
+          line-height: 1.4;
           color: #475569;
           flex-grow: 1;
-          margin: 0 0 1rem 0;
-          user-select: text;
+          margin: 0 0 0.8rem 0;
           overflow-wrap: anywhere;
         }
 
         .card-price {
           font-weight: 600;
-          font-size: 1rem;
+          font-size: 0.95rem;
           color: #2563eb;
-          margin-bottom: 1.2rem;
+          margin-bottom: 1rem;
         }
+
         .card-price span {
           color: #16a34a;
           font-weight: 700;
         }
 
         .btn-add-cart {
-          padding: 0.65rem 0;
+          padding: 0.55rem 0;
           background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
           color: #ffffff;
           font-weight: 600;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           border: none;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+          border-radius: 8px;
+          box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
           cursor: pointer;
-          transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
-          user-select: none;
+          transition: all 0.3s ease;
         }
+
         .btn-add-cart:hover {
           background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
-          box-shadow: 0 6px 18px rgba(37, 99, 235, 0.65);
-          transform: translateY(-2px);
+          transform: translateY(-1px);
         }
+
         .btn-add-cart:active {
-          transform: translateY(0);
-          box-shadow: 0 3px 9px rgba(37, 99, 235, 0.5);
+          transform: scale(0.98);
         }
+
         .btn-add-cart.added {
           background-color: #22c55e;
-          box-shadow: 0 4px 14px rgba(34, 197, 94, 0.6);
+          box-shadow: 0 4px 12px rgba(34, 197, 94, 0.6);
         }
 
         .added-msg {
-          margin-top: 0.5rem;
-          font-size: 0.8rem;
+          margin-top: 0.4rem;
+          font-size: 0.75rem;
           font-weight: 600;
           color: #22c55e;
           text-align: center;
           animation: fadeInOut 2s ease forwards;
-          user-select: none;
         }
 
         @keyframes fadeInOut {
           0% {
             opacity: 0;
-            transform: translateY(6px);
+            transform: translateY(5px);
           }
           10% {
             opacity: 1;
@@ -254,20 +252,32 @@ export default function Page() {
           }
           100% {
             opacity: 0;
-            transform: translateY(6px);
+            transform: translateY(5px);
           }
         }
 
+        /* Show 2 cards per row even on smaller devices */
         @media (max-width: 480px) {
           .product-grid {
-            padding: 1rem 1rem 2rem;
-            gap: 1.25rem 1.25rem;
+            grid-template-columns: repeat(2, 1fr);
+            padding: 1rem;
+            gap: 1rem;
           }
-          .card {
-            border-radius: 12px;
+
+          .card-title {
+            font-size: 0.95rem;
           }
+
+          .card-description {
+            font-size: 0.75rem;
+          }
+
+          .card-price {
+            font-size: 0.85rem;
+          }
+
           .btn-add-cart {
-            border-radius: 8px;
+            font-size: 0.8rem;
           }
         }
       `}</style>
