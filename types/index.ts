@@ -4,4 +4,5 @@ export interface MyProduct {
   description: string;
   image?: { filename: string };
   price?: number | string;
+  slug: string; // added slug here
 }
