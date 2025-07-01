@@ -17,21 +17,25 @@ export async function generateStaticParams() {
     .map((key) => links[key].slug)
     .filter((slug: string) => slug.startsWith("products/"))
     .map((slug: string) => {
-      const productSlug = slug.replace(/^products\//, "");
+      const productSlug = slug.replace(/^products\//, "").trim();
       return { slug: productSlug };
     });
 
   return productSlugs;
 }
 
-// Here is where you put the eslint-disable and use `any` on params
 export default async function ProductPage({ params }: any) {
-  const { slug } = params;
+  let { slug } = params;
+
+  slug = slug.trim(); // just in case
 
   try {
-    const res = await Storyblok.get(`cdn/stories/products/${slug}`, {
-      version: "draft",
-    });
+    const res = await Storyblok.get(
+      `cdn/stories/products/${encodeURIComponent(slug)}`,
+      {
+        version: "draft",
+      }
+    );
 
     const story = res.data.story;
 
@@ -58,7 +62,8 @@ export default async function ProductPage({ params }: any) {
         )}
       </main>
     );
-  } catch {
+  } catch (error) {
+    console.error("Failed to fetch product from Storyblok:", error);
     notFound();
   }
 }
