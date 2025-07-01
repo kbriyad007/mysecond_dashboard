@@ -10,16 +10,7 @@
   width: 100%;
 }
 
-/* Floating Cart for Desktop */
-.floating-cart {
-  position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 320px;
-  z-index: 40;
-}
-
-/* Cart Icon Button */
+/* Floating Cart Icon */
 .cart-toggle-icon {
   position: fixed;
   top: 1.5rem;
@@ -49,7 +40,7 @@
   line-height: 1;
 }
 
-/* Mobile Drawer */
+/* Slide-in Cart Drawer */
 .cart-drawer-overlay {
   position: fixed;
   inset: 0;
@@ -78,9 +69,7 @@
   font-weight: 600;
 }
 
-/* Hide floating cart on mobile */
-@media (max-width: 1023px) {
-  .desktop-only {
-    display: none;
-  }
+/* Hide old desktop cart completely */
+.desktop-only {
+  display: none !important;
 }
