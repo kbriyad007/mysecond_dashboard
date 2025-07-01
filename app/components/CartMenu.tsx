@@ -11,15 +11,20 @@ export default function CartMenu() {
     0
   );
 
+  const handleCheckout = () => {
+    // Placeholder for checkout logic
+    alert("Proceeding to checkout...");
+  };
+
   return (
-    <aside className="bg-white shadow rounded p-4 w-full max-w-xs border border-gray-200">
+    <aside className="bg-white shadow rounded p-4 w-full max-w-xs border border-gray-200 flex flex-col">
       <h2 className="text-lg font-semibold mb-3">🛍️ Cart</h2>
 
       {cartItems.length === 0 ? (
-        <p className="text-gray-500">Cart is empty.</p>
+        <p className="text-gray-500 flex-grow">Cart is empty.</p>
       ) : (
         <>
-          <ul className="space-y-4 max-h-72 overflow-y-auto">
+          <ul className="space-y-4 max-h-72 overflow-y-auto flex-grow">
             {cartItems.map((item) => (
               <li
                 key={item.name}
@@ -57,8 +62,17 @@ export default function CartMenu() {
           </div>
 
           <button
+            onClick={handleCheckout}
+            className="mt-4 w-full py-3 bg-blue-600 hover:bg-blue-700 transition-colors text-white rounded-md font-semibold shadow-md"
+            aria-label="Proceed to checkout"
+          >
+            Checkout
+          </button>
+
+          <button
             onClick={() => clearCart()}
-            className="mt-4 w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded"
+            className="mt-3 w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-semibold"
+            aria-label="Clear cart"
           >
             Clear Cart
           </button>
