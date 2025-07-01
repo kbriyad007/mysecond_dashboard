@@ -22,8 +22,14 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-export default async function ProductPage(props: any) {
-  const { slug } = props.params;
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
+
+export default async function ProductPage({ params }: PageProps) {
+  const { slug } = params;
 
   try {
     const res = await Storyblok.get(`cdn/stories/products/${slug}`, {
