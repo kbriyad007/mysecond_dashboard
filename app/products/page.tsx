@@ -13,7 +13,7 @@ export default function ProductsPage() {
 
   return (
     <main className="page-container">
-      {/* Cart Toggle Button (shown on all screens now) */}
+      {/* Floating Cart Icon */}
       <button
         onClick={() => setIsCartOpen(true)}
         className="cart-toggle-icon"
@@ -25,17 +25,12 @@ export default function ProductsPage() {
         )}
       </button>
 
-      {/* Product Section */}
+      {/* Product Grid */}
       <div className="product-section">
         <ProductGrid />
       </div>
 
-      {/* Floating Cart (Desktop Only) */}
-      <div className="floating-cart desktop-only">
-        <CartMenu />
-      </div>
-
-      {/* Mobile Slide-in Cart */}
+      {/* Unified Slide-in Cart */}
       {isCartOpen && (
         <div className="cart-drawer-overlay" onClick={() => setIsCartOpen(false)}>
           <div className="cart-drawer" onClick={(e) => e.stopPropagation()}>
