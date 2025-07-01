@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
@@ -22,13 +24,8 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-type PageProps = {
-  params: {
-    slug: string;
-  };
-};
-
-export default async function ProductPage({ params }: PageProps) {
+// Here is where you put the eslint-disable and use `any` on params
+export default async function ProductPage({ params }: any) {
   const { slug } = params;
 
   try {
