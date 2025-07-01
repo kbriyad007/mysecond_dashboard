@@ -1,6 +1,4 @@
 
-"use client";
-
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
