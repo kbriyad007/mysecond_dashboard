@@ -1,40 +1,64 @@
-"use client";
+import { notFound } from "next/navigation";
+import StoryblokClient from "storyblok-js-client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { mockProducts } from "@/lib/mockProducts";
-import { MyProduct } from "@/types";
-import Image from "next/image";
+const Storyblok = new StoryblokClient({
+  accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
+  cache: { clear: "auto", type: "memory" },
+});
 
-export default function ProductDetailPage() {
-  const params = useParams();
-  const slug = typeof params?.slug === "string" ? params.slug : Array.isArray(params?.slug) ? params.slug[0] : "";
+type Props = {
+  params: { slug: string };
+};
 
-  const [product, setProduct] = useState<MyProduct | null>(null);
+export async function generateStaticParams() {
+  const res = await Storyblok.get("cdn/links/");
+  const links = res.data.links;
 
-  useEffect(() => {
-    if (slug) {
-      const found = mockProducts.find((p) => p.slug === slug);
-      setProduct(found || null);
+  // Filter only products paths
+  const productSlugs = Object.keys(links)
+    .map((key) => links[key].slug)
+    .filter((slug: string) => slug.startsWith("products/"))
+    .map((slug: string) => {
+      // remove "products/" prefix
+      const productSlug = slug.replace(/^products\//, "");
+      return { slug: productSlug };
+    });
+
+  return productSlugs;
+}
+
+export default async function ProductPage({ params }: Props) {
+  const { slug } = params;
+
+  try {
+    const res = await Storyblok.get(`cdn/stories/products/${slug}`, {
+      version: "draft",
+    });
+
+    const story = res.data.story;
+
+    if (!story) {
+      notFound();
     }
-  }, [slug]);
 
-  if (!product) {
-    return <div className="p-6 text-center text-gray-500">❌ Product not found</div>;
+    const product = story.content;
+
+    return (
+      <main style={{ padding: "2rem", fontFamily: "'Inter', sans-serif" }}>
+        <h1>{product.name || slug}</h1>
+        <p>{product.description}</p>
+        {/* Render product image */}
+        {product.image?.filename && (
+          <img
+            src={product.image.filename}
+            alt={product.name || "Product Image"}
+            style={{ maxWidth: "100%", borderRadius: "12px", marginTop: "1rem" }}
+          />
+        )}
+        {/* Add more product details here */}
+      </main>
+    );
+  } catch (e) {
+    notFound();
   }
-
-  return (
-    <main className="max-w-3xl mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-4">{product.name}</h1>
-      <Image
-        src={product.image?.filename || "/fallback.jpg"}
-        alt={product.name}
-        width={800}
-        height={500}
-        className="rounded mb-6"
-      />
-      <p className="text-gray-700 text-sm mb-3">{product.description}</p>
-      <p className="text-lg font-bold text-green-600">Price: ${product.price}</p>
-    </main>
-  );
 }
