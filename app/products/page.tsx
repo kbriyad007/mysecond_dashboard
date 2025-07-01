@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface MyProduct {
   component: string;
@@ -9,6 +10,17 @@ interface MyProduct {
   description: string;
   image?: { filename: string };
   price?: number | string;
+}
+
+// Simple slugify helper to create URL-friendly slugs
+function slugify(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 }
 
 export default function Page() {
@@ -83,51 +95,69 @@ export default function Page() {
   return (
     <>
       <main className="product-grid">
-        {products.map((product, i) => (
-          <article
-            key={i}
-            className="card"
-            tabIndex={0}
-            aria-label={product.name || "Product"}
-          >
-            <div className="image-wrapper">
-              <Image
-                src={product.image?.filename || fallbackImage}
-                alt={product.name || "Product image"}
-                width={320}
-                height={200}
-                style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
-                quality={80}
-                priority={i === 0}
-                draggable={false}
-              />
-            </div>
+        {products.map((product, i) => {
+          // Derive slug from component or name
+          const slug = product.component
+            ? slugify(product.component)
+            : product.name
+            ? slugify(product.name)
+            : `product-${i}`;
 
-            <div className="card-body">
-              <h2 title={product.name} className="card-title">
-                {product.name || "Unnamed Product"}
-              </h2>
+          return (
+            <Link
+              key={slug}
+              href={`/products/${slug}`}
+              passHref
+              legacyBehavior
+            >
+              <a className="card" aria-label={`View details for ${product.name || "product"}`}>
+                <div className="image-wrapper">
+                  <Image
+                    src={product.image?.filename || fallbackImage}
+                    alt={product.name || "Product image"}
+                    width={320}
+                    height={200}
+                    style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
+                    quality={80}
+                    priority={i === 0}
+                    draggable={false}
+                  />
+                </div>
 
-              <p title={product.description} className="card-description">
-                {product.description}
-              </p>
+                <div className="card-body">
+                  <h2 title={product.name} className="card-title">
+                    {product.name || "Unnamed Product"}
+                  </h2>
 
-              <p className="card-price">
-                Price: <span>${product.price ?? "N/A"}</span>
-              </p>
+                  <p title={product.description} className="card-description">
+                    {product.description}
+                  </p>
 
-              <button
-                onClick={() => handleAddToCart(i)}
-                className={`btn-add-cart ${addedToCartIndex === i ? "added" : ""}`}
-                aria-label={`Add ${product.name} to cart`}
-              >
-                🛒 Add to Cart
-              </button>
+                  <p className="card-price">
+                    Price: <span>${product.price ?? "N/A"}</span>
+                  </p>
 
-              {addedToCartIndex === i && <p className="added-msg">✔️ Added!</p>}
-            </div>
-          </article>
-        ))}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent link navigation when clicking button
+                      handleAddToCart(i);
+                    }}
+                    className={`btn-add-cart ${
+                      addedToCartIndex === i ? "added" : ""
+                    }`}
+                    aria-label={`Add ${product.name} to cart`}
+                  >
+                    🛒 Add to Cart
+                  </button>
+
+                  {addedToCartIndex === i && (
+                    <p className="added-msg">✔️ Added!</p>
+                  )}
+                </div>
+              </a>
+            </Link>
+          );
+        })}
       </main>
 
       <style jsx>{`
@@ -152,8 +182,10 @@ export default function Page() {
           display: flex;
           flex-direction: column;
           outline-offset: 4px;
-          cursor: default;
+          cursor: pointer;
           transition: box-shadow 0.2s ease;
+          text-decoration: none;
+          color: inherit;
         }
 
         .card:focus {
