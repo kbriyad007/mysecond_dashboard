@@ -1,16 +1,11 @@
-
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
+import Image from "next/image";
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
-
-type Props = {
-  params: { slug: string };
-};
 
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
@@ -27,7 +22,11 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-export default async function ProductPage({ params }: Props) {
+export default async function ProductPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
 
   try {
@@ -59,10 +58,11 @@ export default async function ProductPage({ params }: Props) {
           />
         )}
 
-        {/* Add more product details here */}
+        {/* More product details here */}
       </main>
     );
   } catch {
     notFound();
   }
 }
+
