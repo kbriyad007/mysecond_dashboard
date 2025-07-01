@@ -10,27 +10,33 @@
   width: 100%;
 }
 
-/* Floating Cart Icon */
-.cart-toggle-icon {
+/* Floating Cart Icon (FAB Style) */
+.cart-fab {
   position: fixed;
-  top: 1.5rem;
+  bottom: 1.5rem;
   right: 1.5rem;
-  background-color: white;
-  border: 1px solid #e5e7eb;
+  background-color: #1f2937;
+  border: none;
   border-radius: 50%;
-  padding: 0.75rem;
+  padding: 0.9rem;
   cursor: pointer;
   z-index: 60;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.cart-fab:hover {
+  background-color: #111827;
 }
 
 .cart-badge {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: -4px;
+  right: -4px;
   background-color: #ef4444;
   color: white;
   font-size: 0.65rem;
@@ -67,9 +73,4 @@
   align-items: center;
   margin-bottom: 1rem;
   font-weight: 600;
-}
-
-/* Hide old desktop cart completely */
-.desktop-only {
-  display: none !important;
 }
