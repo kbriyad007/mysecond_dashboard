@@ -8,12 +8,14 @@ import {
   ReactNode,
 } from "react";
 
+// Define CartItem with correct types
 export interface CartItem {
   name: string;
   price: number;
   quantity: number;
 }
 
+// Define the context type
 interface CartContextType {
   cartItems: CartItem[];
   addToCart: (item: Omit<CartItem, "quantity">) => void;
@@ -22,8 +24,10 @@ interface CartContextType {
   clearCart: () => void;
 }
 
+// Create the context
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+// Cart Provider Component
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
@@ -32,7 +36,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     try {
       const stored = localStorage.getItem("cart");
       if (stored) {
-        setCartItems(JSON.parse(stored));
+        const parsed = JSON.parse(stored) as CartItem[];
+
+        // Ensure all prices are numbers
+        const sanitized = parsed.map((item) => ({
+          ...item,
+          price: Number(item.price),
+          quantity: Number(item.quantity),
+        }));
+
+        setCartItems(sanitized);
       }
     } catch (error) {
       console.error("Error loading cart from localStorage:", error);
@@ -44,22 +57,29 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Add to cart (ensure price is number)
   const addToCart = (item: Omit<CartItem, "quantity">) => {
+    const numericPrice = Number(item.price);
+
     setCartItems((prev) => {
       const existing = prev.find((p) => p.name === item.name);
       if (existing) {
         return prev.map((p) =>
-          p.name === item.name ? { ...p, quantity: p.quantity + 1 } : p
+          p.name === item.name
+            ? { ...p, quantity: p.quantity + 1 }
+            : p
         );
       }
-      return [...prev, { ...item, quantity: 1 }];
+      return [...prev, { ...item, price: numericPrice, quantity: 1 }];
     });
   };
 
+  // Remove item by name
   const removeFromCart = (name: string) => {
     setCartItems((prev) => prev.filter((item) => item.name !== name));
   };
 
+  // Update quantity
   const updateQuantity = (name: string, newQty: number) => {
     if (newQty < 1) {
       removeFromCart(name);
@@ -72,6 +92,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  // Clear all items
   const clearCart = () => {
     setCartItems([]);
   };
@@ -85,6 +106,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+// Hook to use cart
 export const useCart = (): CartContextType => {
   const context = useContext(CartContext);
   if (!context) {
