@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/lib/CartContext";
+import { Trash2 } from "lucide-react";
 
 export default function CartMenu() {
   const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -12,13 +13,24 @@ export default function CartMenu() {
   );
 
   const handleCheckout = () => {
-    // Placeholder for checkout logic
     alert("Proceeding to checkout...");
   };
 
   return (
     <aside className="bg-white shadow rounded p-4 w-full max-w-xs border border-gray-200 flex flex-col">
-      <h2 className="text-lg font-semibold mb-3">🛍️ Cart</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-semibold">🛍️ Cart</h2>
+        {cartItems.length > 0 && (
+          <button
+            onClick={clearCart}
+            aria-label="Clear cart"
+            title="Clear cart"
+            className="text-gray-400 hover:text-red-600 transition-colors"
+          >
+            <Trash2 size={20} />
+          </button>
+        )}
+      </div>
 
       {cartItems.length === 0 ? (
         <p className="text-gray-500 flex-grow">Cart is empty.</p>
@@ -67,14 +79,6 @@ export default function CartMenu() {
             aria-label="Proceed to checkout"
           >
             Checkout
-          </button>
-
-          <button
-            onClick={() => clearCart()}
-            className="mt-3 w-full py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-semibold"
-            aria-label="Clear cart"
-          >
-            Clear Cart
           </button>
         </>
       )}
