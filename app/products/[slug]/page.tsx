@@ -1,4 +1,8 @@
+
+"use client";
+
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 
 const Storyblok = new StoryblokClient({
@@ -14,12 +18,10 @@ export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
 
-  // Filter only products paths
   const productSlugs = Object.keys(links)
     .map((key) => links[key].slug)
     .filter((slug: string) => slug.startsWith("products/"))
     .map((slug: string) => {
-      // remove "products/" prefix
       const productSlug = slug.replace(/^products\//, "");
       return { slug: productSlug };
     });
@@ -47,18 +49,22 @@ export default async function ProductPage({ params }: Props) {
       <main style={{ padding: "2rem", fontFamily: "'Inter', sans-serif" }}>
         <h1>{product.name || slug}</h1>
         <p>{product.description}</p>
-        {/* Render product image */}
+
         {product.image?.filename && (
-          <img
+          <Image
             src={product.image.filename}
             alt={product.name || "Product Image"}
-            style={{ maxWidth: "100%", borderRadius: "12px", marginTop: "1rem" }}
+            width={800}
+            height={600}
+            style={{ borderRadius: "12px", marginTop: "1rem" }}
+            priority
           />
         )}
+
         {/* Add more product details here */}
       </main>
     );
-  } catch (e) {
+  } catch {
     notFound();
   }
 }
