@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
+import StoryblokClient from "storyblok-js-client";
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -22,12 +22,8 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
+export default async function ProductPage(props: any) {
+  const { slug } = props.params;
 
   try {
     const res = await Storyblok.get(`cdn/stories/products/${slug}`, {
@@ -57,12 +53,9 @@ export default async function ProductPage({
             priority
           />
         )}
-
-        {/* More product details here */}
       </main>
     );
   } catch {
     notFound();
   }
 }
-
