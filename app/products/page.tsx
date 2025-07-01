@@ -84,7 +84,12 @@ export default function Page() {
     <>
       <main className="product-grid">
         {products.map((product, i) => (
-          <article key={i} className="card" tabIndex={0} aria-label={product.name || "Product"}>
+          <article
+            key={i}
+            className="card"
+            tabIndex={0}
+            aria-label={product.name || "Product"}
+          >
             <div className="image-wrapper">
               <Image
                 src={product.image?.filename || fallbackImage}
@@ -108,8 +113,7 @@ export default function Page() {
               </p>
 
               <p className="card-price">
-                Price:{" "}
-                <span>${product.price ?? "N/A"}</span>
+                Price: <span>${product.price ?? "N/A"}</span>
               </p>
 
               <button
@@ -144,17 +148,17 @@ export default function Page() {
         .card {
           background: #ffffff;
           border-radius: 16px;
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
           display: flex;
           flex-direction: column;
-          transition: box-shadow 0.3s ease, transform 0.3s ease;
           outline-offset: 4px;
-          cursor: pointer;
+          cursor: default;
+          transition: box-shadow 0.2s ease;
         }
-        .card:focus,
-        .card:hover {
-          box-shadow: 0 12px 32px rgba(59, 130, 246, 0.3);
-          transform: translateY(-4px);
+
+        .card:focus {
+          box-shadow: 0 0 0 3px #2563eb99;
+          outline: none;
         }
 
         .image-wrapper {
@@ -218,16 +222,14 @@ export default function Page() {
           border-radius: 10px;
           box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
           cursor: pointer;
-          transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
           user-select: none;
+          transition: background 0.3s ease, box-shadow 0.3s ease;
         }
         .btn-add-cart:hover {
           background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 100%);
           box-shadow: 0 6px 18px rgba(37, 99, 235, 0.65);
-          transform: translateY(-2px);
         }
         .btn-add-cart:active {
-          transform: translateY(0);
           box-shadow: 0 3px 9px rgba(37, 99, 235, 0.5);
         }
         .btn-add-cart.added {
