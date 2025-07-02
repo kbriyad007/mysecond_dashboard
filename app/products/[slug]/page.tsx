@@ -16,7 +16,7 @@ export async function generateStaticParams() {
     .map((key) => links[key].slug)
     .filter((slug: string) => slug.startsWith("products/"))
     .map((slug: string) => {
-      const productSlug = slug.replace(/^products\//, "").trim();
+      const productSlug = slug.replace("products/", "").trim();
       return { slug: productSlug };
     });
 
@@ -96,7 +96,7 @@ export default async function ProductPage({ params }: any) {
       </main>
     );
   } catch (error) {
-    console.error("Failed to fetch product from Storyblok:", error);
+    console.error("❌ Failed to fetch product:", error);
     notFound();
   }
 }
