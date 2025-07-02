@@ -8,7 +8,7 @@ interface MyProduct {
   component: string;
   name: string;
   description: string;
-  image?: { filename: string };
+  image?: { filename: string } | string;
   price?: number | string;
   slug?: string;
   _version?: number;
@@ -20,7 +20,6 @@ interface StoryblokStory {
   _version?: number;
 }
 
-// Slugify fallback
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -56,8 +55,8 @@ export default function Page() {
         const stories: StoryblokStory[] = data.stories || [];
 
         const productList = stories.map((story) => {
-          console.log("🟨 Story content:", story.content); // 👈 full product
-          console.log("🟨 Image path:", story.content.image?.filename); // 👈 image path
+          console.log("🟨 Story content:", story.content);
+          console.log("🟨 Image field:", story.content.image);
           return {
             ...story.content,
             slug: story.slug,
@@ -108,13 +107,25 @@ export default function Page() {
       <main className="product-grid">
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
-          const imageUrl = product.image?.filename
-            ? `https://a.storyblok.com${product.image.filename}?v=${product._version || "1"}`
-            : null;
+
+          // 🟩 Dynamic image handler
+          let imageUrl: string | null = null;
+          if (typeof product.image === "string") {
+            imageUrl = product.image.startsWith("//")
+              ? `https:${product.image}`
+              : product.image;
+          } else if (
+            typeof product.image === "object" &&
+            product.image?.filename
+          ) {
+            imageUrl = `https://a.storyblok.com${product.image.filename}?v=${
+              product._version || "1"
+            }`;
+          }
 
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a className="card" aria-label={`View details for ${product.name || "product"}`}>
+              <a className="card" aria-label={`View ${product.name}`}>
                 <div className="image-wrapper">
                   {imageUrl ? (
                     <Image
@@ -129,23 +140,16 @@ export default function Page() {
                       draggable={false}
                     />
                   ) : (
-                    <div className="no-image-placeholder">No Image Available</div>
+                    <div className="no-image-placeholder">No image available</div>
                   )}
                 </div>
 
                 <div className="card-body">
-                  <h2 title={product.name} className="card-title">
-                    {product.name || "Unnamed Product"}
-                  </h2>
-
-                  <p title={product.description} className="card-description">
-                    {product.description}
-                  </p>
-
+                  <h2 className="card-title">{product.name || "Unnamed Product"}</h2>
+                  <p className="card-description">{product.description}</p>
                   <p className="card-price">
                     Price: <span>${product.price ?? "N/A"}</span>
                   </p>
-
                   <button
                     onClick={(e) => {
                       e.preventDefault();
@@ -155,8 +159,9 @@ export default function Page() {
                   >
                     🛒 Add to Cart
                   </button>
-
-                  {addedToCartIndex === i && <p className="added-msg">✔️ Added!</p>}
+                  {addedToCartIndex === i && (
+                    <p className="added-msg">✔️ Added!</p>
+                  )}
                 </div>
               </a>
             </Link>
@@ -173,8 +178,6 @@ export default function Page() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 1.5rem 2rem;
-          justify-content: center;
-          align-content: start;
         }
 
         .card {
