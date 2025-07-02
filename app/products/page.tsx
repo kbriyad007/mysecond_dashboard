@@ -10,7 +10,8 @@ interface MyProduct {
   description: string;
   image?: { filename: string };
   price?: number | string;
-  slug?: string; // added for linking
+  slug?: string;
+  _version?: number; // optional version for cache busting
 }
 
 interface StoryblokStory {
@@ -55,6 +56,7 @@ export default function Page() {
         const productList = stories.map((story) => ({
           ...story.content,
           slug: story.slug,
+          _version: story._version, // get version for cache busting if available
         }));
         setProducts(productList);
       })
@@ -103,6 +105,11 @@ export default function Page() {
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
 
+          // Construct full image URL with optional cache busting
+          const imageUrl = product.image?.filename
+            ? `https://a.storyblok.com/${product.image.filename}?v=${product._version || "1"}`
+            : fallbackImage;
+
           return (
             <Link
               key={slug}
@@ -110,10 +117,13 @@ export default function Page() {
               passHref
               legacyBehavior
             >
-              <a className="card" aria-label={`View details for ${product.name || "product"}`}>
+              <a
+                className="card"
+                aria-label={`View details for ${product.name || "product"}`}
+              >
                 <div className="image-wrapper">
                   <Image
-                    src={product.image?.filename || fallbackImage}
+                    src={imageUrl}
                     alt={product.name || "Product image"}
                     width={320}
                     height={200}
@@ -139,7 +149,7 @@ export default function Page() {
 
                   <button
                     onClick={(e) => {
-                      e.preventDefault(); // prevent link jump
+                      e.preventDefault();
                       handleAddToCart(i);
                     }}
                     className={`btn-add-cart ${addedToCartIndex === i ? "added" : ""}`}
@@ -237,4 +247,3 @@ export default function Page() {
     </>
   );
 }
-
