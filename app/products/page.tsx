@@ -39,7 +39,7 @@ export default function Page() {
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
     if (!token) {
-      setErrorMsg("❌ Storyblok token not found.");
+      setErrorMsg("❌ Storyblok token not found in env.");
       setLoading(false);
       return;
     }
@@ -103,42 +103,49 @@ export default function Page() {
 
   return (
     <>
-      <main className="product-grid">
+      <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4 py-8 bg-gray-50">
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
           const imageUrl = getImageUrl(product.image, product._version);
 
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a className="card">
-                <div className="image-container">
+              <a className="bg-white rounded-xl shadow-sm border border-gray-200 hover:border-blue-500 transition-colors overflow-hidden">
+                <div className="relative w-full h-44 bg-gray-100">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
                       alt={product.name || "Product image"}
                       fill
-                      style={{ objectFit: "cover", borderRadius: "1rem 1rem 0 0" }}
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="image"
-                      priority={i === 0}
+                      className="object-cover"
+                      unoptimized
                     />
                   ) : (
-                    <div className="no-image">No image available</div>
+                    <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                      No image available
+                    </div>
                   )}
                 </div>
 
-                <div className="card-body">
-                  <h2 className="card-title">{product.name}</h2>
-                  <p className="card-description">{product.description}</p>
-                  <p className="card-price">
+                <div className="p-3 text-sm">
+                  <h2 className="font-medium text-gray-800 truncate">
+                    {product.name || "Unnamed Product"}
+                  </h2>
+                  <p className="text-gray-500 line-clamp-2 mt-1">
+                    {product.description}
+                  </p>
+                  <p className="text-green-600 font-semibold mt-2">
                     ${product.price ?? "N/A"}
                   </p>
+
                   <button
-                    className={`add-button ${addedToCartIndex === i ? "added" : ""}`}
                     onClick={(e) => {
                       e.preventDefault();
                       handleAddToCart(i);
                     }}
+                    className={`w-full mt-3 text-xs font-medium px-3 py-2 rounded-md text-white ${
+                      addedToCartIndex === i ? "bg-green-500" : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                   >
                     {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
                   </button>
@@ -148,97 +155,6 @@ export default function Page() {
           );
         })}
       </main>
-
-      <style jsx>{`
-        .product-grid {
-          padding: 2rem;
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-          gap: 2rem;
-          background: #f8fafc;
-          font-family: 'Inter', sans-serif;
-        }
-
-        .card {
-          background: white;
-          border-radius: 1rem;
-          overflow: hidden;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-          text-decoration: none;
-          color: inherit;
-          display: flex;
-          flex-direction: column;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
-        }
-
-        .image-container {
-          position: relative;
-          width: 100%;
-          height: 200px;
-          background: #e2e8f0;
-        }
-
-        .card-body {
-          padding: 1.25rem;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .card-title {
-          font-size: 1.1rem;
-          font-weight: 600;
-          color: #0f172a;
-          margin-bottom: 0.5rem;
-        }
-
-        .card-description {
-          font-size: 0.9rem;
-          color: #64748b;
-          margin-bottom: 1rem;
-          flex-grow: 1;
-        }
-
-        .card-price {
-          font-size: 1rem;
-          font-weight: 600;
-          color: #10b981;
-          margin-bottom: 1rem;
-        }
-
-        .add-button {
-          background: linear-gradient(to right, #3b82f6, #2563eb);
-          color: white;
-          border: none;
-          border-radius: 8px;
-          padding: 0.6rem 0;
-          font-size: 0.9rem;
-          font-weight: 600;
-          cursor: pointer;
-          transition: background 0.3s ease;
-        }
-
-        .add-button:hover {
-          background: linear-gradient(to right, #2563eb, #1d4ed8);
-        }
-
-        .add-button.added {
-          background: #22c55e;
-        }
-
-        .no-image {
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #94a3b8;
-          font-size: 0.85rem;
-        }
-      `}</style>
     </>
   );
 }
