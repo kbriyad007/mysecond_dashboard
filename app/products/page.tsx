@@ -11,7 +11,7 @@ interface MyProduct {
   image?: { filename: string };
   price?: number | string;
   slug?: string;
-  _version?: number; // optional version for cache busting
+  _version?: number;
 }
 
 interface StoryblokStory {
@@ -20,6 +20,7 @@ interface StoryblokStory {
   _version?: number;
 }
 
+// Slugify fallback
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -39,7 +40,7 @@ export default function Page() {
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
     if (!token) {
-      setErrorMsg("❌ Storyblok token not found in environment variables.");
+      setErrorMsg("❌ Storyblok token not found in env.");
       setLoading(false);
       return;
     }
@@ -53,11 +54,17 @@ export default function Page() {
       })
       .then((data) => {
         const stories: StoryblokStory[] = data.stories || [];
-        const productList = stories.map((story) => ({
-          ...story.content,
-          slug: story.slug,
-          _version: story._version,
-        }));
+
+        const productList = stories.map((story) => {
+          console.log("🟨 Story content:", story.content); // 👈 full product
+          console.log("🟨 Image path:", story.content.image?.filename); // 👈 image path
+          return {
+            ...story.content,
+            slug: story.slug,
+            _version: story._version,
+          };
+        });
+
         setProducts(productList);
       })
       .catch((err) => setErrorMsg(err.message))
@@ -101,21 +108,21 @@ export default function Page() {
       <main className="product-grid">
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
+          const imageUrl = product.image?.filename
+            ? `https://a.storyblok.com${product.image.filename}?v=${product._version || "1"}`
+            : null;
 
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a
-                className="card"
-                aria-label={`View details for ${product.name || "product"}`}
-              >
+              <a className="card" aria-label={`View details for ${product.name || "product"}`}>
                 <div className="image-wrapper">
-                  {product.image?.filename ? (
+                  {imageUrl ? (
                     <Image
-                      src={`https://a.storyblok.com/${product.image.filename}?v=${product._version || "1"}`}
+                      src={imageUrl}
                       alt={product.name || "Product image"}
                       width={320}
                       height={200}
-                      unoptimized // disables Next.js image caching for faster dev updates
+                      unoptimized
                       style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
                       quality={80}
                       priority={i === 0}
@@ -181,17 +188,18 @@ export default function Page() {
         }
 
         .image-wrapper {
-          position: relative;
           width: 100%;
           height: 200px;
-          border-radius: 12px 12px 0 0;
-          overflow: hidden;
-          background: #f0f0f0;
           display: flex;
           justify-content: center;
           align-items: center;
-          color: #999;
+          background: #f3f4f6;
+          border-radius: 12px 12px 0 0;
+        }
+
+        .no-image-placeholder {
           font-size: 0.9rem;
+          color: #6b7280;
           font-style: italic;
         }
 
