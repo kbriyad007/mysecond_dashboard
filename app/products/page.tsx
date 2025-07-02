@@ -5,11 +5,28 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface MyProduct {
+  component: string;
   name: string;
   description: string;
-  price?: number | string;
   image?: { filename: string };
+  price?: number | string;
   slug?: string; // added for linking
+}
+
+interface StoryblokStory {
+  slug: string;
+  content: MyProduct;
+}
+
+// Slugify helper for fallback URL creation
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w\-]+/g, "")
+    .replace(/\-\-+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 }
 
 export default function Page() {
@@ -20,23 +37,22 @@ export default function Page() {
 
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
-
     if (!token) {
-      setErrorMsg("❌ Storyblok token not found in env variables.");
+      setErrorMsg("❌ Storyblok token not found in environment variables.");
       setLoading(false);
       return;
     }
 
-    const url = `https://api.storyblok.com/v2/cdn/stories?starts_with=products/&version=draft&token=${token}`;
+    const url = `https://api.storyblok.com/v2/cdn/stories?starts_with=product&version=draft&token=${token}`;
 
     fetch(url)
       .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
       .then((data) => {
-        const stories = data.stories || [];
-        const productList = stories.map((story: any) => ({
+        const stories: StoryblokStory[] = data.stories || [];
+        const productList = stories.map((story) => ({
           ...story.content,
           slug: story.slug,
         }));
@@ -85,10 +101,16 @@ export default function Page() {
     <>
       <main className="product-grid">
         {products.map((product, i) => {
-          const slug = product.slug || `product-${i}`;
+          const slug = product.slug || slugify(product.name || `product-${i}`);
+
           return (
-            <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a className="card" aria-label={`View details for ${product.name}`}>
+            <Link
+              key={slug}
+              href={`/products/${slug}`}
+              passHref
+              legacyBehavior
+            >
+              <a className="card" aria-label={`View details for ${product.name || "product"}`}>
                 <div className="image-wrapper">
                   <Image
                     src={product.image?.filename || fallbackImage}
@@ -101,22 +123,33 @@ export default function Page() {
                     draggable={false}
                   />
                 </div>
+
                 <div className="card-body">
-                  <h2 className="card-title">{product.name || "Unnamed Product"}</h2>
-                  <p className="card-description">{product.description}</p>
+                  <h2 title={product.name} className="card-title">
+                    {product.name || "Unnamed Product"}
+                  </h2>
+
+                  <p title={product.description} className="card-description">
+                    {product.description}
+                  </p>
+
                   <p className="card-price">
                     Price: <span>${product.price ?? "N/A"}</span>
                   </p>
+
                   <button
                     onClick={(e) => {
-                      e.preventDefault();
+                      e.preventDefault(); // prevent link jump
                       handleAddToCart(i);
                     }}
                     className={`btn-add-cart ${addedToCartIndex === i ? "added" : ""}`}
                   >
                     🛒 Add to Cart
                   </button>
-                  {addedToCartIndex === i && <p className="added-msg">✔️ Added!</p>}
+
+                  {addedToCartIndex === i && (
+                    <p className="added-msg">✔️ Added!</p>
+                  )}
                 </div>
               </a>
             </Link>
@@ -133,9 +166,12 @@ export default function Page() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 1.5rem 2rem;
+          justify-content: center;
+          align-content: start;
         }
+
         .card {
-          background: #fff;
+          background: #ffffff;
           border-radius: 16px;
           box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
           display: flex;
@@ -143,51 +179,62 @@ export default function Page() {
           text-decoration: none;
           color: inherit;
         }
-        .image-wrapper {
-          border-radius: 16px 16px 0 0;
-          overflow: hidden;
-        }
+
         .card-body {
-          padding: 1.25rem 1.5rem;
+          padding: 1.25rem 1.5rem 1.5rem;
+          display: flex;
+          flex-direction: column;
         }
+
         .card-title {
           font-weight: 700;
           font-size: 1.15rem;
           color: #0f172a;
+          margin-bottom: 0.5rem;
         }
+
         .card-description {
           font-size: 0.875rem;
           color: #475569;
-          margin: 0.5rem 0;
+          flex-grow: 1;
+          margin-bottom: 1rem;
         }
+
         .card-price {
           font-weight: 600;
+          font-size: 1rem;
           color: #2563eb;
+          margin-bottom: 1.2rem;
         }
+
         .card-price span {
           color: #16a34a;
           font-weight: 700;
         }
+
         .btn-add-cart {
-          margin-top: 1rem;
-          padding: 0.65rem;
+          padding: 0.65rem 0;
           background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
-          color: white;
+          color: #ffffff;
           font-weight: 600;
+          font-size: 0.9rem;
           border: none;
           border-radius: 10px;
           cursor: pointer;
         }
+
         .btn-add-cart.added {
           background-color: #22c55e;
         }
+
         .added-msg {
           margin-top: 0.5rem;
           font-size: 0.8rem;
-          font-weight: 600;
           color: #22c55e;
+          text-align: center;
         }
       `}</style>
     </>
   );
 }
+
