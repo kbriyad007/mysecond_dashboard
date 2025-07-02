@@ -17,6 +17,7 @@ interface MyProduct {
 interface StoryblokStory {
   slug: string;
   content: MyProduct;
+  _version?: number; // Added this line
 }
 
 // Slugify helper for fallback URL creation
@@ -56,7 +57,7 @@ export default function Page() {
         const productList = stories.map((story) => ({
           ...story.content,
           slug: story.slug,
-          _version: story._version, // get version for cache busting if available
+          _version: story._version, // now safe to use
         }));
         setProducts(productList);
       })
