@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
@@ -26,8 +25,7 @@ export async function generateStaticParams() {
 
 export default async function ProductPage({ params }: any) {
   let { slug } = params;
-
-  slug = slug.trim(); // just in case
+  slug = slug.trim();
 
   try {
     const res = await Storyblok.get(
@@ -39,26 +37,61 @@ export default async function ProductPage({ params }: any) {
 
     const story = res.data.story;
 
-    if (!story) {
-      notFound();
-    }
+    if (!story) notFound();
 
     const product = story.content;
 
     return (
-      <main style={{ padding: "2rem", fontFamily: "'Inter', sans-serif" }}>
-        <h1>{product.name || slug}</h1>
-        <p>{product.description}</p>
+      <main
+        style={{
+          maxWidth: "768px",
+          margin: "0 auto",
+          padding: "2rem",
+          fontFamily: "'Inter', sans-serif",
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "2rem",
+            fontWeight: 700,
+            marginBottom: "1rem",
+          }}
+        >
+          {product.name || slug}
+        </h1>
+
+        <p
+          style={{
+            fontSize: "1rem",
+            color: "#475569",
+            marginBottom: "1.5rem",
+            lineHeight: 1.6,
+          }}
+        >
+          {product.description}
+        </p>
 
         {product.image?.filename && (
           <Image
             src={product.image.filename}
             alt={product.name || "Product Image"}
             width={800}
-            height={600}
-            style={{ borderRadius: "12px", marginTop: "1rem" }}
+            height={500}
+            style={{ borderRadius: "12px", marginBottom: "2rem" }}
             priority
           />
+        )}
+
+        {product.price && (
+          <p
+            style={{
+              fontSize: "1.25rem",
+              fontWeight: "600",
+              color: "#16a34a",
+            }}
+          >
+            💰 Price: ${product.price}
+          </p>
         )}
       </main>
     );
