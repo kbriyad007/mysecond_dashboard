@@ -39,7 +39,7 @@ export default function Page() {
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
     if (!token) {
-      setErrorMsg("❌ Storyblok token not found in env.");
+      setErrorMsg("❌ Storyblok token not found.");
       setLoading(false);
       return;
     }
@@ -53,17 +53,11 @@ export default function Page() {
       })
       .then((data) => {
         const stories: StoryblokStory[] = data.stories || [];
-
-        const productList = stories.map((story) => {
-          console.log("🟨 Story content:", story.content);
-          console.log("🟨 Image field:", story.content.image);
-          return {
-            ...story.content,
-            slug: story.slug,
-            _version: story._version,
-          };
-        });
-
+        const productList = stories.map((story) => ({
+          ...story.content,
+          slug: story.slug,
+          _version: story._version,
+        }));
         setProducts(productList);
       })
       .catch((err) => setErrorMsg(err.message))
@@ -75,14 +69,23 @@ export default function Page() {
     setTimeout(() => setAddedToCartIndex(null), 2000);
   };
 
+  const getImageUrl = (image: MyProduct["image"], version?: number): string | null => {
+    if (typeof image === "string") {
+      return image.startsWith("//") ? `https:${image}` : image;
+    } else if (typeof image === "object" && image?.filename) {
+      return `https://a.storyblok.com${image.filename}?v=${version || "1"}`;
+    }
+    return null;
+  };
+
   if (loading || errorMsg || products.length === 0) {
     return (
       <div className="status-message">
         {errorMsg
           ? `❌ Error: ${errorMsg}`
           : products.length === 0
-          ? "No products available."
-          : "Loading products..."}
+          ? "No products found."
+          : "Loading..."}
         <style jsx>{`
           .status-message {
             height: 100vh;
@@ -90,12 +93,8 @@ export default function Page() {
             justify-content: center;
             align-items: center;
             font-size: 1rem;
-            font-family: "Inter", sans-serif;
-            background-color: #f9fafb;
-            color: ${errorMsg ? "#dc2626" : "#64748b"};
-            padding: 1rem;
-            text-align: center;
-            user-select: none;
+            font-family: 'Inter', sans-serif;
+            color: #475569;
           }
         `}</style>
       </div>
@@ -107,61 +106,42 @@ export default function Page() {
       <main className="product-grid">
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
-
-          // 🟩 Dynamic image handler
-          let imageUrl: string | null = null;
-          if (typeof product.image === "string") {
-            imageUrl = product.image.startsWith("//")
-              ? `https:${product.image}`
-              : product.image;
-          } else if (
-            typeof product.image === "object" &&
-            product.image?.filename
-          ) {
-            imageUrl = `https://a.storyblok.com${product.image.filename}?v=${
-              product._version || "1"
-            }`;
-          }
+          const imageUrl = getImageUrl(product.image, product._version);
 
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a className="card" aria-label={`View ${product.name}`}>
-                <div className="image-wrapper">
+              <a className="card">
+                <div className="image-container">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
                       alt={product.name || "Product image"}
-                      width={320}
-                      height={200}
-                      unoptimized
-                      style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
-                      quality={80}
+                      fill
+                      style={{ objectFit: "cover", borderRadius: "1rem 1rem 0 0" }}
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="image"
                       priority={i === 0}
-                      draggable={false}
                     />
                   ) : (
-                    <div className="no-image-placeholder">No image available</div>
+                    <div className="no-image">No image available</div>
                   )}
                 </div>
 
                 <div className="card-body">
-                  <h2 className="card-title">{product.name || "Unnamed Product"}</h2>
+                  <h2 className="card-title">{product.name}</h2>
                   <p className="card-description">{product.description}</p>
                   <p className="card-price">
-                    Price: <span>${product.price ?? "N/A"}</span>
+                    ${product.price ?? "N/A"}
                   </p>
                   <button
+                    className={`add-button ${addedToCartIndex === i ? "added" : ""}`}
                     onClick={(e) => {
                       e.preventDefault();
                       handleAddToCart(i);
                     }}
-                    className={`btn-add-cart ${addedToCartIndex === i ? "added" : ""}`}
                   >
-                    🛒 Add to Cart
+                    {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
                   </button>
-                  {addedToCartIndex === i && (
-                    <p className="added-msg">✔️ Added!</p>
-                  )}
                 </div>
               </a>
             </Link>
@@ -171,93 +151,92 @@ export default function Page() {
 
       <style jsx>{`
         .product-grid {
-          min-height: 100vh;
-          padding: 2rem 1.5rem;
-          background: linear-gradient(90deg, #f9fafb, #e4e7ec);
-          font-family: "Inter", sans-serif;
+          padding: 2rem;
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 1.5rem 2rem;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 2rem;
+          background: #f8fafc;
+          font-family: 'Inter', sans-serif;
         }
 
         .card {
-          background: #ffffff;
-          border-radius: 16px;
-          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-          display: flex;
-          flex-direction: column;
+          background: white;
+          border-radius: 1rem;
+          overflow: hidden;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
           text-decoration: none;
           color: inherit;
+          display: flex;
+          flex-direction: column;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .image-wrapper {
+        .card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-container {
+          position: relative;
           width: 100%;
           height: 200px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: #f3f4f6;
-          border-radius: 12px 12px 0 0;
-        }
-
-        .no-image-placeholder {
-          font-size: 0.9rem;
-          color: #6b7280;
-          font-style: italic;
+          background: #e2e8f0;
         }
 
         .card-body {
-          padding: 1.25rem 1.5rem 1.5rem;
+          padding: 1.25rem;
           display: flex;
           flex-direction: column;
         }
 
         .card-title {
-          font-weight: 700;
-          font-size: 1.15rem;
+          font-size: 1.1rem;
+          font-weight: 600;
           color: #0f172a;
           margin-bottom: 0.5rem;
         }
 
         .card-description {
-          font-size: 0.875rem;
-          color: #475569;
-          flex-grow: 1;
+          font-size: 0.9rem;
+          color: #64748b;
           margin-bottom: 1rem;
+          flex-grow: 1;
         }
 
         .card-price {
-          font-weight: 600;
           font-size: 1rem;
-          color: #2563eb;
-          margin-bottom: 1.2rem;
-        }
-
-        .card-price span {
-          color: #16a34a;
-          font-weight: 700;
-        }
-
-        .btn-add-cart {
-          padding: 0.65rem 0;
-          background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
-          color: #ffffff;
           font-weight: 600;
-          font-size: 0.9rem;
+          color: #10b981;
+          margin-bottom: 1rem;
+        }
+
+        .add-button {
+          background: linear-gradient(to right, #3b82f6, #2563eb);
+          color: white;
           border: none;
-          border-radius: 10px;
+          border-radius: 8px;
+          padding: 0.6rem 0;
+          font-size: 0.9rem;
+          font-weight: 600;
           cursor: pointer;
+          transition: background 0.3s ease;
         }
 
-        .btn-add-cart.added {
-          background-color: #22c55e;
+        .add-button:hover {
+          background: linear-gradient(to right, #2563eb, #1d4ed8);
         }
 
-        .added-msg {
-          margin-top: 0.5rem;
-          font-size: 0.8rem;
-          color: #22c55e;
-          text-align: center;
+        .add-button.added {
+          background: #22c55e;
+        }
+
+        .no-image {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #94a3b8;
+          font-size: 0.85rem;
         }
       `}</style>
     </>
