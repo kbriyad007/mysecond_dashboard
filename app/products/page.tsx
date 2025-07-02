@@ -17,10 +17,9 @@ interface MyProduct {
 interface StoryblokStory {
   slug: string;
   content: MyProduct;
-  _version?: number; // Added this line
+  _version?: number;
 }
 
-// Slugify helper for fallback URL creation
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -57,16 +56,13 @@ export default function Page() {
         const productList = stories.map((story) => ({
           ...story.content,
           slug: story.slug,
-          _version: story._version, // now safe to use
+          _version: story._version,
         }));
         setProducts(productList);
       })
       .catch((err) => setErrorMsg(err.message))
       .finally(() => setLoading(false));
   }, []);
-
-  const fallbackImage =
-    "https://a.storyblok.com/f/285405591159825/4032x2688/ca2804d8c3/image-couple-relaxing-tropical-beach-sunset-hotel-vacation-tourism.jpg";
 
   const handleAddToCart = (index: number) => {
     setAddedToCartIndex(index);
@@ -106,33 +102,28 @@ export default function Page() {
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
 
-          // Construct full image URL with optional cache busting
-          const imageUrl = product.image?.filename
-            ? `https://a.storyblok.com/${product.image.filename}?v=${product._version || "1"}`
-            : fallbackImage;
-
           return (
-            <Link
-              key={slug}
-              href={`/products/${slug}`}
-              passHref
-              legacyBehavior
-            >
+            <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
               <a
                 className="card"
                 aria-label={`View details for ${product.name || "product"}`}
               >
                 <div className="image-wrapper">
-                  <Image
-                    src={imageUrl}
-                    alt={product.name || "Product image"}
-                    width={320}
-                    height={200}
-                    style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
-                    quality={80}
-                    priority={i === 0}
-                    draggable={false}
-                  />
+                  {product.image?.filename ? (
+                    <Image
+                      src={`https://a.storyblok.com/${product.image.filename}?v=${product._version || "1"}`}
+                      alt={product.name || "Product image"}
+                      width={320}
+                      height={200}
+                      unoptimized // disables Next.js image caching for faster dev updates
+                      style={{ objectFit: "cover", borderRadius: "12px 12px 0 0" }}
+                      quality={80}
+                      priority={i === 0}
+                      draggable={false}
+                    />
+                  ) : (
+                    <div className="no-image-placeholder">No Image Available</div>
+                  )}
                 </div>
 
                 <div className="card-body">
@@ -158,9 +149,7 @@ export default function Page() {
                     🛒 Add to Cart
                   </button>
 
-                  {addedToCartIndex === i && (
-                    <p className="added-msg">✔️ Added!</p>
-                  )}
+                  {addedToCartIndex === i && <p className="added-msg">✔️ Added!</p>}
                 </div>
               </a>
             </Link>
@@ -189,6 +178,21 @@ export default function Page() {
           flex-direction: column;
           text-decoration: none;
           color: inherit;
+        }
+
+        .image-wrapper {
+          position: relative;
+          width: 100%;
+          height: 200px;
+          border-radius: 12px 12px 0 0;
+          overflow: hidden;
+          background: #f0f0f0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #999;
+          font-size: 0.9rem;
+          font-style: italic;
         }
 
         .card-body {
