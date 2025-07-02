@@ -56,8 +56,8 @@ export default async function ProductPage({ params }: any) {
             style={{
               position: "relative",
               width: "100%",
-              height: "0",
-              paddingBottom: "56.25%",
+              height: 0,
+              paddingBottom: "56.25%", // 16:9 aspect ratio
               borderRadius: "16px",
               overflow: "hidden",
               marginBottom: "2rem",
@@ -117,7 +117,7 @@ export default async function ProductPage({ params }: any) {
           {product.description || "No description available."}
         </p>
 
-        {/* Buy Now / CTA */}
+        {/* Buy Now Button WITHOUT onClick */}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <button
             style={{
@@ -128,11 +128,10 @@ export default async function ProductPage({ params }: any) {
               fontSize: "1rem",
               fontWeight: 600,
               boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-              transition: "background-color 0.3s ease",
-              cursor: "pointer",
+              cursor: "default",
               border: "none",
             }}
-            onClick={() => alert("Buy Now clicked!")}
+            aria-disabled="true"
           >
             🛒 Buy Now
           </button>
