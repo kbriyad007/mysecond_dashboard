@@ -6,8 +6,6 @@ const mockProducts = [
   { slug: 'banana', name: 'Banana', price: 100 },
 ];
 
-// ✅ No custom Props interface
-// ✅ Correct destructuring of `params`
 export default function ProductPage({
   params,
 }: {
@@ -23,4 +21,11 @@ export default function ProductPage({
       <p>Price: ${product.price}</p>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  return [
+    { params: { slug: 'orange' } },
+    { params: { slug: 'banana' } },
+  ];
 }
