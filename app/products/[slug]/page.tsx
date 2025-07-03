@@ -1,4 +1,5 @@
 // app/products/[slug]/page.tsx
+
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -16,18 +17,30 @@ interface MyProduct {
   Price?: number | string;
 }
 
+interface StoryblokStory {
+  slug: string;
+  content: MyProduct;
+  _version?: number;
+}
+
 export async function generateStaticParams() {
   const res = await storyblok.get("cdn/stories", {
     starts_with: "product",
     version: "draft",
   });
 
-  return res.data.stories.map((story: any) => ({
+  const stories: StoryblokStory[] = res.data.stories;
+
+  return stories.map((story) => ({
     slug: story.slug,
   }));
 }
 
-export default async function ProductDetailPage({ params }: { params: { slug: string } }) {
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   try {
     const res = await storyblok.get(`cdn/stories/product/${params.slug}`, {
       version: "draft",
@@ -64,7 +77,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
         </p>
       </main>
     );
-  } catch (err) {
-    return notFound(); // fallback for 404
+  } catch {
+    return notFound(); // don't use `err` since it's unused
   }
 }
