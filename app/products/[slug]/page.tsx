@@ -2,15 +2,13 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
-import ProductDetails from "./ProductDetails"; // client component
+import ProductDetails from "./ProductDetails";
 
-// Initialize Storyblok Client
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// Generate Static Params for Dynamic Routing
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -26,12 +24,13 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// Main Product Page Component
-export default async function ProductPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+interface ProductPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function ProductPage({ params }: ProductPageProps) {
   const slug = params.slug.trim();
 
   try {
@@ -45,7 +44,6 @@ export default async function ProductPage({
 
     const product = story.content;
 
-    // Normalize Price if using capital "Price" in Storyblok
     if (product.Price) {
       product.price = product.Price;
     }
@@ -85,7 +83,6 @@ export default async function ProductPage({
             justifyContent: "center",
           }}
         >
-          {/* Left - Product Image */}
           <div
             style={{
               flex: "1 1 55%",
@@ -124,7 +121,6 @@ export default async function ProductPage({
             )}
           </div>
 
-          {/* Right - Product Info with Quantity and Buy Now */}
           <ProductDetails product={product} />
         </div>
       </main>
