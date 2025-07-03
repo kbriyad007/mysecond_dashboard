@@ -1,15 +1,16 @@
-// app/products/[slug]/page.tsx
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 import ProductDetails from "./ProductDetails"; // client component
 
+// Initialize Storyblok Client
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
+// Generate static paths for all product slugs
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -25,7 +26,7 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// Fix: Explicitly type params inline here to avoid conflicts
+// ✅ Main Product Page
 export default async function ProductPage({
   params,
 }: {
@@ -44,6 +45,7 @@ export default async function ProductPage({
 
     const product = story.content;
 
+    // Normalize Price field from Storyblok (if using "Price")
     if (product.Price) {
       product.price = product.Price;
     }
@@ -83,6 +85,7 @@ export default async function ProductPage({
             justifyContent: "center",
           }}
         >
+          {/* Product Image */}
           <div
             style={{
               flex: "1 1 55%",
@@ -121,6 +124,7 @@ export default async function ProductPage({
             )}
           </div>
 
+          {/* Product Info + Buy Section */}
           <ProductDetails product={product} />
         </div>
       </main>
