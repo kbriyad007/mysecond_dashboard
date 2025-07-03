@@ -1,26 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 import ProductDetails from "./ProductDetails"; // client component
 
-// Define proper types
-interface PageProps {
-  params: { slug: string };
-}
-
-interface Product {
-  name?: string;
-  description?: string;
-  Price?: string | number;
-  image?: { filename: string } | string;
-}
-
+// Setup Storyblok Client
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// Static paths
+// Generate Static Paths
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -36,8 +26,12 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// Server Component
-export default async function ProductPage({ params }: PageProps) {
+// ✅ Product Page Component
+export default async function ProductPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const slug = params.slug.trim();
 
   try {
@@ -49,7 +43,12 @@ export default async function ProductPage({ params }: PageProps) {
     const story = res.data.story;
     if (!story) notFound();
 
-    const product: Product = story.content;
+    const product = story.content;
+
+    // Normalize Price from CMS (Price → price)
+    if (product.Price) {
+      product.price = product.Price;
+    }
 
     const imageUrl =
       typeof product.image === "string"
@@ -86,7 +85,7 @@ export default async function ProductPage({ params }: PageProps) {
             justifyContent: "center",
           }}
         >
-          {/* Image */}
+          {/* Left - Product Image */}
           <div
             style={{
               flex: "1 1 55%",
@@ -125,7 +124,7 @@ export default async function ProductPage({ params }: PageProps) {
             )}
           </div>
 
-          {/* Details */}
+          {/* Right - Product Info with Quantity and Buy Now */}
           <ProductDetails product={product} />
         </div>
       </main>
@@ -135,4 +134,3 @@ export default async function ProductPage({ params }: PageProps) {
     notFound();
   }
 }
-
