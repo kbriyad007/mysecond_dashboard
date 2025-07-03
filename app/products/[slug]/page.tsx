@@ -25,8 +25,12 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// ✅ Product Page
-export default async function Page({ params }: any) {
+// Product Page component with typed params
+export default async function Page({
+  params,
+}: {
+  params: Record<string, string>;
+}) {
   const slug = params.slug.trim();
 
   try {
@@ -40,7 +44,7 @@ export default async function Page({ params }: any) {
 
     const product = story.content;
 
-    // Normalize Price
+    // Normalize Price if needed
     if (product.Price) {
       product.price = product.Price;
     }
@@ -115,17 +119,5 @@ export default async function Page({ params }: any) {
                 }}
               >
                 No image available
-              </div>
-            )}
-          </div>
+              </d
 
-          {/* Product Info Section */}
-          <ProductDetails product={product} />
-        </div>
-      </main>
-    );
-  } catch (error) {
-    console.error("❌ Failed to fetch product:", error);
-    notFound();
-  }
-}
