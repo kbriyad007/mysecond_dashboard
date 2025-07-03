@@ -16,7 +16,7 @@ interface MyProduct {
 
 interface StoryblokStory {
   slug: string;
-  content: MyProduct;  // Use proper type here instead of any
+  content: MyProduct;
   _version?: number;
 }
 
@@ -53,11 +53,23 @@ export default function Page() {
       })
       .then((data) => {
         const stories: StoryblokStory[] = data.stories || [];
-        const productList = stories.map((story) => ({
-          ...story.content,
-          slug: story.slug,
-          _version: story._version,
-        }));
+
+        const productList = stories.map((story) => {
+          const price = (story.content as any).Price; // Map "Price" to lowercase "price"
+          const mappedProduct: MyProduct = {
+            ...story.content,
+            price,
+            slug: story.slug,
+            _version: story._version,
+          };
+
+          console.log(
+            `🟢 Product: ${mappedProduct.name} | Price: ${mappedProduct.price}`
+          );
+
+          return mappedProduct;
+        });
+
         setProducts(productList);
       })
       .catch((err) => setErrorMsg(err.message))
@@ -139,7 +151,9 @@ export default function Page() {
                         handleAddToCart(i);
                       }}
                       className={`w-full text-sm font-medium px-3 py-2 rounded-md text-white ${
-                        addedToCartIndex === i ? "bg-green-500" : "bg-blue-600 hover:bg-blue-700"
+                        addedToCartIndex === i
+                          ? "bg-green-500"
+                          : "bg-blue-600 hover:bg-blue-700"
                       } transition`}
                     >
                       {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
