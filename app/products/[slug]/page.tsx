@@ -1,16 +1,26 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 import ProductDetails from "./ProductDetails"; // client component
 
-// Setup Storyblok Client
+// Define proper types
+interface PageProps {
+  params: { slug: string };
+}
+
+interface Product {
+  name?: string;
+  description?: string;
+  Price?: string | number;
+  image?: { filename: string } | string;
+}
+
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// Generate Static Paths
+// Static paths
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -26,8 +36,8 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// Product Page Component (Server Component)
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+// Server Component
+export default async function ProductPage({ params }: PageProps) {
   const slug = params.slug.trim();
 
   try {
@@ -39,7 +49,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
     const story = res.data.story;
     if (!story) notFound();
 
-    const product = story.content;
+    const product: Product = story.content;
 
     const imageUrl =
       typeof product.image === "string"
@@ -47,8 +57,6 @@ export default async function ProductPage({ params }: { params: { slug: string }
           ? `https:${product.image}`
           : product.image
         : product.image?.filename ?? null;
-
-    const price = product.Price || product.price || "N/A";
 
     return (
       <main
@@ -78,7 +86,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
             justifyContent: "center",
           }}
         >
-          {/* Left - Product Image */}
+          {/* Image */}
           <div
             style={{
               flex: "1 1 55%",
@@ -117,8 +125,8 @@ export default async function ProductPage({ params }: { params: { slug: string }
             )}
           </div>
 
-          {/* Right - Product Info with Quantity and Buy Now */}
-          <ProductDetails product={{ ...product, price }} />
+          {/* Details */}
+          <ProductDetails product={product} />
         </div>
       </main>
     );
@@ -127,3 +135,4 @@ export default async function ProductPage({ params }: { params: { slug: string }
     notFound();
   }
 }
+
