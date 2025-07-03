@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
-import ProductDetails from "./ProductDetails"; // import client component
+import ProductDetails from "./ProductDetails"; // client component
 
 // Setup Storyblok Client
 const Storyblok = new StoryblokClient({
@@ -117,7 +117,7 @@ export default async function ProductPage({ params }: any) {
           </div>
 
           {/* Right - Product Info with Quantity and Buy Now */}
-          <ProductDetails product={product} slug={slug} />
+          <ProductDetails product={product} />
         </div>
       </main>
     );
