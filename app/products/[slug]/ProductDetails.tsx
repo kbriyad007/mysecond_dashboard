@@ -1,16 +1,21 @@
 "use client";
+
 import { useState } from "react";
 
 interface ProductDetailsProps {
   product: {
     name?: string;
-    Price?: number | string;
+    price?: number | string;
     description?: string;
   };
 }
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
+
+  const handleBuy = () => {
+    alert(`🛒 Added ${quantity} ${product.name || "item"}(s) to cart!`);
+  };
 
   return (
     <div
@@ -34,19 +39,6 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         {product.name || "Unnamed Product"}
       </h1>
 
-      {product.Price && (
-        <p
-          style={{
-            fontSize: "1.5rem",
-            fontWeight: 600,
-            color: "#22c55e",
-            margin: 0,
-          }}
-        >
-          💰 ${product.Price}
-        </p>
-      )}
-
       <p
         style={{
           fontSize: "1.125rem",
@@ -57,8 +49,23 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         {product.description || "No description available."}
       </p>
 
+      {/* Price */}
+      {product.price && (
+        <p
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: 600,
+            color: "#22c55e",
+            margin: 0,
+          }}
+        >
+          💰 ${product.price}
+        </p>
+      )}
+
       {/* Quantity and Buy Button */}
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        {/* Quantity */}
         <div
           style={{
             display: "flex",
@@ -75,11 +82,14 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               padding: "0.5rem 0.75rem",
               border: "none",
               cursor: "pointer",
+              fontSize: "1rem",
             }}
           >
-            -
+            −
           </button>
-          <div style={{ padding: "0 1rem" }}>{quantity}</div>
+          <div style={{ padding: "0 1rem", minWidth: "2rem", textAlign: "center" }}>
+            {quantity}
+          </div>
           <button
             onClick={() => setQuantity((q) => q + 1)}
             style={{
@@ -87,13 +97,16 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               padding: "0.5rem 0.75rem",
               border: "none",
               cursor: "pointer",
+              fontSize: "1rem",
             }}
           >
-            +
+            ＋
           </button>
         </div>
 
+        {/* Buy Now */}
         <button
+          onClick={handleBuy}
           style={{
             backgroundColor: "#2563eb",
             color: "#fff",
@@ -105,9 +118,6 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             cursor: "pointer",
             boxShadow: "0 4px 14px rgba(37, 99, 235, 0.3)",
           }}
-          onClick={() =>
-            alert(`🛒 Added ${quantity} item${quantity > 1 ? "s" : ""} to cart!`)
-          }
         >
           🛒 Buy Now
         </button>
