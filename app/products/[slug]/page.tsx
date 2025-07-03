@@ -2,15 +2,15 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
-import ProductDetails from "./ProductDetails";
+import ProductDetails from "./ProductDetails"; // client component
 
-// ✅ Storyblok client setup
+// Initialize Storyblok Client
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// ✅ Static params generation
+// Generate Static Params for Dynamic Routing
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -18,14 +18,15 @@ export async function generateStaticParams() {
   const productSlugs = Object.keys(links)
     .map((key) => links[key].slug)
     .filter((slug: string) => slug.startsWith("products/"))
-    .map((slug: string) => ({
-      slug: slug.replace("products/", "").trim(),
-    }));
+    .map((slug: string) => {
+      const productSlug = slug.replace("products/", "").trim();
+      return { slug: productSlug };
+    });
 
   return productSlugs;
 }
 
-// ✅ Server component: Product Page
+// Main Product Page Component
 export default async function ProductPage({
   params,
 }: {
@@ -44,9 +45,10 @@ export default async function ProductPage({
 
     const product = story.content;
 
-    // Normalize custom fields
-    if (product.Price) product.price = product.Price;
-    if (product.Description) product.description = product.Description;
+    // Normalize Price if using capital "Price" in Storyblok
+    if (product.Price) {
+      product.price = product.Price;
+    }
 
     const imageUrl =
       typeof product.image === "string"
@@ -83,7 +85,7 @@ export default async function ProductPage({
             justifyContent: "center",
           }}
         >
-          {/* Left: Product Image */}
+          {/* Left - Product Image */}
           <div
             style={{
               flex: "1 1 55%",
@@ -122,7 +124,7 @@ export default async function ProductPage({
             )}
           </div>
 
-          {/* Right: Product Details */}
+          {/* Right - Product Info with Quantity and Buy Now */}
           <ProductDetails product={product} />
         </div>
       </main>
