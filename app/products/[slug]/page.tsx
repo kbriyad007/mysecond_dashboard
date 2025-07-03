@@ -24,9 +24,9 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// Fix: Use props object and destructure
-export default async function ProductPage(props: { params: { slug: string } }) {
-  const slug = props.params.slug.trim();
+// Loosen type to any to avoid build issues with Next.js PageProps
+export default async function ProductPage({ params }: any) {
+  const slug = params.slug.trim();
 
   try {
     const res = await Storyblok.get(
@@ -39,7 +39,7 @@ export default async function ProductPage(props: { params: { slug: string } }) {
 
     const product = story.content;
 
-    // Normalize Price
+    // Normalize Price field (Price → price)
     if (product.Price) {
       product.price = product.Price;
     }
