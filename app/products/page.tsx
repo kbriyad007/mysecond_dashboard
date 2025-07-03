@@ -58,13 +58,15 @@ export default function Page() {
           slug: story.slug,
           _version: story._version,
         }));
-        console.log("Fetched products from Storyblok:", productList);
+
+        // Debug log
+        productList.forEach((p) =>
+          console.log("🟢 Product:", p.name, "| Price:", p.price)
+        );
+
         setProducts(productList);
       })
-      .catch((err) => {
-        console.error("❌ Error fetching products:", err);
-        setErrorMsg(err.message);
-      })
+      .catch((err) => setErrorMsg(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -73,7 +75,10 @@ export default function Page() {
     setTimeout(() => setAddedToCartIndex(null), 2000);
   };
 
-  const getImageUrl = (image: MyProduct["image"], version?: number): string | null => {
+  const getImageUrl = (
+    image: MyProduct["image"],
+    version?: number
+  ): string | null => {
     if (typeof image === "string") {
       return image.startsWith("//") ? `https:${image}` : image;
     } else if (typeof image === "object" && image?.filename) {
@@ -122,7 +127,7 @@ export default function Page() {
                   )}
                 </div>
 
-                {/* Content */}
+                {/* Text Info */}
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
                     <h2 className="font-semibold text-gray-800 text-lg truncate">
@@ -135,7 +140,7 @@ export default function Page() {
 
                   <div className="mt-4">
                     <p className="text-green-600 font-semibold mb-2 text-sm">
-                      ${product.price ?? "N/A"}
+                      {product.price ? `💰 $${product.price}` : "Price not available"}
                     </p>
                     <button
                       onClick={(e) => {
