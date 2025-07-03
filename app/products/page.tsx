@@ -10,7 +10,7 @@ interface MyProduct {
   description: string;
   image?: { filename: string } | string;
   price?: number | string;
-  Price?: number | string; // 👈 From Storyblok CMS
+  Price?: number | string; // From Storyblok
   slug?: string;
   _version?: number;
 }
@@ -40,7 +40,7 @@ export default function Page() {
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
     if (!token) {
-      setErrorMsg("❌ Storyblok token not found in env.");
+      setErrorMsg("❌ Storyblok token not found.");
       setLoading(false);
       return;
     }
@@ -49,23 +49,17 @@ export default function Page() {
 
     fetch(url)
       .then((res) => {
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
         return res.json();
       })
       .then((data) => {
         const stories: StoryblokStory[] = data.stories || [];
-        const productList: MyProduct[] = stories.map((story) => {
-          const price = story.content.Price; // 👈 Correct key from Storyblok
-          const mappedProduct: MyProduct = {
-            ...story.content,
-            price,
-            slug: story.slug,
-            _version: story._version,
-          };
-
-          console.log(`🟢 Product: ${mappedProduct.name} | Price: ${mappedProduct.price}`);
-          return mappedProduct;
-        });
+        const productList: MyProduct[] = stories.map((story) => ({
+          ...story.content,
+          price: story.content.Price,
+          slug: story.slug,
+          _version: story._version,
+        }));
         setProducts(productList);
       })
       .catch((err) => setErrorMsg(err.message))
@@ -77,13 +71,10 @@ export default function Page() {
     setTimeout(() => setAddedToCartIndex(null), 2000);
   };
 
-  const getImageUrl = (
-    image: MyProduct["image"],
-    version?: number
-  ): string | null => {
+  const getImageUrl = (image: MyProduct["image"], version?: number): string | null => {
     if (typeof image === "string") {
       return image.startsWith("//") ? `https:${image}` : image;
-    } else if (typeof image === "object" && image?.filename) {
+    } else if (image?.filename) {
       return `https://a.storyblok.com${image.filename}?v=${version || "1"}`;
     }
     return null;
@@ -91,29 +82,26 @@ export default function Page() {
 
   if (loading || errorMsg || products.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-600 font-medium text-center px-4">
-        {errorMsg
-          ? `❌ Error: ${errorMsg}`
-          : products.length === 0
-          ? "No products found."
-          : "Loading..."}
+      <div className="min-h-screen flex items-center justify-center text-gray-600 text-lg font-medium px-4">
+        {errorMsg ? `❌ ${errorMsg}` : "Loading products..."}
       </div>
     );
   }
 
   return (
-    <main className="px-4 py-10 bg-gradient-to-br from-gray-50 to-white min-h-screen">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
+    <main className="px-4 py-12 bg-white min-h-screen">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-10">
         Our Products
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
           const imageUrl = getImageUrl(product.image, product._version);
 
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a className="group bg-white rounded-xl border border-gray-300 hover:border-blue-500 hover:shadow-lg transition-all overflow-hidden flex flex-col">
+              <a className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-none">
                 {/* Image */}
                 <div className="relative w-full pt-[61.8%] bg-gray-100">
                   {imageUrl ? (
@@ -133,8 +121,8 @@ export default function Page() {
 
                 {/* Info */}
                 <div className="p-4 flex flex-col justify-between flex-1">
-                  <div>
-                    <h2 className="font-semibold text-gray-800 text-lg truncate">
+                  <div className="mb-2">
+                    <h2 className="font-semibold text-gray-800 text-base truncate">
                       {product.name || "Unnamed Product"}
                     </h2>
                     <p className="text-gray-500 text-sm mt-1 line-clamp-2">
@@ -142,8 +130,8 @@ export default function Page() {
                     </p>
                   </div>
 
-                  <div className="mt-4">
-                    <p className="text-green-600 font-semibold mb-2 text-sm">
+                  <div>
+                    <p className="text-green-600 font-semibold text-sm mb-2">
                       ${product.price ?? "N/A"}
                     </p>
                     <button
@@ -153,9 +141,9 @@ export default function Page() {
                       }}
                       className={`w-full text-sm font-medium px-3 py-2 rounded-md text-white ${
                         addedToCartIndex === i
-                          ? "bg-green-500"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      } transition`}
+                          ? "bg-green-600"
+                          : "bg-blue-600"
+                      }`}
                     >
                       {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
                     </button>
