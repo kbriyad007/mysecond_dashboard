@@ -4,13 +4,11 @@ import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 import ProductDetails from "./ProductDetails"; // client component
 
-// Setup Storyblok Client
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// Generate Static Paths
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -26,13 +24,9 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// ✅ Product Page Component
-export default async function ProductPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const slug = params.slug.trim();
+// Fix: Use props object and destructure
+export default async function ProductPage(props: { params: { slug: string } }) {
+  const slug = props.params.slug.trim();
 
   try {
     const res = await Storyblok.get(
@@ -45,7 +39,7 @@ export default async function ProductPage({
 
     const product = story.content;
 
-    // Normalize Price from CMS (Price → price)
+    // Normalize Price
     if (product.Price) {
       product.price = product.Price;
     }
