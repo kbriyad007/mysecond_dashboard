@@ -44,10 +44,15 @@ export default async function ProductPage({ params }: any) {
     return (
       <main
         style={{
-          maxWidth: "860px",
+          maxWidth: "960px",
           margin: "0 auto",
           padding: "2rem 1rem",
           fontFamily: "'Inter', sans-serif",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "#f9fafb",
+          minHeight: "100vh",
         }}
       >
         {/* Image */}
@@ -56,12 +61,15 @@ export default async function ProductPage({ params }: any) {
             style={{
               position: "relative",
               width: "100%",
+              maxWidth: "720px",
               height: 0,
-              paddingBottom: "56.25%", // 16:9 aspect ratio
+              paddingBottom: "56.25%",
               borderRadius: "16px",
               overflow: "hidden",
               marginBottom: "2rem",
-              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.08)",
+              border: "1px solid #e5e7eb",
+              backgroundColor: "#f3f4f6",
+              boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
             }}
           >
             <Image
@@ -76,62 +84,71 @@ export default async function ProductPage({ params }: any) {
           </div>
         )}
 
-        {/* Title */}
-        <h1
+        {/* Product Info Card */}
+        <div
           style={{
-            fontSize: "2.25rem",
-            fontWeight: 700,
-            color: "#1f2937",
-            marginBottom: "1rem",
+            backgroundColor: "#fff",
+            borderRadius: "12px",
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+            padding: "2rem",
+            width: "100%",
+            maxWidth: "720px",
             textAlign: "center",
           }}
         >
-          {product.name || slug}
-        </h1>
-
-        {/* Price */}
-        {product.price && (
-          <p
+          {/* Title */}
+          <h1
             style={{
-              fontSize: "1.5rem",
-              fontWeight: "600",
-              color: "#22c55e",
-              textAlign: "center",
-              marginBottom: "1.5rem",
+              fontSize: "2rem",
+              fontWeight: 700,
+              color: "#1f2937",
+              marginBottom: "0.75rem",
             }}
           >
-            💰 ${product.price}
+            {product.name || slug}
+          </h1>
+
+          {/* Price */}
+          {product.price && (
+            <p
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 600,
+                color: "#22c55e",
+                marginBottom: "1.25rem",
+              }}
+            >
+              💰 ${product.price}
+            </p>
+          )}
+
+          {/* Description */}
+          <p
+            style={{
+              fontSize: "1.125rem",
+              color: "#4b5563",
+              lineHeight: 1.75,
+              marginBottom: "2rem",
+            }}
+          >
+            {product.description || "No description available."}
           </p>
-        )}
 
-        {/* Description */}
-        <p
-          style={{
-            fontSize: "1.125rem",
-            color: "#4b5563",
-            lineHeight: 1.75,
-            marginBottom: "3rem",
-            textAlign: "center",
-          }}
-        >
-          {product.description || "No description available."}
-        </p>
-
-        {/* Buy Now Button WITHOUT onClick */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
+          {/* Buy Button (disabled placeholder) */}
           <button
             style={{
               backgroundColor: "#2563eb",
               color: "#fff",
-              padding: "0.75rem 1.5rem",
+              padding: "0.75rem 2rem",
               borderRadius: "8px",
               fontSize: "1rem",
               fontWeight: 600,
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-              cursor: "default",
+              cursor: "not-allowed",
+              opacity: 0.9,
               border: "none",
+              boxShadow: "0 4px 14px rgba(37, 99, 235, 0.3)",
             }}
-            aria-disabled="true"
+            disabled
           >
             🛒 Buy Now
           </button>
