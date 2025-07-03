@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// app/products/[slug]/page.tsx
+
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
-import ProductDetails from "./ProductDetails";
+import ProductDetails from "./ProductDetails"; // client component
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -24,13 +25,12 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-interface ProductPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-export default async function ProductPage({ params }: ProductPageProps) {
+// Fix: Explicitly type params inline here to avoid conflicts
+export default async function ProductPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const slug = params.slug.trim();
 
   try {
@@ -130,3 +130,4 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 }
+
