@@ -58,9 +58,13 @@ export default function Page() {
           slug: story.slug,
           _version: story._version,
         }));
+        console.log("Fetched products from Storyblok:", productList);
         setProducts(productList);
       })
-      .catch((err) => setErrorMsg(err.message))
+      .catch((err) => {
+        console.error("❌ Error fetching products:", err);
+        setErrorMsg(err.message);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -101,7 +105,7 @@ export default function Page() {
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
               <a className="group bg-white rounded-xl border border-gray-300 hover:border-blue-500 hover:shadow-lg transition-all overflow-hidden flex flex-col">
-                {/* Image area */}
+                {/* Image */}
                 <div className="relative w-full pt-[61.8%] bg-gray-100">
                   {imageUrl ? (
                     <Image
@@ -139,7 +143,9 @@ export default function Page() {
                         handleAddToCart(i);
                       }}
                       className={`w-full text-sm font-medium px-3 py-2 rounded-md text-white ${
-                        addedToCartIndex === i ? "bg-green-500" : "bg-blue-600 hover:bg-blue-700"
+                        addedToCartIndex === i
+                          ? "bg-green-500"
+                          : "bg-blue-600 hover:bg-blue-700"
                       } transition`}
                     >
                       {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
