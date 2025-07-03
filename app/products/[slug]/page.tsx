@@ -23,7 +23,8 @@ interface StoryblokStory {
   _version?: number;
 }
 
-export async function generateStaticParams() {
+// ✅ This defines the valid paths for static generation
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const res = await storyblok.get("cdn/stories", {
     starts_with: "product",
     version: "draft",
@@ -36,13 +37,18 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// ✅ Props type for the dynamic route
+interface ProductPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function ProductDetailPage({ params }: ProductPageProps) {
+  const { slug } = params;
+
   try {
-    const res = await storyblok.get(`cdn/stories/product/${params.slug}`, {
+    const res = await storyblok.get(`cdn/stories/product/${slug}`, {
       version: "draft",
     });
 
@@ -78,6 +84,6 @@ export default async function ProductDetailPage({
       </main>
     );
   } catch {
-    return notFound(); // don't use `err` since it's unused
+    return notFound(); // fallback to 404
   }
 }
