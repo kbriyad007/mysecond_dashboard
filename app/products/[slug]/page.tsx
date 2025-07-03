@@ -27,9 +27,8 @@ export async function generateStaticParams() {
 }
 
 // Product Page Component (Server Component)
-export default async function ProductPage({ params }: any) {
-  let { slug } = params;
-  slug = slug.trim();
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const slug = params.slug.trim();
 
   try {
     const res = await Storyblok.get(
@@ -48,6 +47,8 @@ export default async function ProductPage({ params }: any) {
           ? `https:${product.image}`
           : product.image
         : product.image?.filename ?? null;
+
+    const price = product.Price || product.price || "N/A";
 
     return (
       <main
@@ -117,7 +118,7 @@ export default async function ProductPage({ params }: any) {
           </div>
 
           {/* Right - Product Info with Quantity and Buy Now */}
-          <ProductDetails product={product} />
+          <ProductDetails product={{ ...product, price }} />
         </div>
       </main>
     );
