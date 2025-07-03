@@ -16,7 +16,7 @@ interface MyProduct {
 
 interface StoryblokStory {
   slug: string;
-  content: MyProduct;
+  content: any;
   _version?: number;
 }
 
@@ -53,16 +53,22 @@ export default function Page() {
       })
       .then((data) => {
         const stories: StoryblokStory[] = data.stories || [];
-        const productList = stories.map((story) => ({
-          ...story.content,
-          slug: story.slug,
-          _version: story._version,
-        }));
+        const productList = stories.map((story, i) => {
+          const content = story.content;
 
-        // Debug log
-        productList.forEach((p) =>
-          console.log("🟢 Product:", p.name, "| Price:", p.price)
-        );
+          const product: MyProduct = {
+            name: content.name,
+            description: content.description,
+            price: content.Price || content.price || null,
+            image: content.image,
+            slug: story.slug || slugify(content.name || `product-${i}`),
+            _version: story._version,
+            component: content.component,
+          };
+
+          console.log("🟢 Product:", product.name, "| Price:", product.price);
+          return product;
+        });
 
         setProducts(productList);
       })
@@ -75,10 +81,7 @@ export default function Page() {
     setTimeout(() => setAddedToCartIndex(null), 2000);
   };
 
-  const getImageUrl = (
-    image: MyProduct["image"],
-    version?: number
-  ): string | null => {
+  const getImageUrl = (image: MyProduct["image"], version?: number): string | null => {
     if (typeof image === "string") {
       return image.startsWith("//") ? `https:${image}` : image;
     } else if (typeof image === "object" && image?.filename) {
@@ -110,7 +113,7 @@ export default function Page() {
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
               <a className="group bg-white rounded-xl border border-gray-300 hover:border-blue-500 hover:shadow-lg transition-all overflow-hidden flex flex-col">
-                {/* Image */}
+                {/* Image area */}
                 <div className="relative w-full pt-[61.8%] bg-gray-100">
                   {imageUrl ? (
                     <Image
@@ -127,7 +130,7 @@ export default function Page() {
                   )}
                 </div>
 
-                {/* Text Info */}
+                {/* Content */}
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
                     <h2 className="font-semibold text-gray-800 text-lg truncate">
@@ -140,7 +143,7 @@ export default function Page() {
 
                   <div className="mt-4">
                     <p className="text-green-600 font-semibold mb-2 text-sm">
-                      {product.price ? `💰 $${product.price}` : "Price not available"}
+                      ${product.price ?? "N/A"}
                     </p>
                     <button
                       onClick={(e) => {
@@ -148,9 +151,7 @@ export default function Page() {
                         handleAddToCart(i);
                       }}
                       className={`w-full text-sm font-medium px-3 py-2 rounded-md text-white ${
-                        addedToCartIndex === i
-                          ? "bg-green-500"
-                          : "bg-blue-600 hover:bg-blue-700"
+                        addedToCartIndex === i ? "bg-green-500" : "bg-blue-600 hover:bg-blue-700"
                       } transition`}
                     >
                       {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
@@ -165,3 +166,4 @@ export default function Page() {
     </main>
   );
 }
+
