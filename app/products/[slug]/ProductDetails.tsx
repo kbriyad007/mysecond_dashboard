@@ -4,7 +4,7 @@ import { useState } from "react";
 interface ProductDetailsProps {
   product: {
     name?: string;
-    price?: number | string;
+    Price?: number | string;
     description?: string;
   };
 }
@@ -34,7 +34,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         {product.name || "Unnamed Product"}
       </h1>
 
-      {product.price && (
+      {product.Price && (
         <p
           style={{
             fontSize: "1.5rem",
@@ -43,7 +43,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             margin: 0,
           }}
         >
-          💰 ${product.price}
+          💰 ${product.Price}
         </p>
       )}
 
@@ -105,7 +105,9 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             cursor: "pointer",
             boxShadow: "0 4px 14px rgba(37, 99, 235, 0.3)",
           }}
-          onClick={() => alert(`🛒 Added ${quantity} to cart!`)}
+          onClick={() =>
+            alert(`🛒 Added ${quantity} item${quantity > 1 ? "s" : ""} to cart!`)
+          }
         >
           🛒 Buy Now
         </button>
