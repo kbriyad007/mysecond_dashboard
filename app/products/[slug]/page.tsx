@@ -7,11 +7,7 @@ const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_API_KEY,
 });
 
-type PageProps = {
-  params: { slug: string };
-};
-
-export default async function ProductPage({ params }: PageProps) {
+export default async function ProductPage({ params }: { params: { slug: string } }) {
   try {
     const { data } = await Storyblok.get(`cdn/stories/products/${params.slug}`, {
       version: 'draft',
