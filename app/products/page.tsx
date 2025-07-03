@@ -80,38 +80,29 @@ export default function Page() {
 
   if (loading || errorMsg || products.length === 0) {
     return (
-      <div className="status-message">
+      <div className="min-h-screen flex items-center justify-center text-gray-600 font-medium text-center px-4">
         {errorMsg
           ? `❌ Error: ${errorMsg}`
           : products.length === 0
           ? "No products found."
           : "Loading..."}
-        <style jsx>{`
-          .status-message {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            color: #475569;
-          }
-        `}</style>
       </div>
     );
   }
 
   return (
-    <>
-      <main className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4 py-8 bg-gray-50">
+    <main className="px-4 py-10 bg-gradient-to-br from-gray-50 to-white min-h-screen">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Our Products</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
           const imageUrl = getImageUrl(product.image, product._version);
 
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a className="bg-white rounded-xl shadow-sm border border-gray-200 hover:border-blue-500 transition-colors overflow-hidden">
-                <div className="relative w-full h-44 bg-gray-100">
+              <a className="group bg-white rounded-2xl shadow-md border border-gray-200 hover:shadow-lg hover:border-blue-500 transition-all overflow-hidden flex flex-col">
+                {/* Image wrapper with border */}
+                <div className="relative w-full pt-[61.8%] bg-gray-50 border border-gray-300 rounded-lg overflow-hidden m-2">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
@@ -121,40 +112,44 @@ export default function Page() {
                       unoptimized
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                       No image available
                     </div>
                   )}
                 </div>
 
-                <div className="p-3 text-sm">
-                  <h2 className="font-medium text-gray-800 truncate">
-                    {product.name || "Unnamed Product"}
-                  </h2>
-                  <p className="text-gray-500 line-clamp-2 mt-1">
-                    {product.description}
-                  </p>
-                  <p className="text-green-600 font-semibold mt-2">
-                    ${product.price ?? "N/A"}
-                  </p>
+                <div className="p-4 flex flex-col justify-between flex-1">
+                  <div>
+                    <h2 className="font-semibold text-gray-800 text-lg truncate">
+                      {product.name || "Unnamed Product"}
+                    </h2>
+                    <p className="text-gray-500 text-sm mt-1 line-clamp-2">
+                      {product.description}
+                    </p>
+                  </div>
 
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleAddToCart(i);
-                    }}
-                    className={`w-full mt-3 text-xs font-medium px-3 py-2 rounded-md text-white ${
-                      addedToCartIndex === i ? "bg-green-500" : "bg-blue-600 hover:bg-blue-700"
-                    }`}
-                  >
-                    {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
-                  </button>
+                  <div className="mt-4">
+                    <p className="text-green-600 font-semibold mb-2 text-sm">
+                      ${product.price ?? "N/A"}
+                    </p>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleAddToCart(i);
+                      }}
+                      className={`w-full text-sm font-medium px-3 py-2 rounded-md text-white ${
+                        addedToCartIndex === i ? "bg-green-500" : "bg-blue-600 hover:bg-blue-700"
+                      } transition`}
+                    >
+                      {addedToCartIndex === i ? "✔ Added" : "🛒 Add to Cart"}
+                    </button>
+                  </div>
                 </div>
               </a>
             </Link>
           );
         })}
-      </main>
-    </>
+      </div>
+    </main>
   );
 }
