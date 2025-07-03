@@ -2,15 +2,15 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
-import ProductDetails from "./ProductDetails"; // client component
+import ProductDetails from "./ProductDetails";
 
-// Storyblok setup
+// ✅ Storyblok client setup
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// Generate paths at build time
+// ✅ Static params generation
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -18,22 +18,25 @@ export async function generateStaticParams() {
   const productSlugs = Object.keys(links)
     .map((key) => links[key].slug)
     .filter((slug: string) => slug.startsWith("products/"))
-    .map((slug: string) => {
-      const productSlug = slug.replace("products/", "").trim();
-      return { slug: productSlug };
-    });
+    .map((slug: string) => ({
+      slug: slug.replace("products/", "").trim(),
+    }));
 
   return productSlugs;
 }
 
-// Product page by slug
-export default async function ProductPage({ params }: { params: { slug: string } }) {
+// ✅ Server component: Product Page
+export default async function ProductPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const slug = params.slug.trim();
 
   try {
     const res = await Storyblok.get(
       `cdn/stories/products/${encodeURIComponent(slug)}`,
-      { version: "draft" } // Always fetch latest draft
+      { version: "draft" }
     );
 
     const story = res.data.story;
@@ -41,11 +44,9 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
     const product = story.content;
 
-    // Normalize fields
+    // Normalize custom fields
     if (product.Price) product.price = product.Price;
     if (product.Description) product.description = product.Description;
-
-    console.log("🟢 Product fetched:", product);
 
     const imageUrl =
       typeof product.image === "string"
@@ -82,7 +83,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
             justifyContent: "center",
           }}
         >
-          {/* Left - Product Image */}
+          {/* Left: Product Image */}
           <div
             style={{
               flex: "1 1 55%",
@@ -121,7 +122,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
             )}
           </div>
 
-          {/* Right - Product Info */}
+          {/* Right: Product Details */}
           <ProductDetails product={product} />
         </div>
       </main>
