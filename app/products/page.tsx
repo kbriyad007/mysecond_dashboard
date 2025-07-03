@@ -16,7 +16,7 @@ interface MyProduct {
 
 interface StoryblokStory {
   slug: string;
-  content: any;
+  content: MyProduct;  // Use proper type here instead of any
   _version?: number;
 }
 
@@ -53,23 +53,11 @@ export default function Page() {
       })
       .then((data) => {
         const stories: StoryblokStory[] = data.stories || [];
-        const productList = stories.map((story, i) => {
-          const content = story.content;
-
-          const product: MyProduct = {
-            name: content.name,
-            description: content.description,
-            price: content.Price || content.price || null,
-            image: content.image,
-            slug: story.slug || slugify(content.name || `product-${i}`),
-            _version: story._version,
-            component: content.component,
-          };
-
-          console.log("🟢 Product:", product.name, "| Price:", product.price);
-          return product;
-        });
-
+        const productList = stories.map((story) => ({
+          ...story.content,
+          slug: story.slug,
+          _version: story._version,
+        }));
         setProducts(productList);
       })
       .catch((err) => setErrorMsg(err.message))
@@ -166,4 +154,3 @@ export default function Page() {
     </main>
   );
 }
-
