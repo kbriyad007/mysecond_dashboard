@@ -4,11 +4,13 @@ import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 import ProductDetails from "./ProductDetails"; // client component
 
+// Storyblok setup
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
+// Generate paths at build time
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -24,14 +26,14 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// Loosen type to any to avoid build issues with Next.js PageProps
-export default async function ProductPage({ params }: any) {
+// Product page by slug
+export default async function ProductPage({ params }: { params: { slug: string } }) {
   const slug = params.slug.trim();
 
   try {
     const res = await Storyblok.get(
       `cdn/stories/products/${encodeURIComponent(slug)}`,
-      { version: "draft" }
+      { version: "draft" } // Always fetch latest draft
     );
 
     const story = res.data.story;
@@ -39,10 +41,11 @@ export default async function ProductPage({ params }: any) {
 
     const product = story.content;
 
-    // Normalize Price field (Price → price)
-    if (product.Price) {
-      product.price = product.Price;
-    }
+    // Normalize fields
+    if (product.Price) product.price = product.Price;
+    if (product.Description) product.description = product.Description;
+
+    console.log("🟢 Product fetched:", product);
 
     const imageUrl =
       typeof product.image === "string"
@@ -118,7 +121,7 @@ export default async function ProductPage({ params }: any) {
             )}
           </div>
 
-          {/* Right - Product Info with Quantity and Buy Now */}
+          {/* Right - Product Info */}
           <ProductDetails product={product} />
         </div>
       </main>
