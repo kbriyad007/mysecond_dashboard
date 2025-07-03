@@ -23,9 +23,11 @@ export default function ProductPage({
   );
 }
 
-export async function generateStaticParams() {
+// ✅ Sync function (no `async`)
+export function generateStaticParams() {
   return [
     { params: { slug: 'orange' } },
     { params: { slug: 'banana' } },
   ];
 }
+
