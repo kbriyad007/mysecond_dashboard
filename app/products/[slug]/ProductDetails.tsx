@@ -1,169 +1,205 @@
+/* eslint-disable react/prop-types */
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
-export default function ProductDetails({
-  product,
-  slug,
-}: {
-  product: any;
-  slug: string;
-}) {
+interface ProductImage {
+  filename?: string;
+}
+
+interface Product {
+  name: string;
+  description: string;
+  price?: number | string;
+  image?: ProductImage | string;
+}
+
+interface ProductDetailsClientProps {
+  product: Product;
+}
+
+export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
   const [quantity, setQuantity] = useState(1);
+
+  const imageUrl =
+    typeof product.image === "string"
+      ? product.image.startsWith("//")
+        ? `https:${product.image}`
+        : product.image
+      : product.image?.filename ?? null;
 
   const increment = () => setQuantity((q) => q + 1);
   const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
   const handleBuyNow = () => {
-    alert(
-      `You clicked Buy Now for "${product.name || slug}" with quantity ${quantity}!`
-    );
-    // Replace alert with your actual checkout or cart logic
+    alert(`You bought ${quantity} × ${product.name}`);
   };
 
   return (
     <div
       style={{
-        flex: "1 1 38%",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        gap: "1.5rem",
-        minWidth: "280px",
-        maxWidth: "600px",
+        flexWrap: "wrap",
+        gap: "2rem",
+        backgroundColor: "#ffffff",
+        borderRadius: "16px",
+        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
+        padding: "2rem",
+        maxWidth: "1280px",
+        margin: "0 auto",
       }}
     >
-      <h1
+      {/* Left - Image */}
+      <div
         style={{
-          fontSize: "2rem",
-          fontWeight: 700,
-          color: "#1f2937",
-          margin: 0,
+          flex: "1 1 60%",
+          minWidth: "300px",
+          border: "1px solid #e5e7eb",
+          borderRadius: "12px",
+          overflow: "hidden",
+          position: "relative",
+          aspectRatio: "4 / 3",
+          backgroundColor: "#f3f4f6",
         }}
       >
-        {product.name || slug}
-      </h1>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={product.name || "Product Image"}
+            fill
+            style={{ objectFit: "cover" }}
+            priority
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#9ca3af",
+              fontSize: "1rem",
+            }}
+          >
+            No image available
+          </div>
+        )}
+      </div>
 
-      {product.price && (
-        <p
+      {/* Right - Info */}
+      <div
+        style={{
+          flex: "1 1 38%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          gap: "1.5rem",
+          minWidth: "260px",
+        }}
+      >
+        <h1
           style={{
-            fontSize: "1.5rem",
-            fontWeight: 600,
-            color: "#22c55e",
+            fontSize: "2rem",
+            fontWeight: 700,
+            color: "#1f2937",
             margin: 0,
           }}
         >
-          💰 ${product.price}
-        </p>
-      )}
+          {product.name}
+        </h1>
 
-      <p
-        style={{
-          fontSize: "1.125rem",
-          color: "#4b5563",
-          lineHeight: 1.75,
-        }}
-      >
-        {product.description || "No description available."}
-      </p>
+        {product.price && (
+          <p
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 600,
+              color: "#22c55e",
+              margin: 0,
+            }}
+          >
+            💰 ${product.price}
+          </p>
+        )}
 
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          alignItems: "center",
-          marginTop: "1rem",
-        }}
-      >
-        {/* Quantity selector */}
-        <div
+        <p
           style={{
-            display: "flex",
-            alignItems: "center",
-            border: "1px solid #cbd5e1",
-            borderRadius: "8px",
-            overflow: "hidden",
-            width: "130px",
+            fontSize: "1.125rem",
+            color: "#4b5563",
+            lineHeight: 1.75,
           }}
         >
+          {product.description || "No description available."}
+        </p>
+
+        {/* Quantity and Buy Now */}
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <button
             onClick={decrement}
-            style={{
-              backgroundColor: "#e2e8f0",
-              border: "none",
-              padding: "0.5rem 0.75rem",
-              cursor: "pointer",
-              fontSize: "1.25rem",
-              userSelect: "none",
-              color: "#475569",
-            }}
             aria-label="Decrease quantity"
-          >
-            –
-          </button>
-          <input
-            type="number"
-            min={1}
-            value={quantity}
-            onChange={(e) => {
-              let val = parseInt(e.target.value);
-              if (isNaN(val) || val < 1) val = 1;
-              setQuantity(val);
-            }}
             style={{
-              width: "50px",
+              fontSize: "1.5rem",
+              padding: "0.25rem 0.75rem",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              backgroundColor: "#f3f4f6",
+              cursor: "pointer",
+            }}
+          >
+            −
+          </button>
+
+          <input
+            type="text"
+            value={quantity}
+            readOnly
+            aria-label="Quantity"
+            style={{
+              width: "3rem",
               textAlign: "center",
-              border: "none",
-              fontSize: "1rem",
-              padding: "0.5rem 0",
-              outline: "none",
+              fontSize: "1.25rem",
+              fontWeight: "600",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              padding: "0.25rem",
               userSelect: "none",
             }}
-            aria-label="Quantity"
           />
+
           <button
             onClick={increment}
-            style={{
-              backgroundColor: "#e2e8f0",
-              border: "none",
-              padding: "0.5rem 0.75rem",
-              cursor: "pointer",
-              fontSize: "1.25rem",
-              userSelect: "none",
-              color: "#475569",
-            }}
             aria-label="Increase quantity"
+            style={{
+              fontSize: "1.5rem",
+              padding: "0.25rem 0.75rem",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              backgroundColor: "#f3f4f6",
+              cursor: "pointer",
+            }}
           >
             +
           </button>
-        </div>
 
-        {/* Buy Now button */}
-        <button
-          onClick={handleBuyNow}
-          style={{
-            backgroundColor: "#2563eb",
-            color: "#fff",
-            padding: "0.75rem 2rem",
-            borderRadius: "8px",
-            fontSize: "1rem",
-            fontWeight: 600,
-            border: "none",
-            cursor: "pointer",
-            opacity: 1,
-            boxShadow: "0 4px 14px rgba(37, 99, 235, 0.3)",
-            transition: "background-color 0.3s ease",
-          }}
-          onMouseEnter={(e) =>
-            ((e.target as HTMLButtonElement).style.backgroundColor = "#1d4ed8")
-          }
-          onMouseLeave={(e) =>
-            ((e.target as HTMLButtonElement).style.backgroundColor = "#2563eb")
-          }
-          aria-label="Buy Now"
-        >
-          🛒 Buy Now
-        </button>
+          <button
+            onClick={handleBuyNow}
+            style={{
+              backgroundColor: "#2563eb",
+              color: "#fff",
+              padding: "0.75rem 2rem",
+              borderRadius: "8px",
+              fontSize: "1rem",
+              fontWeight: 600,
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 4px 14px rgba(37, 99, 235, 0.3)",
+              marginLeft: "auto",
+            }}
+          >
+            🛒 Buy Now
+          </button>
+        </div>
       </div>
     </div>
   );
