@@ -2,7 +2,14 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
-import ProductDetails from "./ProductDetails"; // client component
+import ProductDetails from "./ProductDetails";
+
+// Define type for dynamic route params
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
 
 // Initialize Storyblok Client
 const Storyblok = new StoryblokClient({
@@ -26,12 +33,8 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// ✅ Main Product Page
-export default async function ProductPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// ✅ Product Page
+export default async function Page({ params }: PageProps) {
   const slug = params.slug.trim();
 
   try {
@@ -45,7 +48,7 @@ export default async function ProductPage({
 
     const product = story.content;
 
-    // Normalize Price field from Storyblok (if using "Price")
+    // Normalize Price
     if (product.Price) {
       product.price = product.Price;
     }
@@ -124,7 +127,7 @@ export default async function ProductPage({
             )}
           </div>
 
-          {/* Product Info + Buy Section */}
+          {/* Product Info Section */}
           <ProductDetails product={product} />
         </div>
       </main>
