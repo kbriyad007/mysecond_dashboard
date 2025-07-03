@@ -3,13 +3,11 @@ import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 import ProductDetails from "./ProductDetails";
 
-// Initialize Storyblok Client
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// Generate static paths for all product slugs
 export async function generateStaticParams() {
   const res = await Storyblok.get("cdn/links/");
   const links = res.data.links;
@@ -25,12 +23,7 @@ export async function generateStaticParams() {
   return productSlugs;
 }
 
-// Product Page component with typed params
-export default async function Page({
-  params,
-}: {
-  params: Record<string, string>;
-}) {
+export default async function Page({ params }: { params: { slug: string } }) {
   const slug = params.slug.trim();
 
   try {
@@ -44,7 +37,6 @@ export default async function Page({
 
     const product = story.content;
 
-    // Normalize Price if needed
     if (product.Price) {
       product.price = product.Price;
     }
@@ -76,15 +68,14 @@ export default async function Page({
             display: "flex",
             flexWrap: "wrap",
             gap: "2rem",
-            backgroundColor: "#ffffff",
+            backgroundColor: "#fff",
             borderRadius: "16px",
-            boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
+            boxShadow: "0 6px 20px rgba(0,0,0,0.08)",
             padding: "2rem",
             width: "100%",
             justifyContent: "center",
           }}
         >
-          {/* Product Image */}
           <div
             style={{
               flex: "1 1 55%",
@@ -123,7 +114,6 @@ export default async function Page({
             )}
           </div>
 
-          {/* Product Info Section */}
           <ProductDetails product={product} />
         </div>
       </main>
