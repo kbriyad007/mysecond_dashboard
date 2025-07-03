@@ -41,6 +41,16 @@ export default async function ProductPage({ params }: any) {
 
     const product = story.content;
 
+    // ✅ Get image URL safely
+    const imageUrl =
+      typeof product.image === "string"
+        ? product.image.startsWith("//")
+          ? `https:${product.image}`
+          : product.image
+        : product.image?.filename
+        ? product.image.filename
+        : null;
+
     return (
       <main
         style={{
@@ -55,25 +65,28 @@ export default async function ProductPage({ params }: any) {
           minHeight: "100vh",
         }}
       >
-        {/* Image */}
-        {product.image?.filename && (
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              maxWidth: "720px",
-              height: 0,
-              paddingBottom: "56.25%",
-              borderRadius: "16px",
-              overflow: "hidden",
-              marginBottom: "2rem",
-              border: "1px solid #e5e7eb",
-              backgroundColor: "#f3f4f6",
-              boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
-            }}
-          >
+        {/* ✅ Product Image */}
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            maxWidth: "720px",
+            height: 0,
+            paddingBottom: "56.25%",
+            borderRadius: "16px",
+            overflow: "hidden",
+            marginBottom: "2rem",
+            border: "1px solid #e5e7eb",
+            backgroundColor: "#f3f4f6",
+            boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {imageUrl ? (
             <Image
-              src={product.image.filename}
+              src={imageUrl}
               alt={product.name || "Product Image"}
               fill
               style={{
@@ -81,10 +94,14 @@ export default async function ProductPage({ params }: any) {
               }}
               priority
             />
-          </div>
-        )}
+          ) : (
+            <span style={{ color: "#9ca3af", fontSize: "1rem" }}>
+              No image available
+            </span>
+          )}
+        </div>
 
-        {/* Product Info Card */}
+        {/* ✅ Product Info */}
         <div
           style={{
             backgroundColor: "#fff",
@@ -134,7 +151,7 @@ export default async function ProductPage({ params }: any) {
             {product.description || "No description available."}
           </p>
 
-          {/* Buy Button (disabled placeholder) */}
+          {/* Buy Button */}
           <button
             style={{
               backgroundColor: "#2563eb",
