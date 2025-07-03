@@ -119,5 +119,17 @@ export default async function Page({
                 }}
               >
                 No image available
-              </d
+              </div>
+            )}
+          </div>
 
+          {/* Product Info Section */}
+          <ProductDetails product={product} />
+        </div>
+      </main>
+    );
+  } catch (error) {
+    console.error("❌ Failed to fetch product:", error);
+    notFound();
+  }
+}
