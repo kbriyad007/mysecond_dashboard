@@ -65,7 +65,7 @@ export default async function ProductPage({ params }: any) {
         <div
           style={{
             display: "flex",
-            flexWrap: "wrap",
+            flexDirection: "row", // force side by side
             gap: "2rem",
             backgroundColor: "#ffffff",
             borderRadius: "16px",
@@ -78,8 +78,7 @@ export default async function ProductPage({ params }: any) {
           {/* Left - Product Image */}
           <div
             style={{
-              flex: "1 1 60%",
-              minWidth: "300px",
+              width: "58%",
               border: "1px solid #e5e7eb",
               borderRadius: "12px",
               overflow: "hidden",
@@ -116,12 +115,11 @@ export default async function ProductPage({ params }: any) {
           {/* Right - Product Info */}
           <div
             style={{
-              flex: "1 1 38%",
+              width: "40%",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               gap: "1.5rem",
-              minWidth: "260px",
             }}
           >
             <h1
