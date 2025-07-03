@@ -58,8 +58,8 @@ export default async function ProductPage({ params }: any) {
           minHeight: "100vh",
           backgroundColor: "#f9fafb",
           display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <div
@@ -71,18 +71,20 @@ export default async function ProductPage({ params }: any) {
             borderRadius: "16px",
             boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
             padding: "2rem",
+            width: "100%",
+            maxWidth: "960px",
           }}
         >
-          {/* Left Side - Image */}
+          {/* Left - Product Image */}
           <div
             style={{
-              flex: "1 1 58%",
+              flex: "1 1 60%",
               minWidth: "300px",
-              position: "relative",
-              aspectRatio: "4 / 3",
+              border: "1px solid #e5e7eb",
               borderRadius: "12px",
               overflow: "hidden",
-              border: "1px solid #e5e7eb",
+              position: "relative",
+              aspectRatio: "4 / 3",
               backgroundColor: "#f3f4f6",
             }}
           >
@@ -111,13 +113,14 @@ export default async function ProductPage({ params }: any) {
             )}
           </div>
 
-          {/* Right Side - Info */}
+          {/* Right - Product Info */}
           <div
             style={{
-              flex: "1 1 40%",
+              flex: "1 1 38%",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              gap: "1.5rem",
               minWidth: "260px",
             }}
           >
@@ -126,7 +129,7 @@ export default async function ProductPage({ params }: any) {
                 fontSize: "2rem",
                 fontWeight: 700,
                 color: "#1f2937",
-                marginBottom: "1rem",
+                margin: 0,
               }}
             >
               {product.name || slug}
@@ -138,7 +141,7 @@ export default async function ProductPage({ params }: any) {
                   fontSize: "1.5rem",
                   fontWeight: 600,
                   color: "#22c55e",
-                  marginBottom: "1.25rem",
+                  margin: 0,
                 }}
               >
                 💰 ${product.price}
@@ -150,7 +153,6 @@ export default async function ProductPage({ params }: any) {
                 fontSize: "1.125rem",
                 color: "#4b5563",
                 lineHeight: 1.75,
-                marginBottom: "2rem",
               }}
             >
               {product.description || "No description available."}
