@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -101,8 +102,8 @@ export default function Page() {
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
               <a className="group bg-white rounded-2xl shadow-md border border-gray-200 hover:shadow-lg hover:border-blue-500 transition-all overflow-hidden flex flex-col">
-                {/* Image wrapper with border */}
-                <div className="relative w-full pt-[61.8%] bg-gray-50 border border-gray-300 rounded-lg overflow-hidden m-2">
+                {/* Image wrapper with full border */}
+                <div className="relative w-full pt-[61.8%] bg-gray-50 border border-gray-300 rounded-lg overflow-hidden">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
