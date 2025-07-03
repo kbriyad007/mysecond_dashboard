@@ -1,15 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import StoryblokClient from "storyblok-js-client";
 import ProductDetails from "./ProductDetails";
-
-// Define type for dynamic route params
-type PageProps = {
-  params: {
-    slug: string;
-  };
-};
 
 // Initialize Storyblok Client
 const Storyblok = new StoryblokClient({
@@ -34,7 +26,11 @@ export async function generateStaticParams() {
 }
 
 // ✅ Product Page
-export default async function Page({ params }: PageProps) {
+export default async function Page({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const slug = params.slug.trim();
 
   try {
