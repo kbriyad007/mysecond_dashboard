@@ -100,10 +100,9 @@ export default function Page() {
 
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
-              <a className="group bg-white rounded-2xl shadow-md border border-gray-200 hover:shadow-lg hover:border-blue-500 transition-all overflow-hidden flex flex-col">
-                
-                {/* Image area with full proper border */}
-                <div className="border border-gray-300 rounded-t-2xl relative w-full pt-[61.8%] bg-white overflow-hidden">
+              <a className="group bg-white rounded-xl border border-gray-300 hover:border-blue-500 hover:shadow-lg transition-all overflow-hidden flex flex-col">
+                {/* Image area */}
+                <div className="relative w-full pt-[61.8%] bg-gray-100">
                   {imageUrl ? (
                     <Image
                       src={imageUrl}
@@ -119,6 +118,7 @@ export default function Page() {
                   )}
                 </div>
 
+                {/* Content */}
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
                     <h2 className="font-semibold text-gray-800 text-lg truncate">
@@ -154,4 +154,3 @@ export default function Page() {
     </main>
   );
 }
-
