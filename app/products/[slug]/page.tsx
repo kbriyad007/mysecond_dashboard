@@ -41,134 +41,139 @@ export default async function ProductPage({ params }: any) {
 
     const product = story.content;
 
-    // ✅ Get image URL safely
     const imageUrl =
       typeof product.image === "string"
         ? product.image.startsWith("//")
           ? `https:${product.image}`
           : product.image
-        : product.image?.filename
-        ? product.image.filename
-        : null;
+        : product.image?.filename ?? null;
 
     return (
       <main
         style={{
-          maxWidth: "960px",
+          maxWidth: "1080px",
           margin: "0 auto",
           padding: "2rem 1rem",
           fontFamily: "'Inter', sans-serif",
+          minHeight: "100vh",
+          backgroundColor: "#f9fafb",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          backgroundColor: "#f9fafb",
-          minHeight: "100vh",
+          justifyContent: "center",
         }}
       >
-        {/* ✅ Product Image */}
         <div
           style={{
-            position: "relative",
-            width: "100%",
-            maxWidth: "720px",
-            height: 0,
-            paddingBottom: "56.25%",
-            borderRadius: "16px",
-            overflow: "hidden",
-            marginBottom: "2rem",
-            border: "1px solid #e5e7eb",
-            backgroundColor: "#f3f4f6",
-            boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={product.name || "Product Image"}
-              fill
-              style={{
-                objectFit: "cover",
-              }}
-              priority
-            />
-          ) : (
-            <span style={{ color: "#9ca3af", fontSize: "1rem" }}>
-              No image available
-            </span>
-          )}
-        </div>
-
-        {/* ✅ Product Info */}
-        <div
-          style={{
-            backgroundColor: "#fff",
-            borderRadius: "12px",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.06)",
+            flexWrap: "wrap",
+            gap: "2rem",
+            backgroundColor: "#ffffff",
+            borderRadius: "16px",
+            boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
             padding: "2rem",
-            width: "100%",
-            maxWidth: "720px",
-            textAlign: "center",
           }}
         >
-          {/* Title */}
-          <h1
+          {/* Left Side - Image */}
+          <div
             style={{
-              fontSize: "2rem",
-              fontWeight: 700,
-              color: "#1f2937",
-              marginBottom: "0.75rem",
+              flex: "1 1 58%",
+              minWidth: "300px",
+              position: "relative",
+              aspectRatio: "4 / 3",
+              borderRadius: "12px",
+              overflow: "hidden",
+              border: "1px solid #e5e7eb",
+              backgroundColor: "#f3f4f6",
             }}
           >
-            {product.name || slug}
-          </h1>
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={product.name || "Product Image"}
+                fill
+                style={{ objectFit: "cover" }}
+                priority
+              />
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#9ca3af",
+                  fontSize: "1rem",
+                }}
+              >
+                No image available
+              </div>
+            )}
+          </div>
 
-          {/* Price */}
-          {product.price && (
-            <p
+          {/* Right Side - Info */}
+          <div
+            style={{
+              flex: "1 1 40%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              minWidth: "260px",
+            }}
+          >
+            <h1
               style={{
-                fontSize: "1.5rem",
-                fontWeight: 600,
-                color: "#22c55e",
-                marginBottom: "1.25rem",
+                fontSize: "2rem",
+                fontWeight: 700,
+                color: "#1f2937",
+                marginBottom: "1rem",
               }}
             >
-              💰 ${product.price}
+              {product.name || slug}
+            </h1>
+
+            {product.price && (
+              <p
+                style={{
+                  fontSize: "1.5rem",
+                  fontWeight: 600,
+                  color: "#22c55e",
+                  marginBottom: "1.25rem",
+                }}
+              >
+                💰 ${product.price}
+              </p>
+            )}
+
+            <p
+              style={{
+                fontSize: "1.125rem",
+                color: "#4b5563",
+                lineHeight: 1.75,
+                marginBottom: "2rem",
+              }}
+            >
+              {product.description || "No description available."}
             </p>
-          )}
 
-          {/* Description */}
-          <p
-            style={{
-              fontSize: "1.125rem",
-              color: "#4b5563",
-              lineHeight: 1.75,
-              marginBottom: "2rem",
-            }}
-          >
-            {product.description || "No description available."}
-          </p>
-
-          {/* Buy Button */}
-          <button
-            style={{
-              backgroundColor: "#2563eb",
-              color: "#fff",
-              padding: "0.75rem 2rem",
-              borderRadius: "8px",
-              fontSize: "1rem",
-              fontWeight: 600,
-              cursor: "not-allowed",
-              opacity: 0.9,
-              border: "none",
-              boxShadow: "0 4px 14px rgba(37, 99, 235, 0.3)",
-            }}
-            disabled
-          >
-            🛒 Buy Now
-          </button>
+            <button
+              style={{
+                backgroundColor: "#2563eb",
+                color: "#fff",
+                padding: "0.75rem 2rem",
+                borderRadius: "8px",
+                fontSize: "1rem",
+                fontWeight: 600,
+                border: "none",
+                cursor: "not-allowed",
+                opacity: 0.9,
+                boxShadow: "0 4px 14px rgba(37, 99, 235, 0.3)",
+              }}
+              disabled
+            >
+              🛒 Buy Now
+            </button>
+          </div>
         </div>
       </main>
     );
