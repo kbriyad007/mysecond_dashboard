@@ -26,11 +26,7 @@ export async function generateStaticParams() {
 }
 
 // ✅ Product Page
-export default async function Page({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function Page({ params }: any) {
   const slug = params.slug.trim();
 
   try {
