@@ -1,89 +1,28 @@
 // app/products/[slug]/page.tsx
 
-import StoryblokClient from "storyblok-js-client";
-import Image from "next/image";
-import { notFound } from "next/navigation";
+import StoryblokClient from 'storyblok-js-client';
+import { notFound } from 'next/navigation';
 
-const storyblok = new StoryblokClient({
-  accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
-  cache: { type: "memory" },
+// Setup client
+const Storyblok = new StoryblokClient({
+  accessToken: process.env.NEXT_PUBLIC_STORYBLOK_API_KEY,
 });
 
-interface MyProduct {
-  component: string;
-  name: string;
-  description: string;
-  image?: { filename: string } | string;
-  Price?: number | string;
-}
+type PageProps = {
+  params: { slug: string };
+};
 
-interface StoryblokStory {
-  slug: string;
-  content: MyProduct;
-  _version?: number;
-}
-
-// ✅ This defines the valid paths for static generation
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const res = await storyblok.get("cdn/stories", {
-    starts_with: "product",
-    version: "draft",
-  });
-
-  const stories: StoryblokStory[] = res.data.stories;
-
-  return stories.map((story) => ({
-    slug: story.slug,
-  }));
-}
-
-// ✅ Props type for the dynamic route
-interface ProductPageProps {
-  params: {
-    slug: string;
-  };
-}
-
-export default async function ProductDetailPage({ params }: ProductPageProps) {
-  const { slug } = params;
-
+export default async function ProductPage({ params }: PageProps) {
   try {
-    const res = await storyblok.get(`cdn/stories/product/${slug}`, {
-      version: "draft",
+    // Fetch story by slug
+    const { data } = await Storyblok.get(`cdn/stories/products/${params.slug}`, {
+      version: 'draft', // or 'published'
     });
 
-    const product: MyProduct = res.data.story.content;
-    const imageUrl =
-      typeof product.image === "string"
-        ? product.image
-        : product.image?.filename
-        ? `https://a.storyblok.com${product.image.filename}`
-        : null;
+    const productName = data.story.content.product_name;
 
-    return (
-      <main className="max-w-4xl mx-auto px-4 py-10">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">{product.name}</h1>
-
-        {imageUrl && (
-          <div className="relative w-full h-96 mb-6 bg-gray-100 rounded-lg overflow-hidden">
-            <Image
-              src={imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover"
-              unoptimized
-            />
-          </div>
-        )}
-
-        <p className="text-gray-700 text-lg mb-4">{product.description}</p>
-
-        <p className="text-xl font-semibold text-green-600">
-          Price: ${product.Price ?? "N/A"}
-        </p>
-      </main>
-    );
-  } catch {
-    return notFound(); // fallback to 404
+    return <h1>{productName}</h1>;
+  } catch (err) {
+    return notFound();
   }
 }
