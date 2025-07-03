@@ -51,34 +51,37 @@ export default async function ProductPage({ params }: any) {
     return (
       <main
         style={{
-          maxWidth: "1080px",
+          width: "100%",
+          maxWidth: "1280px",
           margin: "0 auto",
           padding: "2rem 1rem",
           fontFamily: "'Inter', sans-serif",
-          minHeight: "100vh",
           backgroundColor: "#f9fafb",
+          minHeight: "100vh",
           display: "flex",
-          justifyContent: "center",
           alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <div
           style={{
             display: "flex",
-            flexDirection: "row", // force side by side
+            flexWrap: "wrap",
             gap: "2rem",
             backgroundColor: "#ffffff",
             borderRadius: "16px",
             boxShadow: "0 6px 20px rgba(0, 0, 0, 0.08)",
             padding: "2rem",
             width: "100%",
-            maxWidth: "960px",
+            justifyContent: "center",
           }}
         >
           {/* Left - Product Image */}
           <div
             style={{
-              width: "58%",
+              flex: "1 1 55%",
+              minWidth: "300px",
+              maxWidth: "640px",
               border: "1px solid #e5e7eb",
               borderRadius: "12px",
               overflow: "hidden",
@@ -115,11 +118,13 @@ export default async function ProductPage({ params }: any) {
           {/* Right - Product Info */}
           <div
             style={{
-              width: "40%",
+              flex: "1 1 40%",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               gap: "1.5rem",
+              minWidth: "280px",
+              maxWidth: "600px",
             }}
           >
             <h1
@@ -182,3 +187,4 @@ export default async function ProductPage({ params }: any) {
     notFound();
   }
 }
+
