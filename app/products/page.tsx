@@ -10,6 +10,7 @@ interface MyProduct {
   description: string;
   image?: { filename: string } | string;
   price?: number | string;
+  Price?: number | string; // 👈 From Storyblok CMS
   slug?: string;
   _version?: number;
 }
@@ -53,9 +54,8 @@ export default function Page() {
       })
       .then((data) => {
         const stories: StoryblokStory[] = data.stories || [];
-
-        const productList = stories.map((story) => {
-          const price = (story.content as any).Price; // Map "Price" to lowercase "price"
+        const productList: MyProduct[] = stories.map((story) => {
+          const price = story.content.Price; // 👈 Correct key from Storyblok
           const mappedProduct: MyProduct = {
             ...story.content,
             price,
@@ -63,13 +63,9 @@ export default function Page() {
             _version: story._version,
           };
 
-          console.log(
-            `🟢 Product: ${mappedProduct.name} | Price: ${mappedProduct.price}`
-          );
-
+          console.log(`🟢 Product: ${mappedProduct.name} | Price: ${mappedProduct.price}`);
           return mappedProduct;
         });
-
         setProducts(productList);
       })
       .catch((err) => setErrorMsg(err.message))
@@ -81,7 +77,10 @@ export default function Page() {
     setTimeout(() => setAddedToCartIndex(null), 2000);
   };
 
-  const getImageUrl = (image: MyProduct["image"], version?: number): string | null => {
+  const getImageUrl = (
+    image: MyProduct["image"],
+    version?: number
+  ): string | null => {
     if (typeof image === "string") {
       return image.startsWith("//") ? `https:${image}` : image;
     } else if (typeof image === "object" && image?.filename) {
@@ -104,7 +103,9 @@ export default function Page() {
 
   return (
     <main className="px-4 py-10 bg-gradient-to-br from-gray-50 to-white min-h-screen">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Our Products</h1>
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
+        Our Products
+      </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {products.map((product, i) => {
           const slug = product.slug || slugify(product.name || `product-${i}`);
@@ -113,7 +114,7 @@ export default function Page() {
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
               <a className="group bg-white rounded-xl border border-gray-300 hover:border-blue-500 hover:shadow-lg transition-all overflow-hidden flex flex-col">
-                {/* Image area */}
+                {/* Image */}
                 <div className="relative w-full pt-[61.8%] bg-gray-100">
                   {imageUrl ? (
                     <Image
@@ -130,7 +131,7 @@ export default function Page() {
                   )}
                 </div>
 
-                {/* Content */}
+                {/* Info */}
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div>
                     <h2 className="font-semibold text-gray-800 text-lg truncate">
