@@ -1,63 +1,66 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { useState } from "react";
+import { useCart } from "@/app/context/CartContext";
 
-export interface CartItem {
+interface QuantitySelectorProps {
   name: string;
   price?: number | string;
-  quantity: number;
 }
 
-interface CartContextType {
-  cart: CartItem[];
-  addToCart: (item: CartItem) => void;
-  removeFromCart: (name: string) => void;
-}
+export default function QuantitySelector({ name, price }: QuantitySelectorProps) {
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
-
-export const CartProvider = ({ children }: { children: React.ReactNode }) => {
-  const [cart, setCart] = useState<CartItem[]>([]);
-
-  // Load from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("cart");
-    if (stored) setCart(JSON.parse(stored));
-  }, []);
-
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
-  const addToCart = (item: CartItem) => {
-    setCart((prev) => {
-      const existing = prev.find((p) => p.name === item.name);
-      if (existing) {
-        return prev.map((p) =>
-          p.name === item.name
-            ? { ...p, quantity: p.quantity + item.quantity }
-            : p
-        );
-      } else {
-        return [...prev, item];
-      }
-    });
+  const increase = () => setQuantity((q) => q + 1);
+  const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10);
+    if (!isNaN(val) && val > 0) setQuantity(val);
   };
 
-  const removeFromCart = (name: string) => {
-    setCart((prev) => prev.filter((item) => item.name !== name));
+  const handleAddToCart = () => {
+    addToCart({ name, price, quantity });
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
-      {children}
-    </CartContext.Provider>
-  );
-};
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleAddToCart();
+      }}
+      className="flex flex-col sm:flex-row sm:items-center gap-4 max-w-xs text-sm"
+    >
+      <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+        <button
+          type="button"
+          onClick={decrease}
+          className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300"
+        >
+          −
+        </button>
+        <input
+          type="number"
+          min={1}
+          value={quantity}
+          onChange={onInputChange}
+          className="w-14 text-center border-l border-r border-gray-300"
+        />
+        <button
+          type="button"
+          onClick={increase}
+          className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300"
+        >
+          +
+        </button>
+      </div>
 
-export const useCart = () => {
-  const ctx = useContext(CartContext);
-  if (!ctx) throw new Error("useCart must be used inside CartProvider");
-  return ctx;
-};
+      <button
+        type="submit"
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm"
+      >
+        Add to Cart
+      </button>
+    </form>
+  );
+}
