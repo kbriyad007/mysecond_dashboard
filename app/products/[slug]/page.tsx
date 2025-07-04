@@ -71,7 +71,9 @@ export default async function Page(props: { params: Promise<{ slug: string }> })
             />
           </section>
         </div>
-        <div 
+        <div className="mt-10">
+      <CartWrapper />
+    </div>
       </main>
     );
   } catch {
