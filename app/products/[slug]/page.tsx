@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import ProductDetailsClient from "./ProductDetailsClient"; // 👈 new client wrapper
+import QuantitySelector from "./QuantitySelector"; // relative import
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -24,7 +24,7 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-export default async function Page({ params }: any) {
+export default async function Page({ params }: { params: { slug: string } }) {
   const slug = params.slug;
 
   try {
@@ -32,12 +32,17 @@ export default async function Page({ params }: any) {
       version: "draft",
     });
 
+    if (!response?.data?.story?.content) {
+      return notFound();
+    }
+
     const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
 
     return (
       <main className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8">
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 items-start">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-start">
+          {/* Product Image */}
           <div className="bg-white rounded-xl overflow-hidden shadow-md">
             <div className="aspect-[1.4] relative">
               {imageUrl ? (
@@ -56,8 +61,27 @@ export default async function Page({ params }: any) {
             </div>
           </div>
 
-          {/* ✅ Pass data to client wrapper */}
-          <ProductDetailsClient name={product.name} description={product.description} price={product.Price} />
+          {/* Product Details */}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-semibold text-gray-900 truncate">
+                {product.name || "Unnamed Product"}
+              </h1>
+              <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line line-clamp-6">
+                {product.description || "No description available."}
+              </p>
+            </div>
+
+            <p className="text-2xl font-semibold text-green-600">
+              {product.Price ? `$${product.Price}` : "Price not available"}
+            </p>
+
+            {/* Quantity Selector */}
+            <QuantitySelector
+              name={product.name}
+              price={product.Price}
+            />
+          </div>
         </div>
       </main>
     );
