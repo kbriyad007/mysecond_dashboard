@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import ProductDetailsClient from "./ProductDetailsClient"; // 👈 client component
+import ProductDetailsClient from "./ProductDetailsClient";
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -24,8 +24,8 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// ✅ Let Next.js infer the type automatically
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function Page(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params; // await here!
   const slug = params.slug;
 
   try {
