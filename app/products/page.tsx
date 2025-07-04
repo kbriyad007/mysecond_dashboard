@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/app/context/CartContext"; // ✅ Make sure this is the correct path
+import CartMenu from "@/app/components/CartMenu"; // adjust path if needed
+
 
 interface MyProduct {
   component: string;
