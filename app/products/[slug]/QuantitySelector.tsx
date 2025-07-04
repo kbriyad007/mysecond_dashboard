@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCart } from "@/lib/CartContext";
+import { useCart } from "@/context/CartContext";
 
 interface QuantitySelectorProps {
   name: string;
