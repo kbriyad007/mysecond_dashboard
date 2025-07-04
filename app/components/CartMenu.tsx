@@ -2,7 +2,6 @@
 
 import { useCart } from "@/app/context/CartContext";
 import { X } from "lucide-react";
-import { useState } from "react";
 
 export default function CartMenu() {
   const { cart, removeFromCart, clearCart, addToCart } = useCart();
