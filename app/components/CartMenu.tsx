@@ -1,11 +1,11 @@
 "use client";
 
 import { useCart } from "@/app/context/CartContext";
-import { X, ShoppingCart } from "lucide-react"; // Cart icon & X icon
+import { X, ShoppingCart } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 export default function CartMenu() {
-  const { cart, removeFromCart, addToCart } = useCart();
+  const { cart, removeFromCart, clearCart, addToCart } = useCart();
 
   const [isOpen, setIsOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -44,9 +44,9 @@ export default function CartMenu() {
     addToCart({ name, price: existingItem.price, quantity: diff });
   };
 
-  // Calculate total price
+  // Calculate total price safely by coercing price to number
   const totalPrice = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + Number(item.price || 0) * item.quantity,
     0
   );
 
@@ -124,22 +124,22 @@ export default function CartMenu() {
           )}
         </div>
 
-        {/* Fixed checkout + total bar */}
-        <div className="p-4 border-t bg-white sticky bottom-0 flex flex-col space-y-2">
-          <div className="flex justify-between font-semibold text-lg">
+        {/* Fixed footer with total and checkout button */}
+        <div className="border-t p-4 bg-white sticky bottom-0 left-0 w-full z-50 flex flex-col gap-2">
+          <div className="flex justify-between items-center font-semibold text-lg">
             <span>Total:</span>
             <span>${totalPrice.toFixed(2)}</span>
           </div>
           <button
-            onClick={() => alert("Checkout clicked!")}
-            className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition"
+            onClick={() => alert("Proceed to checkout")}
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
           >
             Checkout
           </button>
         </div>
       </div>
 
-      {/* Backdrop overlay */}
+      {/* Optional: Add backdrop overlay */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
