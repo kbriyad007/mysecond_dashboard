@@ -1,7 +1,7 @@
 "use client";
 
-import { useCart } from "@/context/CartContext"; // adjust path
-import { X } from "lucide-react"; // optional icon
+import { useCart } from "@/app/context/CartContext";
+import { X } from "lucide-react";
 
 export default function CartMenu() {
   const { cart, removeFromCart, clearCart } = useCart();
