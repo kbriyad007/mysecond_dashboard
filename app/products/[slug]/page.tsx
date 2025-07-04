@@ -1,6 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import QuantitySelector from "./QuantitySelector"; // Adjust if path differs
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -23,56 +24,74 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// ✅ Use inline type for params (instead of custom interface)
-export default async function Page({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const { slug } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function Page({ params }: any) {
+  if (
+    typeof params !== "object" ||
+    params === null ||
+    typeof params.slug !== "string"
+  ) {
+    return notFound();
+  }
+
+  const slug = params.slug;
 
   try {
     const response = await Storyblok.get(`cdn/stories/products/${slug}`, {
       version: "draft",
     });
 
-    if (!response?.data?.story?.content) return notFound();
+    if (!response?.data?.story?.content) {
+      return notFound();
+    }
 
     const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
 
     return (
-      <main className="min-h-screen bg-white px-6 py-12">
-        <div className="max-w-5xl mx-auto">
-          <div className="w-full aspect-[1.618] bg-gray-100 relative mb-10 rounded-2xl overflow-hidden shadow-md">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={product.name || "Product"}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                No image available
-              </div>
-            )}
+      <main className="min-h-screen bg-gradient-to-tr from-white to-gray-100 py-14 px-6 sm:px-10 lg:px-24 xl:px-32">
+        <div className="max-w-[1600px] mx-auto grid lg:grid-cols-2 gap-16 items-start">
+          {/* Image Section */}
+          <div className="bg-white rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-200">
+            <div className="aspect-[4/3] relative">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={product.name || "Product"}
+                  fill
+                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  unoptimized
+                  priority
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-base font-semibold">
+                  No image available
+                </div>
+              )}
+            </div>
           </div>
 
-          <div>
-            <h1 className="text-4xl font-semibold text-gray-900 mb-3">
-              {product.name || "Unnamed Product"}
-            </h1>
+          {/* Info Section */}
+          <section className="flex flex-col justify-between h-full space-y-6">
+            <div className="space-y-6">
+              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">
+                {product.name || "Unnamed Product"}
+              </h1>
 
-            <p className="text-base text-gray-600 mb-5 whitespace-pre-line leading-relaxed">
-              {product.description || "No description available."}
-            </p>
+              <p className="text-gray-700 text-sm md:text-base leading-relaxed whitespace-pre-line line-clamp-6">
+                {product.description || "No description available."}
+              </p>
 
-            <p className="text-2xl font-bold text-green-600">
-              {product.Price ? `$${product.Price}` : "Price not available"}
-            </p>
-          </div>
+              <p className="text-3xl font-bold text-green-700 drop-shadow">
+                {product.Price ? `$${product.Price}` : "Price not available"}
+              </p>
+            </div>
+
+            {/* Quantity selector + Buy button */}
+            <div className="pt-4">
+              <QuantitySelector price={product.Price} />
+            </div>
+          </section>
         </div>
       </main>
     );
