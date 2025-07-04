@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
+import QuantitySelector from "@/QuantitySelector"; // adjust path as needed
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -23,9 +23,6 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   }
   return null;
 }
-
-// Dynamically import the Client Component to avoid SSR issues
-const QuantitySelector = dynamic(() => import("./QuantitySelector"), { ssr: false });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Page({ params }: any) {
@@ -51,10 +48,10 @@ export default async function Page({ params }: any) {
     const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
 
-    // This is a server component, so event handlers can't live here
-    // Pass a stub callback to QuantitySelector just for demonstration
+    // This function will run on the server side only.
+    // Real client-side logic should go into the QuantitySelector component.
     const handleBuy = (quantity: number) => {
-      alert(`You want to buy ${quantity} of ${product.name}`);
+      console.log(`User wants to buy ${quantity} x ${product.name}`);
     };
 
     return (
@@ -94,8 +91,8 @@ export default async function Page({ params }: any) {
               </p>
             </div>
 
-            {/* Render client component */}
-            <QuantitySelector onBuy={handleBuy} price={product.Price} />
+            {/* Client-side interactive quantity and buy button */}
+            <QuantitySelector price={product.Price} onBuy={handleBuy} />
           </div>
         </div>
       </main>
