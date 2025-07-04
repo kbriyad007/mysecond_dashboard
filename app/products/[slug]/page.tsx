@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import QuantitySelector from "./QuantitySelector"; // adjust path as needed
+import QuantitySelector from "./QuantitySelector"; // relative import
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -48,12 +48,6 @@ export default async function Page({ params }: any) {
     const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
 
-    // This function will run on the server side only.
-    // Real client-side logic should go into the QuantitySelector component.
-    const handleBuy = (quantity: number) => {
-      console.log(`User wants to buy ${quantity} x ${product.name}`);
-    };
-
     return (
       <main className="min-h-screen bg-gray-50 py-14 px-6">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
@@ -91,8 +85,8 @@ export default async function Page({ params }: any) {
               </p>
             </div>
 
-            {/* Client-side interactive quantity and buy button */}
-            <QuantitySelector price={product.Price} onBuy={handleBuy} />
+            {/* Just pass price prop; no onBuy handler */}
+            <QuantitySelector price={product.Price} />
           </div>
         </div>
       </main>
@@ -101,3 +95,4 @@ export default async function Page({ params }: any) {
     return notFound();
   }
 }
+
