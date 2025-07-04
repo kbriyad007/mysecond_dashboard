@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import ProductDetailsClient from "./ProductDetailsClient"; // 👈 separate Client Component
+import QuantitySelector from "./QuantitySelector"; // Adjust if path differs
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -15,10 +15,6 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
-interface PageProps {
-  params: { slug: string };
-}
-
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -28,7 +24,16 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-export default async function Page({ params }: PageProps) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function Page({ params }: any) {
+  if (
+    typeof params !== "object" ||
+    params === null ||
+    typeof params.slug !== "string"
+  ) {
+    return notFound();
+  }
+
   const slug = params.slug;
 
   try {
@@ -36,7 +41,9 @@ export default async function Page({ params }: PageProps) {
       version: "draft",
     });
 
-    if (!response?.data?.story?.content) return notFound();
+    if (!response?.data?.story?.content) {
+      return notFound();
+    }
 
     const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
@@ -64,13 +71,26 @@ export default async function Page({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Info Section (Client Component handles interactive parts) */}
+          {/* Info Section */}
           <section className="flex flex-col justify-between h-full space-y-6">
-            <ProductDetailsClient
-              name={product.name}
-              description={product.description}
-              price={product.Price}
-            />
+            <div className="space-y-6">
+              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">
+                {product.name || "Unnamed Product"}
+              </h1>
+
+              <p className="text-gray-700 text-sm md:text-base leading-relaxed whitespace-pre-line line-clamp-6">
+                {product.description || "No description available."}
+              </p>
+
+              <p className="text-3xl font-bold text-green-700 drop-shadow">
+                {product.Price ? `$${product.Price}` : "Price not available"}
+              </p>
+            </div>
+
+            {/* Quantity selector + Buy button */}
+            <div className="pt-4">
+              <QuantitySelector price={product.Price} />
+            </div>
           </section>
         </div>
       </main>
