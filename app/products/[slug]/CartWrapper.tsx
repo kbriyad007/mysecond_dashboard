@@ -18,7 +18,7 @@ export default function CartWrapper() {
       </button>
 
       {/* Cart Menu Drawer */}
-      <CartMenu isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
+      <CartMenu />
     </>
   );
 }
