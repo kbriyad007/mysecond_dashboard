@@ -23,19 +23,21 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
+function hasSlug(obj: unknown): obj is { slug: string } {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "slug" in obj &&
+    typeof (obj as Record<string, unknown>).slug === "string"
+  );
+}
+
 export default async function Page({ params }: { params: unknown }) {
-  // Runtime type check for params and slug
-  if (
-    typeof params !== "object" ||
-    params === null ||
-    !("slug" in params) ||
-    typeof (params as any).slug !== "string"
-  ) {
-    // If params or slug invalid, show 404
+  if (!hasSlug(params)) {
     return notFound();
   }
 
-  const slug = (params as { slug: string }).slug;
+  const slug = params.slug;
 
   try {
     const response = await Storyblok.get(`cdn/stories/products/${slug}`, {
