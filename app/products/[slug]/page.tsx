@@ -2,13 +2,11 @@ import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// Storyblok client config
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// Product data interface
 interface MyProduct {
   name: string;
   description: string;
@@ -16,14 +14,6 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
-// Params type interface for Next.js dynamic route
-interface PageProps {
-  params: {
-    slug: string;
-  };
-}
-
-// Image helper
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -33,8 +23,12 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// ✅ Page Component with type-safe params
-export default async function Page({ params }: PageProps) {
+// ✅ Use inline type for params (instead of custom interface)
+export default async function Page({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
 
   try {
