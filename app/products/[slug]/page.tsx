@@ -7,9 +7,20 @@ const Storyblok = new StoryblokClient({
   cache: { clear: "auto", type: "memory" },
 });
 
-function getImageUrl(image: any): string | null {
-  if (typeof image === "string") return image.startsWith("//") ? `https:${image}` : image;
-  if (image?.filename) return `https://a.storyblok.com${image.filename}`;
+interface MyProduct {
+  name: string;
+  description: string;
+  Price?: number | string;
+  image?: { filename: string } | string;
+}
+
+// Use proper typed parameter, no any
+function getImageUrl(image: MyProduct["image"]): string | null {
+  if (typeof image === "string") {
+    return image.startsWith("//") ? `https:${image}` : image;
+  } else if (image?.filename) {
+    return `https://a.storyblok.com${image.filename}`;
+  }
   return null;
 }
 
@@ -21,7 +32,7 @@ export default async function Page({ params }: { params: Record<string, string> 
       version: "draft",
     });
 
-    const product = response.data.story.content;
+    const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
 
     return (
@@ -29,7 +40,13 @@ export default async function Page({ params }: { params: Record<string, string> 
         <div className="max-w-4xl mx-auto">
           <div className="w-full aspect-[1.618] bg-gray-100 relative mb-8 rounded-xl overflow-hidden shadow-sm">
             {imageUrl ? (
-              <Image src={imageUrl} alt={product.name || "Product"} fill className="object-cover" unoptimized />
+              <Image
+                src={imageUrl}
+                alt={product.name || "Product"}
+                fill
+                className="object-cover"
+                unoptimized
+              />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                 No image available
