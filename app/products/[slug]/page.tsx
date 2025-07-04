@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import QuantitySelector from "./QuantitySelector"; // Adjust if path differs
+import ProductDetailsClient from "./ProductDetailsClient"; // ✅ must be client component
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -24,16 +24,12 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function Page({ params }: any) {
-  if (
-    typeof params !== "object" ||
-    params === null ||
-    typeof params.slug !== "string"
-  ) {
-    return notFound();
-  }
-
+// ✅ Correct function signature — matches what Next.js expects
+export default async function Page({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const slug = params.slug;
 
   try {
@@ -71,26 +67,13 @@ export default async function Page({ params }: any) {
             </div>
           </div>
 
-          {/* Info Section */}
+          {/* Client-side Info Section */}
           <section className="flex flex-col justify-between h-full space-y-6">
-            <div className="space-y-6">
-              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">
-                {product.name || "Unnamed Product"}
-              </h1>
-
-              <p className="text-gray-700 text-sm md:text-base leading-relaxed whitespace-pre-line line-clamp-6">
-                {product.description || "No description available."}
-              </p>
-
-              <p className="text-3xl font-bold text-green-700 drop-shadow">
-                {product.Price ? `$${product.Price}` : "Price not available"}
-              </p>
-            </div>
-
-            {/* Quantity selector + Buy button */}
-            <div className="pt-4">
-              <QuantitySelector price={product.Price} />
-            </div>
+            <ProductDetailsClient
+              name={product.name}
+              description={product.description}
+              price={product.Price}
+            />
           </section>
         </div>
       </main>
