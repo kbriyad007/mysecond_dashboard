@@ -49,9 +49,9 @@ export default async function Page({ params }: any) {
     const imageUrl = getImageUrl(product.image);
 
     return (
-      <main className="min-h-screen bg-gray-50 py-14 px-6">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
-          <div className="w-full bg-white rounded-2xl overflow-hidden shadow-md">
+      <main className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8">
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 items-start">
+          <div className="bg-white rounded-xl overflow-hidden shadow-md">
             <div className="aspect-[1.4] relative">
               {imageUrl ? (
                 <Image
@@ -62,30 +62,30 @@ export default async function Page({ params }: any) {
                   unoptimized
                 />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
                   No image available
                 </div>
               )}
             </div>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-3">
+              <h1 className="text-3xl font-semibold text-gray-900 mb-2 truncate">
                 {product.name || "Unnamed Product"}
               </h1>
-              <p className="text-gray-600 text-lg leading-relaxed whitespace-pre-line">
+              <p className="text-gray-600 text-base leading-relaxed whitespace-pre-line line-clamp-6">
                 {product.description || "No description available."}
               </p>
             </div>
 
             <div>
-              <p className="text-3xl font-semibold text-green-600">
+              <p className="text-2xl font-semibold text-green-600 mb-4">
                 {product.Price ? `$${product.Price}` : "Price not available"}
               </p>
             </div>
 
-            {/* Just pass price prop; no onBuy handler */}
+            {/* QuantitySelector only gets price prop */}
             <QuantitySelector price={product.Price} />
           </div>
         </div>
@@ -95,4 +95,3 @@ export default async function Page({ params }: any) {
     return notFound();
   }
 }
-
