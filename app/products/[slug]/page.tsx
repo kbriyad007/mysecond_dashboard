@@ -1,4 +1,3 @@
-
 // app/products/[slug]/page.tsx
 
 import StoryblokClient from "storyblok-js-client";
@@ -78,7 +77,7 @@ export default async function ProductPage({ params }: ProductProps) {
         </div>
       </main>
     );
-  } catch (error) {
-    return notFound(); // fallback to 404 if product not found
+  } catch {
+    return notFound();
   }
 }
