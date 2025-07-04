@@ -44,36 +44,52 @@ export default async function Page({ params }: any) {
     const imageUrl = getImageUrl(product.image);
 
     return (
-      <main className="min-h-screen bg-white px-6 py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="w-full aspect-[1.618] bg-gray-100 relative mb-8 rounded-xl overflow-hidden shadow-sm">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={product.name || "Product"}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                No image available
-              </div>
-            )}
+      <main className="min-h-screen bg-gray-50 py-14 px-6">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+          {/* Image */}
+          <div className="w-full bg-white rounded-2xl overflow-hidden shadow-md">
+            <div className="aspect-[1.4] relative">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={product.name || "Product"}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                  No image available
+                </div>
+              )}
+            </div>
           </div>
 
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              {product.name || "Unnamed Product"}
-            </h1>
+          {/* Product Info */}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-3">
+                {product.name || "Unnamed Product"}
+              </h1>
+              <p className="text-gray-600 text-lg leading-relaxed whitespace-pre-line">
+                {product.description || "No description available."}
+              </p>
+            </div>
 
-            <p className="text-lg text-gray-600 mb-6 whitespace-pre-line">
-              {product.description || "No description available."}
-            </p>
+            <div>
+              <p className="text-3xl font-semibold text-green-600">
+                {product.Price ? `$${product.Price}` : "Price not available"}
+              </p>
+            </div>
 
-            <p className="text-xl font-semibold text-green-600">
-              {product.Price ? `$${product.Price}` : "Price not available"}
-            </p>
+            <div>
+              <button
+                type="button"
+                className="mt-4 w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 transition-colors text-white text-base font-medium rounded-xl shadow-md"
+              >
+                🛒 Buy Now
+              </button>
+            </div>
           </div>
         </div>
       </main>
@@ -82,4 +98,3 @@ export default async function Page({ params }: any) {
     return notFound();
   }
 }
-
