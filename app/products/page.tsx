@@ -174,6 +174,10 @@ export default function Page() {
           );
         })}
       </div>
+       {/* ✅ Add cart here */}
+    <div className="mt-10">
+      <CartMenu />
+    </div>
     </main>
   );
 }
