@@ -1,82 +1,143 @@
 "use client";
 
 import { useCart } from "@/app/context/CartContext";
-import { X } from "lucide-react";
+import { X, ShoppingCart } from "lucide-react"; // Cart icon & X icon
+import { useState, useEffect, useRef } from "react";
 
 export default function CartMenu() {
   const { cart, removeFromCart, clearCart, addToCart } = useCart();
 
-  // Handle quantity change for a specific item
-  const handleQuantityChange = (name: string, newQuantity: number) => {
-    if (newQuantity < 1) return; // Optional: no zero or negative quantities
+  const [isOpen, setIsOpen] = useState(false);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
-    // Update quantity by adding the difference
+  // Close cart when clicking outside drawer
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        drawerRef.current &&
+        !drawerRef.current.contains(event.target as Node) &&
+        (event.target as HTMLElement).id !== "cart-toggle-btn"
+      ) {
+        setIsOpen(false);
+      }
+    }
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  // Quantity change handler
+  const handleQuantityChange = (name: string, newQuantity: number) => {
+    if (newQuantity < 1) return;
+
     const existingItem = cart.find((item) => item.name === name);
     if (!existingItem) return;
 
     const diff = newQuantity - existingItem.quantity;
+    if (diff === 0) return;
 
-    if (diff === 0) return; // No change
-
-    // Reuse addToCart to update quantity by diff (as addToCart adds quantity)
     addToCart({ name, price: existingItem.price, quantity: diff });
   };
 
-  if (cart.length === 0) {
-    return (
-      <div className="fixed right-0 top-20 w-80 h-60 bg-white rounded-l-md shadow-lg p-4 text-center text-gray-500 text-sm flex items-center justify-center">
-        Your cart is empty.
-      </div>
-    );
-  }
-
   return (
-    <div className="fixed right-0 top-20 w-80 max-h-[70vh] bg-white rounded-l-md shadow-lg p-4 overflow-auto flex flex-col">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4 flex justify-between items-center">
-        🛒 Your Cart
-        <button
-          onClick={clearCart}
-          className="text-red-500 hover:text-red-600 text-xs font-semibold"
-          aria-label="Clear cart"
-        >
-          Clear All
-        </button>
-      </h2>
+    <>
+      {/* Floating Cart Icon Button */}
+      <button
+        id="cart-toggle-btn"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle cart"
+        className="fixed bottom-6 right-6 z-50 p-4 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition"
+      >
+        <ShoppingCart className="w-6 h-6" />
+        {cart.length > 0 && (
+          <span className="absolute top-1 right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+            {cart.reduce((sum, item) => sum + item.quantity, 0)}
+          </span>
+        )}
+      </button>
 
-      <div className="flex-grow space-y-4 overflow-auto">
-        {cart.map((item) => (
-          <div
-            key={item.name}
-            className="flex items-center justify-between border-b pb-2"
+      {/* Sliding Cart Drawer */}
+      <div
+        ref={drawerRef}
+        className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-40 transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        } flex flex-col`}
+      >
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="text-lg font-semibold">🛒 Your Cart</h2>
+          <button
+            onClick={() => setIsOpen(false)}
+            aria-label="Close cart"
+            className="text-gray-600 hover:text-gray-900"
           >
-            <div className="flex flex-col">
-              <p className="font-medium text-gray-900">{item.name}</p>
-              <p className="text-green-600 font-semibold">${item.price}</p>
-            </div>
+            <X className="w-6 h-6" />
+          </button>
+        </div>
 
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                min={1}
-                value={item.quantity}
-                onChange={(e) =>
-                  handleQuantityChange(item.name, Number(e.target.value))
-                }
-                className="w-16 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                aria-label={`Quantity for ${item.name}`}
-              />
-
-              <button
-                onClick={() => removeFromCart(item.name)}
-                className="text-red-500 hover:text-red-600 text-xs font-semibold"
-                aria-label={`Remove ${item.name} from cart`}
+        <div className="flex-grow overflow-auto p-4 space-y-4">
+          {cart.length === 0 ? (
+            <p className="text-center text-gray-500">Your cart is empty.</p>
+          ) : (
+            cart.map((item) => (
+              <div
+                key={item.name}
+                className="flex items-center justify-between border-b pb-2"
               >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+                <div className="flex flex-col">
+                  <p className="font-medium text-gray-900">{item.name}</p>
+                  <p className="text-green-600 font-semibold">${item.price}</p>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    min={1}
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleQuantityChange(item.name, Number(e.target.value))
+                    }
+                    className="w-16 text-center border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    aria-label={`Quantity for ${item.name}`}
+                  />
+
+                  <button
+                    onClick={() => removeFromCart(item.name)}
+                    className="text-red-500 hover:text-red-600 text-xs font-semibold"
+                    aria-label={`Remove ${item.name} from cart`}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {cart.length > 0 && (
+          <div className="p-4 border-t">
+            <button
+              onClick={clearCart}
+              className="w-full text-sm text-red-500 hover:underline"
+            >
+              Clear Cart
+            </button>
           </div>
-        ))}
+        )}
       </div>
-    </div>
+
+      {/* Optional: Add backdrop overlay */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black bg-opacity-30 z-30"
+          aria-hidden="true"
+        />
+      )}
+    </>
   );
 }
