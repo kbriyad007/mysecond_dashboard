@@ -1,6 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { useState } from "react";
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -82,14 +83,62 @@ export default async function Page({ params }: any) {
               </p>
             </div>
 
-            <div>
+            {/* Quantity Selector */}
+            <form action="#" method="POST" className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <label
+                  htmlFor="quantity"
+                  className="text-gray-700 font-medium text-base"
+                >
+                  Quantity:
+                </label>
+                <div className="flex items-center border rounded-lg overflow-hidden">
+                  <button
+                    type="button"
+                    className="w-10 h-10 text-xl font-bold text-gray-600 hover:bg-gray-100"
+                    onClick={() =>
+                      document.getElementById("qty") &&
+                      ((document.getElementById("qty") as HTMLInputElement).value = String(
+                        Math.max(
+                          1,
+                          Number((document.getElementById("qty") as HTMLInputElement).value) - 1
+                        )
+                      ))
+                    }
+                  >
+                    −
+                  </button>
+                  <input
+                    id="qty"
+                    name="quantity"
+                    type="number"
+                    defaultValue={1}
+                    min={1}
+                    className="w-16 h-10 text-center border-x border-gray-200 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    className="w-10 h-10 text-xl font-bold text-gray-600 hover:bg-gray-100"
+                    onClick={() =>
+                      document.getElementById("qty") &&
+                      ((document.getElementById("qty") as HTMLInputElement).value = String(
+                        Number((document.getElementById("qty") as HTMLInputElement).value) + 1
+                      ))
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+
+              {/* Buy Now Button */}
               <button
-                type="button"
-                className="mt-4 w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 transition-colors text-white text-base font-medium rounded-xl shadow-md"
+                type="submit"
+                className="mt-6 w-full sm:w-auto px-8 py-3 bg-blue-600 hover:bg-blue-700 transition-colors text-white text-lg font-semibold rounded-xl shadow-lg"
               >
                 🛒 Buy Now
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </main>
