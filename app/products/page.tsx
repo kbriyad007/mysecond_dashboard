@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCart } from "@/app/context/CartContext"; // adjust if needed
-
+import { useCart } from "@/app/context/CartContext"; // ✅ Make sure this is the correct path
 
 interface MyProduct {
   component: string;
@@ -39,6 +38,8 @@ export default function Page() {
   const [errorMsg, setErrorMsg] = useState("");
   const [addedToCartIndex, setAddedToCartIndex] = useState<number | null>(null);
 
+  const { addToCart } = useCart(); // ✅ useCart hook to access addToCart
+
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN;
     if (!token) {
@@ -68,9 +69,26 @@ export default function Page() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleAddToCart = (index: number) => {
+  // ✅ Updated Add to Cart Handler
+  const handleAddToCart = (product: MyProduct, index: number) => {
+    const price =
+      typeof product.Price === "string"
+        ? parseFloat(product.Price)
+        : product.Price;
+
+    if (price === undefined || isNaN(price)) {
+      alert("Invalid price");
+      return;
+    }
+
+    addToCart({
+      name: product.name || "Unnamed Product",
+      price,
+      quantity: 1,
+    });
+
     setAddedToCartIndex(index);
-    setTimeout(() => setAddedToCartIndex(null), 2000);
+    setTimeout(() => setAddedToCartIndex(null), 1500);
   };
 
   const getImageUrl = (image: MyProduct["image"], version?: number): string | null => {
@@ -104,7 +122,6 @@ export default function Page() {
           return (
             <Link key={slug} href={`/products/${slug}`} passHref legacyBehavior>
               <a className="bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-none">
-                {/* Image */}
                 <div className="relative w-full pt-[61.8%] bg-gray-100">
                   {imageUrl ? (
                     <Image
@@ -121,7 +138,6 @@ export default function Page() {
                   )}
                 </div>
 
-                {/* Info */}
                 <div className="p-4 flex flex-col justify-between flex-1">
                   <div className="mb-2">
                     <h2 className="font-semibold text-gray-800 text-base truncate">
@@ -139,7 +155,7 @@ export default function Page() {
                     <button
                       onClick={(e) => {
                         e.preventDefault();
-                        handleAddToCart(i);
+                        handleAddToCart(product, i); // ✅ Pass product here
                       }}
                       className={`w-full text-sm font-medium px-3 py-2 rounded-md text-white ${
                         addedToCartIndex === i
