@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCart } from "@/app/context/CartContext"; // adjust if needed
+
 
 interface MyProduct {
   component: string;
