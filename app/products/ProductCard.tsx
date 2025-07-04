@@ -21,6 +21,7 @@ export default function ProductCard({ product, isAdded, onAdd }: Props) {
     addToCart({
       name: product.name || "Unnamed Product",
       price: isNaN(priceNumber) ? 0 : priceNumber,
+      quantity: 1, // ✅ required by CartItem
     });
     onAdd();
   };
