@@ -89,8 +89,11 @@ export default async function Page({ params }: any) {
 
             {/* Quantity selector + Buy button */}
             <div className="pt-4">
-              <QuantitySelector price={product.Price} />
-            </div>
+  <QuantitySelector
+    name={product.name || "Unnamed Product"}
+    price={product.Price}
+  />
+</div>
           </section>
         </div>
       </main>
