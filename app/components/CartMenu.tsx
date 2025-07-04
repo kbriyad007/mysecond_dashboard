@@ -44,6 +44,12 @@ export default function CartMenu() {
     addToCart({ name, price: existingItem.price, quantity: diff });
   };
 
+  // Calculate total price dynamically
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
   return (
     <>
       {/* Floating Cart Icon Button */}
@@ -79,6 +85,7 @@ export default function CartMenu() {
           </button>
         </div>
 
+        {/* Cart Items */}
         <div className="flex-grow overflow-auto p-4 space-y-4">
           {cart.length === 0 ? (
             <p className="text-center text-gray-500">Your cart is empty.</p>
@@ -90,7 +97,9 @@ export default function CartMenu() {
               >
                 <div className="flex flex-col">
                   <p className="font-medium text-gray-900">{item.name}</p>
-                  <p className="text-green-600 font-semibold">${item.price}</p>
+                  <p className="text-green-600 font-semibold">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </p>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -118,19 +127,23 @@ export default function CartMenu() {
           )}
         </div>
 
-        {cart.length > 0 && (
-          <div className="p-4 border-t">
-            <button
-              onClick={clearCart}
-              className="w-full text-sm text-red-500 hover:underline"
-            >
-              Clear Cart
-            </button>
+        {/* Fixed Footer with Total and Checkout */}
+        <div className="sticky bottom-0 bg-white border-t p-4 flex flex-col space-y-2">
+          <div className="flex justify-between font-semibold text-lg">
+            <span>Total:</span>
+            <span>${totalPrice.toFixed(2)}</span>
           </div>
-        )}
+          <button
+            onClick={() => alert("Proceed to checkout")} // Replace with real checkout action
+            disabled={cart.length === 0}
+            className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 transition"
+          >
+            Checkout
+          </button>
+        </div>
       </div>
 
-      {/* Optional: Add backdrop overlay */}
+      {/* Backdrop overlay */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
