@@ -2,13 +2,12 @@ import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// ✅ Storyblok client setup
+// Initialize Storyblok client
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// ✅ Product data shape
 interface MyProduct {
   name: string;
   description: string;
@@ -16,7 +15,11 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
-// ✅ Generate static paths for each product slug (for SSG)
+interface Story {
+  slug: string;
+}
+
+// Generate static paths for all product slugs
 export async function generateStaticParams() {
   const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!;
   const res = await fetch(
@@ -24,12 +27,12 @@ export async function generateStaticParams() {
   );
   const data = await res.json();
 
-  return data.stories.map((story: any) => ({
+  return data.stories.map((story: Story) => ({
     slug: story.slug,
   }));
 }
 
-// ✅ Helper to resolve image URL
+// Helper to get the full image URL
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -39,7 +42,7 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// ✅ Main dynamic product page
+// Dynamic product page component
 export default async function Page({
   params,
 }: {
