@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import ProductDetailsClient from "./ProductDetailsClient"; // ✅ must be client component
+import ProductDetailsClient from "./ProductDetailsClient"; // 👈 client component
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -24,12 +24,8 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// ✅ Correct function signature — matches what Next.js expects
-export default async function Page({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// ✅ Let Next.js infer the type automatically
+export default async function Page({ params }: { params: { slug: string } }) {
   const slug = params.slug;
 
   try {
@@ -37,9 +33,7 @@ export default async function Page({
       version: "draft",
     });
 
-    if (!response?.data?.story?.content) {
-      return notFound();
-    }
+    if (!response?.data?.story?.content) return notFound();
 
     const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
@@ -47,7 +41,7 @@ export default async function Page({
     return (
       <main className="min-h-screen bg-gradient-to-tr from-white to-gray-100 py-14 px-6 sm:px-10 lg:px-24 xl:px-32">
         <div className="max-w-[1600px] mx-auto grid lg:grid-cols-2 gap-16 items-start">
-          {/* Image Section */}
+          {/* Image */}
           <div className="bg-white rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-200">
             <div className="aspect-[4/3] relative">
               {imageUrl ? (
@@ -67,7 +61,7 @@ export default async function Page({
             </div>
           </div>
 
-          {/* Client-side Info Section */}
+          {/* Info (Client Component) */}
           <section className="flex flex-col justify-between h-full space-y-6">
             <ProductDetailsClient
               name={product.name}
