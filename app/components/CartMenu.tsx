@@ -1,90 +1,50 @@
 "use client";
 
-import { useCart } from "@/lib/CartContext";
-import { Trash2 } from "lucide-react";
+import { useCart } from "@/context/CartContext"; // adjust path
+import { X } from "lucide-react"; // optional icon
 
 export default function CartMenu() {
-  const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { cart, removeFromCart, clearCart } = useCart();
 
-  // Calculate grand total
-  const grandTotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
-  const handleCheckout = () => {
-    alert("Proceeding to checkout...");
-  };
+  if (cart.length === 0) {
+    return (
+      <div className="p-4 text-center text-gray-500 text-sm">
+        Your cart is empty.
+      </div>
+    );
+  }
 
   return (
-    <aside className="bg-white shadow rounded p-4 w-full max-w-xs border border-gray-200 flex flex-col h-full">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-semibold">🛍️ Cart</h2>
-        {cartItems.length > 0 && (
-          <button
-            onClick={clearCart}
-            aria-label="Clear cart"
-            title="Clear cart"
-            className="text-gray-400 hover:text-red-600 transition-colors"
-          >
-            <Trash2 size={20} />
-          </button>
-        )}
-      </div>
+    <div className="p-4 bg-white rounded-md shadow-md max-w-md mx-auto space-y-4">
+      <h2 className="text-lg font-semibold text-gray-800">🛒 Your Cart</h2>
 
-      {cartItems.length === 0 ? (
-        <p className="text-gray-500 flex-grow">Cart is empty.</p>
-      ) : (
-        <>
-          <ul className="space-y-4 overflow-y-auto flex-grow mb-24">
-            {cartItems.map((item) => (
-              <li
-                key={item.name}
-                className="flex items-center justify-between gap-2 text-gray-800"
-              >
-                <div className="flex-grow">
-                  <p className="font-semibold">{item.name}</p>
-                  <p className="text-sm text-gray-600">
-                    ${item.price.toFixed(2)} ×{" "}
-                    <input
-                      type="number"
-                      min={1}
-                      value={item.quantity}
-                      onChange={(e) =>
-                        updateQuantity(item.name, Number(e.target.value))
-                      }
-                      className="w-12 p-1 border rounded text-center text-sm"
-                    />{" "}
-                    = ${(item.price * item.quantity).toFixed(2)}
-                  </p>
-                </div>
-                <button
-                  onClick={() => removeFromCart(item.name)}
-                  aria-label={`Remove ${item.name}`}
-                  className="text-red-500 hover:text-red-700 font-bold px-2"
-                >
-                  &times;
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          {/* Checkout section fixed at bottom inside cart */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 flex flex-col gap-2">
-            <div className="font-semibold text-gray-900">
-              Grand Total: ${grandTotal.toFixed(2)}
-            </div>
-            <button
-              onClick={handleCheckout}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 transition-colors text-white rounded-md font-semibold shadow-md"
-              aria-label="Proceed to checkout"
-              disabled={cartItems.length === 0}
-            >
-              Checkout
-            </button>
+      {cart.map((item) => (
+        <div
+          key={item.name}
+          className="flex justify-between items-center border-b pb-2 text-sm"
+        >
+          <div>
+            <p className="font-medium">{item.name}</p>
+            <p className="text-gray-600">Qty: {item.quantity}</p>
+            <p className="text-green-600 font-semibold">${item.price}</p>
           </div>
-        </>
-      )}
-    </aside>
+
+          <button
+            onClick={() => removeFromCart(item.name)}
+            className="text-red-500 hover:text-red-600 text-xs"
+          >
+            <X className="w-4 h-4 inline-block mr-1" />
+            Remove
+          </button>
+        </div>
+      ))}
+
+      <button
+        onClick={clearCart}
+        className="mt-3 w-full text-sm text-red-500 hover:underline"
+      >
+        Clear All
+      </button>
+    </div>
   );
 }
