@@ -74,7 +74,7 @@ export default async function Page({ params }: any) {
               <h1 className="text-3xl font-semibold text-gray-900 mb-2 truncate">
                 {product.name || "Unnamed Product"}
               </h1>
-              <p className="text-gray-600 text-base leading-relaxed whitespace-pre-line line-clamp-6">
+              <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line line-clamp-6">
                 {product.description || "No description available."}
               </p>
             </div>
