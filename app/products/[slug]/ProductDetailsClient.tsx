@@ -16,12 +16,8 @@ export default function ProductDetailsClient({
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-3xl font-semibold text-gray-900 mb-2 truncate">
-          {name}
-        </h1>
-        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line line-clamp-6">
-          {description || "No description available."}
-        </p>
+        <h1 className="text-3xl font-semibold text-gray-900 mb-2 truncate">{name}</h1>
+        <p className="text-gray-600 text-sm">{description || "No description available."}</p>
       </div>
 
       <div>
