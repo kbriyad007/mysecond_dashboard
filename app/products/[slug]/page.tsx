@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import QuantitySelector from "./QuantitySelector";
+import ProductDetailsClient from "./ProductDetailsClient"; // 👈 new client wrapper
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -24,9 +24,7 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Page({ params }: any) {
-  if (!params?.slug || typeof params.slug !== "string") return notFound();
   const slug = params.slug;
 
   try {
@@ -39,13 +37,13 @@ export default async function Page({ params }: any) {
 
     return (
       <main className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 items-start">
+        <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 items-start">
           <div className="bg-white rounded-xl overflow-hidden shadow-md">
             <div className="aspect-[1.4] relative">
               {imageUrl ? (
                 <Image
                   src={imageUrl}
-                  alt={product.name}
+                  alt={product.name || "Product"}
                   fill
                   className="object-cover"
                   unoptimized
@@ -58,16 +56,8 @@ export default async function Page({ params }: any) {
             </div>
           </div>
 
-          <div className="space-y-5">
-            <h1 className="text-3xl font-semibold text-gray-900">{product.name}</h1>
-            <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line line-clamp-6">
-              {product.description || "No description available."}
-            </p>
-            <p className="text-2xl font-semibold text-green-600">
-              {product.Price ? `$${product.Price}` : "Price not available"}
-            </p>
-            <QuantitySelector name={product.name} price={product.Price} />
-          </div>
+          {/* ✅ Pass data to client wrapper */}
+          <ProductDetailsClient name={product.name} description={product.description} price={product.Price} />
         </div>
       </main>
     );
