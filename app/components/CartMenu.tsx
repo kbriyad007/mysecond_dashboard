@@ -2,7 +2,6 @@
 
 import { useCart } from "@/app/context/CartContext";
 import { X, ShoppingCart } from "lucide-react"; // Cart icon & X icon
-import { useState, useEffect, useRef } from "react";
 
 export default function CartMenu() {
   const { cart, removeFromCart, clearCart, addToCart } = useCart();
