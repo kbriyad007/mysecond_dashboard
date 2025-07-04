@@ -2,13 +2,13 @@ import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// ✅ Initialize Storyblok
+// ✅ Storyblok client setup
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
-// ✅ Product type
+// ✅ Product data shape
 interface MyProduct {
   name: string;
   description: string;
@@ -16,7 +16,20 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
-// ✅ Image URL resolver
+// ✅ Generate static paths for each product slug (for SSG)
+export async function generateStaticParams() {
+  const token = process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!;
+  const res = await fetch(
+    `https://api.storyblok.com/v2/cdn/stories?starts_with=products&version=draft&token=${token}`
+  );
+  const data = await res.json();
+
+  return data.stories.map((story: any) => ({
+    slug: story.slug,
+  }));
+}
+
+// ✅ Helper to resolve image URL
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -26,16 +39,14 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// ✅ Dynamic product page
-export default async function ProductPage({
+// ✅ Main dynamic product page
+export default async function Page({
   params,
 }: {
   params: { slug: string };
 }) {
-  const { slug } = params;
-
   try {
-    const response = await Storyblok.get(`cdn/stories/products/${slug}`, {
+    const response = await Storyblok.get(`cdn/stories/products/${params.slug}`, {
       version: "draft",
     });
 
@@ -73,7 +84,7 @@ export default async function ProductPage({
             </p>
 
             <p className="text-xl font-semibold text-green-600">
-              ${product.Price ?? "N/A"}
+              {product.Price ? `$${product.Price}` : "Price not available"}
             </p>
           </div>
         </div>
