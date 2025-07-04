@@ -1,67 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-interface QuantitySelectorProps {
+export interface CartItem {
+  name: string;
   price?: number | string;
+  quantity: number;
 }
 
-export default function QuantitySelector({ price }: QuantitySelectorProps) {
-  const [quantity, setQuantity] = useState(1);
+interface CartContextType {
+  cart: CartItem[];
+  addToCart: (item: CartItem) => void;
+  removeFromCart: (name: string) => void;
+}
 
-  const increase = () => setQuantity((q) => q + 1);
-  const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
-  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseInt(e.target.value, 10);
-    if (!isNaN(val) && val > 0) setQuantity(val);
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Load from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("cart");
+    if (stored) setCart(JSON.parse(stored));
+  }, []);
+
+  // Save to localStorage
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  const addToCart = (item: CartItem) => {
+    setCart((prev) => {
+      const existing = prev.find((p) => p.name === item.name);
+      if (existing) {
+        return prev.map((p) =>
+          p.name === item.name
+            ? { ...p, quantity: p.quantity + item.quantity }
+            : p
+        );
+      } else {
+        return [...prev, item];
+      }
+    });
   };
 
-  const handleBuy = () => {
-    alert(`Buying ${quantity} item${quantity > 1 ? "s" : ""} for $${price ?? "N/A"}`);
-    // TODO: Implement real buy/cart logic here
+  const removeFromCart = (name: string) => {
+    setCart((prev) => prev.filter((item) => item.name !== name));
   };
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleBuy();
-      }}
-      className="flex flex-col sm:flex-row sm:items-center gap-3 max-w-xs"
-    >
-      <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-        <button
-          type="button"
-          onClick={decrease}
-          className="px-2 py-1 bg-gray-200 hover:bg-gray-300 transition text-gray-700 font-semibold text-sm"
-          aria-label="Decrease quantity"
-        >
-          −
-        </button>
-        <input
-          type="number"
-          min={1}
-          value={quantity}
-          onChange={onInputChange}
-          className="w-14 text-center border-l border-r border-gray-300 focus:outline-none text-sm"
-          aria-label="Quantity"
-        />
-        <button
-          type="button"
-          onClick={increase}
-          className="px-2 py-1 bg-gray-200 hover:bg-gray-300 transition text-gray-700 font-semibold text-sm"
-          aria-label="Increase quantity"
-        >
-          +
-        </button>
-      </div>
-
-      <button
-        type="submit"
-        className="flex-1 bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-1.5 rounded-md shadow-md text-sm"
-      >
-        Buy Now
-      </button>
-    </form>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+      {children}
+    </CartContext.Provider>
   );
-}
+};
+
+export const useCart = () => {
+  const ctx = useContext(CartContext);
+  if (!ctx) throw new Error("useCart must be used inside CartProvider");
+  return ctx;
+};
