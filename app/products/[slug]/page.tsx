@@ -1,13 +1,15 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import QuantitySelector from "./QuantitySelector"; // relative import
+import QuantitySelector from "./QuantitySelector"; // Adjust path if needed
 
+// Storyblok client config
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
+// Interface for product data
 interface MyProduct {
   name: string;
   description: string;
@@ -15,6 +17,14 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
+// Interface for page props
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+// Helper to format image
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -24,17 +34,16 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const slug = params.slug;
+// ✅ Page component using interface
+export default async function Page({ params }: PageProps) {
+  const { slug } = params;
 
   try {
     const response = await Storyblok.get(`cdn/stories/products/${slug}`, {
       version: "draft",
     });
 
-    if (!response?.data?.story?.content) {
-      return notFound();
-    }
+    if (!response?.data?.story?.content) return notFound();
 
     const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
@@ -42,7 +51,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     return (
       <main className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-start">
-          {/* Product Image */}
+          {/* Image */}
           <div className="bg-white rounded-xl overflow-hidden shadow-md">
             <div className="aspect-[1.4] relative">
               {imageUrl ? (
@@ -61,7 +70,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
             </div>
           </div>
 
-          {/* Product Details */}
+          {/* Details */}
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-semibold text-gray-900 truncate">
@@ -76,11 +85,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
               {product.Price ? `$${product.Price}` : "Price not available"}
             </p>
 
-            {/* Quantity Selector */}
-            <QuantitySelector
-              name={product.name}
-              price={product.Price}
-            />
+            <QuantitySelector name={product.name} price={product.Price} />
           </div>
         </div>
       </main>
