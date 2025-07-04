@@ -23,17 +23,13 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-function hasSlug(obj: unknown): obj is { slug: string } {
-  return (
-    typeof obj === "object" &&
-    obj !== null &&
-    "slug" in obj &&
-    typeof (obj as Record<string, unknown>).slug === "string"
-  );
-}
-
-export default async function Page({ params }: { params: unknown }) {
-  if (!hasSlug(params)) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function Page({ params }: any) {
+  if (
+    typeof params !== "object" ||
+    params === null ||
+    typeof params.slug !== "string"
+  ) {
     return notFound();
   }
 
@@ -86,3 +82,4 @@ export default async function Page({ params }: { params: unknown }) {
     return notFound();
   }
 }
+
