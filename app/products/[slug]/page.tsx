@@ -14,7 +14,6 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
-// Use proper typed parameter, no any
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -24,8 +23,19 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-export default async function Page({ params }: { params: Record<string, string> }) {
-  const slug = params.slug;
+export default async function Page({ params }: { params: unknown }) {
+  // Runtime type check for params and slug
+  if (
+    typeof params !== "object" ||
+    params === null ||
+    !("slug" in params) ||
+    typeof (params as any).slug !== "string"
+  ) {
+    // If params or slug invalid, show 404
+    return notFound();
+  }
+
+  const slug = (params as { slug: string }).slug;
 
   try {
     const response = await Storyblok.get(`cdn/stories/products/${slug}`, {
