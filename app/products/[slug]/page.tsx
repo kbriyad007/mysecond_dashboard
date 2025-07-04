@@ -1,7 +1,6 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import QuantitySelector from "./QuantitySelector"; // Adjust path if needed
 
 // Storyblok client config
 const Storyblok = new StoryblokClient({
@@ -9,7 +8,7 @@ const Storyblok = new StoryblokClient({
   cache: { clear: "auto", type: "memory" },
 });
 
-// Interface for product data
+// Product data interface
 interface MyProduct {
   name: string;
   description: string;
@@ -17,14 +16,14 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
-// Interface for page props
+// Params type interface for Next.js dynamic route
 interface PageProps {
   params: {
     slug: string;
   };
 }
 
-// Helper to format image
+// Image helper
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -34,7 +33,7 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// ✅ Page component using interface
+// ✅ Page Component with type-safe params
 export default async function Page({ params }: PageProps) {
   const { slug } = params;
 
@@ -49,43 +48,36 @@ export default async function Page({ params }: PageProps) {
     const imageUrl = getImageUrl(product.image);
 
     return (
-      <main className="min-h-screen bg-gray-50 py-10 px-4 sm:px-8">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-start">
-          {/* Image */}
-          <div className="bg-white rounded-xl overflow-hidden shadow-md">
-            <div className="aspect-[1.4] relative">
-              {imageUrl ? (
-                <Image
-                  src={imageUrl}
-                  alt={product.name || "Product"}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
-                  No image available
-                </div>
-              )}
-            </div>
+      <main className="min-h-screen bg-white px-6 py-12">
+        <div className="max-w-5xl mx-auto">
+          <div className="w-full aspect-[1.618] bg-gray-100 relative mb-10 rounded-2xl overflow-hidden shadow-md">
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={product.name || "Product"}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                No image available
+              </div>
+            )}
           </div>
 
-          {/* Details */}
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-semibold text-gray-900 truncate">
-                {product.name || "Unnamed Product"}
-              </h1>
-              <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line line-clamp-6">
-                {product.description || "No description available."}
-              </p>
-            </div>
+          <div>
+            <h1 className="text-4xl font-semibold text-gray-900 mb-3">
+              {product.name || "Unnamed Product"}
+            </h1>
 
-            <p className="text-2xl font-semibold text-green-600">
-              {product.Price ? `$${product.Price}` : "Price not available"}
+            <p className="text-base text-gray-600 mb-5 whitespace-pre-line leading-relaxed">
+              {product.description || "No description available."}
             </p>
 
-            <QuantitySelector name={product.name} price={product.Price} />
+            <p className="text-2xl font-bold text-green-600">
+              {product.Price ? `$${product.Price}` : "Price not available"}
+            </p>
           </div>
         </div>
       </main>
