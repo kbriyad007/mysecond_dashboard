@@ -1,7 +1,7 @@
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import QuantitySelector from "./QuantitySelector"; // Adjust if path differs
+import ProductDetailsClient from "./ProductDetailsClient"; // <-- use this instead of QuantitySelector
 
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
@@ -24,32 +24,23 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Page({ params }: any) {
-  if (
-    typeof params !== "object" ||
-    params === null ||
-    typeof params.slug !== "string"
-  ) {
+  if (!params?.slug || typeof params.slug !== "string") {
     return notFound();
   }
 
-  const slug = params.slug;
-
   try {
-    const response = await Storyblok.get(`cdn/stories/products/${slug}`, {
+    const response = await Storyblok.get(`cdn/stories/products/${params.slug}`, {
       version: "draft",
     });
 
-    if (!response?.data?.story?.content) {
-      return notFound();
-    }
+    const product: MyProduct | undefined = response?.data?.story?.content;
+    if (!product) return notFound();
 
-    const product: MyProduct = response.data.story.content;
     const imageUrl = getImageUrl(product.image);
 
     return (
-      <main className="min-h-screen bg-gradient-to-tr from-white to-gray-100 py-14 px-6 sm:px-10 lg:px-24 xl:px-32">
+      <main className="min-h-screen bg-gray-100 py-14 px-6 sm:px-10 lg:px-24 xl:px-32">
         <div className="max-w-[1600px] mx-auto grid lg:grid-cols-2 gap-16 items-start">
           {/* Image Section */}
           <div className="bg-white rounded-3xl overflow-hidden shadow-xl ring-1 ring-gray-200">
@@ -59,42 +50,24 @@ export default async function Page({ params }: any) {
                   src={imageUrl}
                   alt={product.name || "Product"}
                   fill
-                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  className="object-cover"
                   unoptimized
                   priority
                 />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-base font-semibold">
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                   No image available
                 </div>
               )}
             </div>
           </div>
 
-          {/* Info Section */}
-          <section className="flex flex-col justify-between h-full space-y-6">
-            <div className="space-y-6">
-              <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">
-                {product.name || "Unnamed Product"}
-              </h1>
-
-              <p className="text-gray-700 text-sm md:text-base leading-relaxed whitespace-pre-line line-clamp-6">
-                {product.description || "No description available."}
-              </p>
-
-              <p className="text-3xl font-bold text-green-700 drop-shadow">
-                {product.Price ? `$${product.Price}` : "Price not available"}
-              </p>
-            </div>
-
-            {/* Quantity selector + Buy button */}
-            <div className="pt-4">
-  <QuantitySelector
-    name={product.name || "Unnamed Product"}
-    price={product.Price}
-  />
-</div>
-          </section>
+          {/* Client Component */}
+          <ProductDetailsClient
+            name={product.name}
+            description={product.description}
+            price={product.Price}
+          />
         </div>
       </main>
     );
