@@ -27,13 +27,13 @@ export default function QuantitySelector({ price }: QuantitySelectorProps) {
         e.preventDefault();
         handleBuy();
       }}
-      className="flex flex-col sm:flex-row sm:items-center gap-4 max-w-xs"
+      className="flex flex-col sm:flex-row sm:items-center gap-3 max-w-xs"
     >
       <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
         <button
           type="button"
           onClick={decrease}
-          className="px-3 py-2 bg-gray-200 hover:bg-gray-300 transition text-gray-700 font-semibold"
+          className="px-2 py-1 bg-gray-200 hover:bg-gray-300 transition text-gray-700 font-semibold text-sm"
           aria-label="Decrease quantity"
         >
           −
@@ -43,13 +43,13 @@ export default function QuantitySelector({ price }: QuantitySelectorProps) {
           min={1}
           value={quantity}
           onChange={onInputChange}
-          className="w-16 text-center border-l border-r border-gray-300 focus:outline-none"
+          className="w-14 text-center border-l border-r border-gray-300 focus:outline-none text-sm"
           aria-label="Quantity"
         />
         <button
           type="button"
           onClick={increase}
-          className="px-3 py-2 bg-gray-200 hover:bg-gray-300 transition text-gray-700 font-semibold"
+          className="px-2 py-1 bg-gray-200 hover:bg-gray-300 transition text-gray-700 font-semibold text-sm"
           aria-label="Increase quantity"
         >
           +
@@ -58,7 +58,7 @@ export default function QuantitySelector({ price }: QuantitySelectorProps) {
 
       <button
         type="submit"
-        className="flex-1 bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-2 rounded-md shadow-md"
+        className="flex-1 bg-blue-600 hover:bg-blue-700 transition text-white font-semibold py-1.5 rounded-md shadow-md text-sm"
       >
         Buy Now
       </button>
