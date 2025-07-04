@@ -5,7 +5,7 @@ import { X, ShoppingCart } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 export default function CartMenu() {
-  const { cart, removeFromCart, clearCart, addToCart } = useCart();
+  const { cart, removeFromCart, addToCart } = useCart();
 
   const [isOpen, setIsOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
