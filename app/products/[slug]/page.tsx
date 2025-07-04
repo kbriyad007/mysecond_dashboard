@@ -1,14 +1,14 @@
-// app/products/[slug]/page.tsx
-
 import StoryblokClient from "storyblok-js-client";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+// ✅ Initialize Storyblok
 const Storyblok = new StoryblokClient({
   accessToken: process.env.NEXT_PUBLIC_STORYBLOK_TOKEN!,
   cache: { clear: "auto", type: "memory" },
 });
 
+// ✅ Product type
 interface MyProduct {
   name: string;
   description: string;
@@ -16,10 +16,7 @@ interface MyProduct {
   image?: { filename: string } | string;
 }
 
-interface ProductProps {
-  params: { slug: string };
-}
-
+// ✅ Image URL resolver
 function getImageUrl(image: MyProduct["image"]): string | null {
   if (typeof image === "string") {
     return image.startsWith("//") ? `https:${image}` : image;
@@ -29,7 +26,12 @@ function getImageUrl(image: MyProduct["image"]): string | null {
   return null;
 }
 
-export default async function ProductPage({ params }: ProductProps) {
+// ✅ Dynamic product page
+export default async function ProductPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const { slug } = params;
 
   try {
@@ -43,7 +45,7 @@ export default async function ProductPage({ params }: ProductProps) {
     return (
       <main className="min-h-screen bg-white px-6 py-12">
         <div className="max-w-4xl mx-auto">
-          {/* Image */}
+          {/* Product Image */}
           <div className="w-full aspect-[1.618] bg-gray-100 relative mb-8 rounded-xl overflow-hidden shadow-sm">
             {imageUrl ? (
               <Image
@@ -60,7 +62,7 @@ export default async function ProductPage({ params }: ProductProps) {
             )}
           </div>
 
-          {/* Info */}
+          {/* Product Info */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
               {product.name || "Unnamed Product"}
